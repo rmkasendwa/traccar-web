@@ -9,10 +9,10 @@ import {
   ListItemText,
   Skeleton,
   Box,
-} from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+} from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { createRoot } from 'react-dom/client';
-import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { TravelExploreIcon } from '@/components/icons';
 import { map } from '../core/MapView';
 import { toMapCoordinates } from '../core/mapUtil';
 import { errorsActions } from '../../store';

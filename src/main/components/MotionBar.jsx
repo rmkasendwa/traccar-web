@@ -1,4 +1,4 @@
-import { makeStyles } from 'tss-react/mui';
+import { makeStyles } from '@/components/styles';
 import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles()((theme) => ({

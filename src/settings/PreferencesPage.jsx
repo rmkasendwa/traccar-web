@@ -22,10 +22,10 @@ import {
   TextField,
   createFilterOptions,
   Button,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CachedIcon from '@mui/icons-material/Cached';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+} from '@/components/ui';
+import { ExpandMoreIcon } from '@/components/icons';
+import { CachedIcon } from '@/components/icons';
+import { ContentCopyIcon } from '@/components/icons';
 import { useTranslation, useTranslationKeys } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';
 import SettingsMenu from './components/SettingsMenu';

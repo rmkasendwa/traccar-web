@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from '@mui/material';
+import { Alert } from '@/components/ui';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

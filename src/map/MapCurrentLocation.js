@@ -1,7 +1,7 @@
 import maplibregl from 'maplibre-gl';
 import { useEffect } from 'react';
 import { map } from './core/MapView';
-import { useTheme } from '@mui/material';
+import { useTheme } from '@/components/ui';
 
 const MapCurrentLocation = () => {
   const theme = useTheme();

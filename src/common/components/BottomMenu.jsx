@@ -9,13 +9,13 @@ import {
   MenuItem,
   Typography,
   Badge,
-} from '@mui/material';
+} from '@/components/ui';
 
-import DescriptionIcon from '@mui/icons-material/Description';
-import SettingsIcon from '@mui/icons-material/Settings';
-import MapIcon from '@mui/icons-material/Map';
-import PersonIcon from '@mui/icons-material/Person';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { DescriptionIcon } from '@/components/icons';
+import { SettingsIcon } from '@/components/icons';
+import { MapIcon } from '@/components/icons';
+import { PersonIcon } from '@/components/icons';
+import { ExitToAppIcon } from '@/components/icons';
 
 import { sessionActions } from '../../store';
 import { useTranslation } from './LocalizationProvider';

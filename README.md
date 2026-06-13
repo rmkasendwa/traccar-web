@@ -4,7 +4,33 @@
 
 Traccar is open source server for various GPS tracking devices. This repository contains web interface for the Traccar platform. For back-end checkout [main Traccar repository](https://github.com/tananaev/traccar).
 
-The app uses React, Material UI and MapLibre. For more information on how to build it please check the [web app documentation](https://www.traccar.org/build-web-app/).
+The app uses Next.js, TypeScript, Tailwind CSS, React, Redux, and MapLibre.
+
+## Development
+
+Copy `.env.example` to `.env` and adjust the runtime settings:
+
+```bash
+PORT=3000
+BACKEND_URL=http://localhost:8082
+```
+
+Install dependencies and start the development server:
+
+```bash
+npm install
+npm run dev
+```
+
+`PORT` controls the web server port. `BACKEND_URL` controls where HTTP and WebSocket
+requests under `/api` are proxied, which keeps Traccar session cookies same-origin.
+
+## Production
+
+```bash
+npm run build
+PORT=3000 BACKEND_URL=http://localhost:8082 npm start
+```
 
 ## Team
 

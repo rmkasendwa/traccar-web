@@ -9,9 +9,9 @@ import {
   Switch,
   TableFooter,
   FormControlLabel,
-} from '@mui/material';
-import LoginIcon from '@mui/icons-material/Login';
-import LinkIcon from '@mui/icons-material/Link';
+} from '@/components/ui';
+import { LoginIcon } from '@/components/icons';
+import { LinkIcon } from '@/components/icons';
 import { useCatch, useAsyncTask, useScrollToLoad, pageSize } from '../reactHelper';
 import { formatBoolean, formatTime } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';

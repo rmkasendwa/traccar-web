@@ -13,8 +13,8 @@ import {
   TableRow,
   TableCell,
   TableBody,
-} from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+} from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAsyncTask } from '../reactHelper';
 import BackIcon from '../common/components/BackIcon';

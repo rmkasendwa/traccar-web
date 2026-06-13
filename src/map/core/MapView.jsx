@@ -3,7 +3,7 @@ import maplibregl from 'maplibre-gl';
 import { googleProtocol } from 'maplibre-google-maps';
 import { Protocol } from 'pmtiles';
 import { useRef, useLayoutEffect, useEffect, useState, useMemo } from 'react';
-import { useTheme } from '@mui/material';
+import { useTheme } from '@/components/ui';
 import MapSwitcher from '../control/MapSwitcher';
 import { useAttributePreference, usePreference } from '../../common/util/preferences';
 import usePersistedState from '../../common/util/usePersistedState';

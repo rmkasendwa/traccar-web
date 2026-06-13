@@ -11,9 +11,9 @@ import {
   TableFooter,
   FormControlLabel,
   Switch,
-} from '@mui/material';
-import LinkIcon from '@mui/icons-material/Link';
-import { useTheme } from '@mui/material/styles';
+} from '@/components/ui';
+import { LinkIcon } from '@/components/icons';
+import { useTheme } from '@/components/ui';
 import { useAsyncTask, useScrollToLoad, pageSize } from '../reactHelper';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';

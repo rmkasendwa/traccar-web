@@ -10,8 +10,8 @@ import {
   FormGroup,
   Button,
   TextField,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+} from '@/components/ui';
+import { ExpandMoreIcon } from '@/components/icons';
 import { useTranslation, useTranslationKeys } from '../common/components/LocalizationProvider';
 import EditItemView from './components/EditItemView';
 import { prefixString, unprefixString } from '../common/util/stringUtils';

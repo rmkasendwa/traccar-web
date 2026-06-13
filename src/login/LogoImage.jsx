@@ -1,6 +1,6 @@
-import { useTheme, useMediaQuery } from '@mui/material';
+import { useTheme, useMediaQuery } from '@/components/ui';
 import { useSelector } from 'react-redux';
-import { makeStyles } from 'tss-react/mui';
+import { makeStyles } from '@/components/styles';
 import Logo from '../resources/images/logo.svg?react';
 
 const useStyles = makeStyles()((theme) => ({

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import VpnLockIcon from '@mui/icons-material/VpnLock';
-import { makeStyles } from 'tss-react/mui';
+import { VpnLockIcon } from '@/components/icons';
+import { makeStyles } from '@/components/styles';
 import {
   Autocomplete,
   Button,
@@ -11,7 +11,7 @@ import {
   DialogActions,
   DialogContent,
   TextField,
-} from '@mui/material';
+} from '@/components/ui';
 import { useNavigate } from 'react-router-dom';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import { useTranslation } from '../common/components/LocalizationProvider';

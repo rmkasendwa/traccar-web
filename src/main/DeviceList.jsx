@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react';
 import { useDispatch } from 'react-redux';
-import { makeStyles } from 'tss-react/mui';
+import { makeStyles } from '@/components/styles';
 import { List } from 'react-window';
 import { devicesActions } from '../store';
 import { useAsyncTask } from '../reactHelper';

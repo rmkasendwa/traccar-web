@@ -6,7 +6,7 @@ import {
   Divider,
   ListSubheader,
   ListItemButton,
-} from '@mui/material';
+} from '@/components/ui';
 import { Link, useLocation } from 'react-router-dom';
 
 const SideNav = ({ routes }) => {

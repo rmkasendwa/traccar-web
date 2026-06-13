@@ -8,8 +8,8 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+} from '@/components/ui';
+import { ExpandMoreIcon } from '@/components/icons';
 import EditItemView from './components/EditItemView';
 import EditAttributesAccordion from './components/EditAttributesAccordion';
 import { useTranslation } from '../common/components/LocalizationProvider';

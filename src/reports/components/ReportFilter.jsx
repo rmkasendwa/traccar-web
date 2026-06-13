@@ -8,7 +8,7 @@ import {
   Button,
   TextField,
   Typography,
-} from '@mui/material';
+} from '@/components/ui';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { useTranslation } from '../../common/components/LocalizationProvider';

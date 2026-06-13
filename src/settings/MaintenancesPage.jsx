@@ -1,6 +1,6 @@
 import { useCallback, useReducer, useState } from 'react';
 import dayjs from 'dayjs';
-import { Table, TableRow, TableCell, TableHead, TableBody } from '@mui/material';
+import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { useAsyncTask, useScrollToLoad, pageSize } from '../reactHelper';
 import usePositionAttributes from '../common/attributes/usePositionAttributes';
 import { formatDistance, formatSpeed } from '../common/util/formatter';

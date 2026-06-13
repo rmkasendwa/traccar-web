@@ -1,8 +1,8 @@
 import { lazy, Suspense, useState, useCallback, useEffect } from 'react';
-import { Paper } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { Paper } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { useTheme } from '@/components/ui';
+import { useMediaQuery } from '@/components/ui';
 import { useDispatch, useSelector } from 'react-redux';
 import DeviceList from './DeviceList';
 import BottomMenu from '../common/components/BottomMenu';

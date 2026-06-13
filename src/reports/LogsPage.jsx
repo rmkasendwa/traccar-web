@@ -9,10 +9,10 @@ import {
   TableBody,
   IconButton,
   Tooltip,
-} from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlined';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutlined';
+} from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { CheckCircleOutlinedIcon as CheckCircleOutlineIcon } from '@/components/icons';
+import { HelpOutlinedIcon as HelpOutlineIcon } from '@/components/icons';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';
 import ReportsMenu from './components/ReportsMenu';

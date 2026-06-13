@@ -1,4 +1,4 @@
-import { makeStyles } from 'tss-react/mui';
+import { makeStyles } from '@/components/styles';
 
 const useStyles = makeStyles()((theme) => ({
   handle: {

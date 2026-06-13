@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from '@mui/material';
+import { Link } from '@/components/ui';
 import { useTranslation } from './LocalizationProvider';
 import { useCatch } from '../../reactHelper';
 import { formatAddress } from '../util/formatter';

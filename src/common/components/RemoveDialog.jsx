@@ -1,6 +1,6 @@
-import Button from '@mui/material/Button';
-import { Snackbar } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { Button } from '@/components/ui';
+import { Snackbar } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { useTranslation } from './LocalizationProvider';
 import { useCatch } from '../../reactHelper';
 import { snackBarDurationLongMs } from '../util/duration';

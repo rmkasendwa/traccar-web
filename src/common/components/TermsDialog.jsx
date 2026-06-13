@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogContentText,
   Link,
-} from '@mui/material';
+} from '@/components/ui';
 import { useTranslation } from './LocalizationProvider';
 
 const TermsDialog = ({ open, onCancel, onAccept }) => {

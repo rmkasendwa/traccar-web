@@ -1,7 +1,7 @@
 import { useId, useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { useMediaQuery } from '@/components/ui';
+import { useTheme } from '@/components/ui';
 import { map } from './core/MapView';
 import { formatTime, getStatusColor } from '../common/util/formatter';
 import { mapIconKey } from './core/preloadImages';

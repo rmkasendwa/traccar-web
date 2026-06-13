@@ -1,4 +1,4 @@
-import { Skeleton, TableCell, TableRow } from '@mui/material';
+import { Skeleton, TableCell, TableRow } from '@/components/ui';
 
 const TableShimmer = ({ columns, startAction, endAction, ref }) =>
   [...Array(3)].map((_, i) => (

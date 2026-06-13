@@ -11,15 +11,15 @@ import {
   IconButton,
   Tooltip,
   InputAdornment,
-} from '@mui/material';
+} from '@/components/ui';
 import CountryFlag from 'react-country-flag';
-import { makeStyles } from 'tss-react/mui';
-import CloseIcon from '@mui/icons-material/Close';
-import VpnLockIcon from '@mui/icons-material/VpnLock';
-import QrCode2Icon from '@mui/icons-material/QrCode2';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { useTheme } from '@mui/material/styles';
+import { makeStyles } from '@/components/styles';
+import { CloseIcon } from '@/components/icons';
+import { VpnLockIcon } from '@/components/icons';
+import { QrCode2Icon } from '@/components/icons';
+import { VisibilityIcon } from '@/components/icons';
+import { VisibilityOffIcon } from '@/components/icons';
+import { useTheme } from '@/components/ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { sessionActions } from '../store';

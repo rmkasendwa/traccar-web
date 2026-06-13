@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { FormControl, InputLabel, Select, MenuItem, useTheme } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, useTheme } from '@/components/ui';
 import {
   Brush,
   CartesianGrid,

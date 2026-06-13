@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Autocomplete, Checkbox, FormControlLabel, TextField } from '@mui/material';
+import { Autocomplete, Checkbox, FormControlLabel, TextField } from '@/components/ui';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import { useRestriction } from '../../common/util/permissions';
 import { useAsyncTask } from '../../reactHelper';

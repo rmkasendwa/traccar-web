@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@/components/ui';
+import { useMediaQuery } from '@/components/ui';
 import { useDispatch, useSelector } from 'react-redux';
 import MapView from '../map/core/MapView';
 import MapSelectedDevice from '../map/main/MapSelectedDevice';

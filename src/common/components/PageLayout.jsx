@@ -9,11 +9,11 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-} from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import MenuIcon from '@mui/icons-material/Menu';
+} from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { ChevronLeftIcon } from '@/components/icons';
+import { ChevronRightIcon } from '@/components/icons';
+import { MenuIcon } from '@/components/icons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from './LocalizationProvider';
 import BackIcon from './BackIcon';

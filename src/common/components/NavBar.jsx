@@ -1,5 +1,5 @@
-import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Toolbar, Typography, IconButton } from '@/components/ui';
+import { MenuIcon } from '@/components/icons';
 
 const Navbar = ({ setOpenDrawer, title }) => (
   <AppBar position="sticky" color="inherit">

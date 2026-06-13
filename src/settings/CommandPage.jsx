@@ -5,8 +5,8 @@ import {
   AccordionDetails,
   Typography,
   TextField,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+} from '@/components/ui';
+import { ExpandMoreIcon } from '@/components/icons';
 import EditItemView from './components/EditItemView';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import BaseCommandView from './components/BaseCommandView';

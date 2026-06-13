@@ -1,8 +1,8 @@
 import { useRef } from 'react';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import CloseIcon from '@mui/icons-material/Close';
+import { TextField } from '@/components/ui';
+import { IconButton } from '@/components/ui';
+import { InputAdornment } from '@/components/ui';
+import { CloseIcon } from '@/components/icons';
 
 const FileInput = ({ placeholder, value, onChange, slotProps }) => {
   const inputRef = useRef(null);

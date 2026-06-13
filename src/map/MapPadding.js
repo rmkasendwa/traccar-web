@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { map } from './core/MapView';
-import { useTheme } from '@mui/material';
+import { useTheme } from '@/components/ui';
 
 const MapPadding = ({ start }) => {
   const theme = useTheme();

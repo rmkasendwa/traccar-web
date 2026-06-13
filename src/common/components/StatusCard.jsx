@@ -18,14 +18,14 @@ import {
   TableFooter,
   Link,
   Tooltip,
-} from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import CloseIcon from '@mui/icons-material/Close';
-import RouteIcon from '@mui/icons-material/Route';
-import SendIcon from '@mui/icons-material/Send';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PendingIcon from '@mui/icons-material/Pending';
+} from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { CloseIcon } from '@/components/icons';
+import { RouteIcon } from '@/components/icons';
+import { SendIcon } from '@/components/icons';
+import { EditIcon } from '@/components/icons';
+import { DeleteIcon } from '@/components/icons';
+import { PendingIcon } from '@/components/icons';
 
 import { useTranslation } from './LocalizationProvider';
 import RemoveDialog from './RemoveDialog';

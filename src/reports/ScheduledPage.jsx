@@ -1,8 +1,8 @@
 import { useReducer, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Table, TableRow, TableCell, TableHead, TableBody, IconButton } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Table, TableRow, TableCell, TableHead, TableBody, IconButton } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { DeleteIcon } from '@/components/icons';
 import { useAsyncTask } from '../reactHelper';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';

@@ -1,6 +1,6 @@
 import { useId, useEffect } from 'react';
-import { useTheme } from '@mui/material/styles';
-import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@/components/ui';
+import { useMediaQuery } from '@/components/ui';
 import { map } from './core/MapView';
 import { useAttributePreference } from '../common/util/preferences';
 import { findFonts, toMapCoordinates } from './core/mapUtil';

@@ -10,10 +10,10 @@ import {
   Select,
   TextField,
   Autocomplete,
-} from '@mui/material';
+} from '@/components/ui';
 
-import { createFilterOptions } from '@mui/material/useAutocomplete';
-import { makeStyles } from 'tss-react/mui';
+import { createFilterOptions } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 
 const useStyles = makeStyles()((theme) => ({

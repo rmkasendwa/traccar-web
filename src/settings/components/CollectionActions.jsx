@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
-import Tooltip from '@mui/material/Tooltip';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@/components/ui';
+import { Tooltip } from '@/components/ui';
+import { MoreVertIcon } from '@/components/icons';
+import { EditIcon } from '@/components/icons';
+import { DeleteIcon } from '@/components/icons';
 import { useNavigate } from 'react-router-dom';
-import { makeStyles } from 'tss-react/mui';
+import { makeStyles } from '@/components/styles';
 import RemoveDialog from '../../common/components/RemoveDialog';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 

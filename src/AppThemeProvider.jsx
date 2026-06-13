@@ -1,22 +1,7 @@
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { ThemeProvider, useMediaQuery } from '@mui/material';
-import { CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
-import { prefixer } from 'stylis';
-import rtlPlugin from 'stylis-plugin-rtl';
-import theme from './common/theme';
+import { ThemeProvider, useAppTheme, useMediaQuery } from './components/theme';
 import { useLocalization } from './common/components/LocalizationProvider';
-
-const cache = {
-  ltr: createCache({
-    key: 'muiltr',
-    stylisPlugins: [prefixer],
-  }),
-  rtl: createCache({
-    key: 'muirtl',
-    stylisPlugins: [prefixer, rtlPlugin],
-  }),
-};
 
 const AppThemeProvider = ({ children }) => {
   const server = useSelector((state) => state.session.server);
@@ -26,13 +11,22 @@ const AppThemeProvider = ({ children }) => {
   const preferDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const darkMode = serverDarkMode !== undefined ? serverDarkMode : preferDarkMode;
 
-  const themeInstance = theme(server, darkMode, direction);
+  const themeInstance = useAppTheme(server, darkMode, direction);
 
-  return (
-    <CacheProvider value={cache[direction]}>
-      <ThemeProvider theme={themeInstance}>{children}</ThemeProvider>
-    </CacheProvider>
-  );
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+    document.documentElement.dir = direction;
+    document.documentElement.style.setProperty(
+      '--color-primary',
+      themeInstance.palette.primary.main,
+    );
+    document.documentElement.style.setProperty(
+      '--color-secondary',
+      themeInstance.palette.secondary.main,
+    );
+  }, [darkMode, direction, themeInstance]);
+
+  return <ThemeProvider theme={themeInstance}>{children}</ThemeProvider>;
 };
 
 export default AppThemeProvider;

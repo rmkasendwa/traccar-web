@@ -1,6 +1,6 @@
-import { Fab } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import AddIcon from '@mui/icons-material/Add';
+import { Fab } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { AddIcon } from '@/components/icons';
 import { useNavigate } from 'react-router-dom';
 import { useRestriction } from '../../common/util/permissions';
 

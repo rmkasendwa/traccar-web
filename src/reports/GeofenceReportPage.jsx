@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { useTheme } from '@/components/ui';
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@/components/ui';
 import { formatNumericHours, formatTime } from '../common/util/formatter';
 import ReportFilter, { updateReportParams } from './components/ReportFilter';
 import { useTranslation } from '../common/components/LocalizationProvider';

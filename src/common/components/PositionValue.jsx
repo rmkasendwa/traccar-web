@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { Link } from '@mui/material';
+import { Link } from '@/components/ui';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   formatAlarm,

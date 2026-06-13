@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { Typography, AppBar, Toolbar, IconButton } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { Typography, AppBar, Toolbar, IconButton } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAsyncTask } from '../reactHelper';
 import { useTranslation } from '../common/components/LocalizationProvider';

@@ -9,8 +9,8 @@ import {
   Checkbox,
   TextField,
   Button,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+} from '@/components/ui';
+import { ExpandMoreIcon } from '@/components/icons';
 import FileInput from '../common/components/FileInput';
 import EditItemView from './components/EditItemView';
 import EditAttributesAccordion from './components/EditAttributesAccordion';

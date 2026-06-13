@@ -10,8 +10,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+} from '@/components/ui';
+import { ExpandMoreIcon } from '@/components/icons';
 import { prefixString } from '../common/util/stringUtils';
 import EditItemView from './components/EditItemView';
 import EditAttributesAccordion from './components/EditAttributesAccordion';

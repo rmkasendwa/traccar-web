@@ -20,11 +20,11 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import CachedIcon from '@mui/icons-material/Cached';
-import CloseIcon from '@mui/icons-material/Close';
+} from '@/components/ui';
+import { ExpandMoreIcon } from '@/components/icons';
+import { DeleteForeverIcon } from '@/components/icons';
+import { CachedIcon } from '@/components/icons';
+import { CloseIcon } from '@/components/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import EditItemView from './components/EditItemView';
 import EditAttributesAccordion from './components/EditAttributesAccordion';

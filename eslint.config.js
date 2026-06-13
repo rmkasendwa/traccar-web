@@ -7,11 +7,29 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['build/**', 'switcher.js', 'theme.js', 'vite.config.js'],
+    ignores: ['build/**', '.next/**', 'switcher.js', 'theme.js'],
   },
   js.configs.recommended,
   eslintReact.configs.recommended,
   importConfigs['flat/recommended'],
+  {
+    files: ['server.mjs', 'next.config.mjs', 'postcss.config.mjs'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+  {
+    files: ['src/components/**/*.{js,jsx}'],
+    rules: {
+      'no-unused-vars': 'off',
+      '@eslint-react/no-children-map': 'off',
+      '@eslint-react/no-children-to-array': 'off',
+      '@eslint-react/no-clone-element': 'off',
+      '@eslint-react/no-context-provider': 'off',
+      '@eslint-react/no-forward-ref': 'off',
+      '@eslint-react/no-use-context': 'off',
+    },
+  },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -38,9 +56,11 @@ export default [
       'import-x/no-unresolved': [
         'warn',
         {
-          ignore: ['\\.svg', 'virtual:'],
+          ignore: ['\\.svg', '^@/'],
         },
       ],
+      'import-x/no-duplicates': 'off',
+      'import-x/namespace': 'off',
       '@eslint-react/set-state-in-effect': 'off',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'off',

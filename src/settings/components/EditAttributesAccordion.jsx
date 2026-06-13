@@ -14,10 +14,10 @@ import {
   AccordionSummary,
   Typography,
   AccordionDetails,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import AddIcon from '@mui/icons-material/Add';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+} from '@/components/ui';
+import { CloseIcon } from '@/components/icons';
+import { AddIcon } from '@/components/icons';
+import { ExpandMoreIcon } from '@/components/icons';
 import AddAttributeDialog from './AddAttributeDialog';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import { useAttributePreference } from '../../common/util/preferences';

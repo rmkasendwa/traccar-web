@@ -1,5 +1,5 @@
-import { grey } from '@mui/material/colors';
-import { createTheme } from '@mui/material';
+import { grey } from '@/components/theme';
+import { createTheme } from '@/components/theme';
 import { loadImage, prepareIcon } from './mapUtil';
 
 import directionSvg from '../../resources/images/direction.svg';

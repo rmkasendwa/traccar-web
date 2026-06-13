@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogActions, TextField, Button, useTheme } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { Dialog, DialogContent, DialogActions, TextField, Button, useTheme } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { QRCode } from 'react-qr-code';
 import { useTranslation } from './LocalizationProvider';
 

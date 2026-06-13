@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Typography, IconButton, Toolbar, Paper, TextField } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { Typography, IconButton, Toolbar, Paper, TextField } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { default as Hls, Events } from 'hls.js/light';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import StopIcon from '@mui/icons-material/Stop';
+import { PlayArrowIcon } from '@/components/icons';
+import { StopIcon } from '@/components/icons';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { useCatchCallback } from '../reactHelper';
 import BackIcon from '../common/components/BackIcon';

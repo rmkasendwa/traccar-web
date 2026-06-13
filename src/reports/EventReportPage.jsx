@@ -1,10 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Table, TableHead, TableRow, TableCell, TableBody, Link, IconButton } from '@mui/material';
-import GpsFixedIcon from '@mui/icons-material/GpsFixed';
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Link,
+  IconButton,
+} from '@/components/ui';
+import { GpsFixedIcon } from '@/components/icons';
+import { LocationSearchingIcon } from '@/components/icons';
 import { useSelector } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@/components/ui';
 import { formatAddress, formatNumber, formatSpeed, formatTime } from '../common/util/formatter';
 import ReportFilter, { updateReportParams } from './components/ReportFilter';
 import { prefixString, unprefixString } from '../common/util/stringUtils';

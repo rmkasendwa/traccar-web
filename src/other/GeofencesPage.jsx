@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Divider, Typography, IconButton, Toolbar, Paper } from '@mui/material';
-import Tooltip from '@mui/material/Tooltip';
-import { makeStyles } from 'tss-react/mui';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { Divider, Typography, IconButton, Toolbar, Paper } from '@/components/ui';
+import { Tooltip } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { UploadFileIcon } from '@/components/icons';
 import { useNavigate } from 'react-router-dom';
 import MapView from '../map/core/MapView';
 import MapCurrentLocation from '../map/MapCurrentLocation';

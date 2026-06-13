@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from '@mui/material';
+import { Link } from '@/components/ui';
 import { useCatch } from '../../reactHelper';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import fetchOrThrow from '../../common/util/fetchOrThrow';

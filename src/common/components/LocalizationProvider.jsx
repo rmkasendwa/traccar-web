@@ -7,11 +7,6 @@ import Loader from './Loader';
 import en from '../../resources/l10n/en.json';
 import 'dayjs/locale/en';
 
-const localeLoaders = import.meta.glob([
-  '../../resources/l10n/*.json',
-  '!../../resources/l10n/en.json',
-]);
-
 const dayjsLoaders = {
   af: () => import('dayjs/locale/af.js'),
   ar: () => import('dayjs/locale/ar.js'),
@@ -135,7 +130,7 @@ const cache = new Map([['en', Promise.resolve({ data: en, dayjsName: 'en' })]]);
 
 const loadLocale = (language) => {
   if (!cache.has(language)) {
-    const dataLoader = localeLoaders[`../../resources/l10n/${language}.json`];
+    const dataLoader = () => import(`../../resources/l10n/${language}.json`);
     const dayjsLoader = dayjsLoaders[language];
     cache.set(
       language,

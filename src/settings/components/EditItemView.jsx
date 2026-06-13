@@ -8,7 +8,7 @@ import {
   Skeleton,
   Typography,
   TextField,
-} from '@mui/material';
+} from '@/components/ui';
 import { useCatch, useAsyncTask } from '../../reactHelper';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import PageLayout from '../../common/components/PageLayout';

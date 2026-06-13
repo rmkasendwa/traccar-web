@@ -1,5 +1,5 @@
-import { makeStyles } from 'tss-react/mui';
-import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { makeStyles } from '@/components/styles';
+import { ListItemButton, ListItemIcon, ListItemText } from '@/components/ui';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles()(() => ({

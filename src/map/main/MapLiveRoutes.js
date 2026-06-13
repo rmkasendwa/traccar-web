@@ -1,6 +1,6 @@
 import { useId, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@/components/ui';
 import { map } from '../core/MapView';
 import { useAttributePreference } from '../../common/util/preferences';
 import { toMapCoordinates } from '../core/mapUtil';

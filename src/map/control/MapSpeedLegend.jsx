@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useTheme } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { useTheme } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { map } from '../core/MapView';
 import { interpolateTurbo } from '../../common/util/colors';
 import { speedFromKnots, speedUnitString } from '../../common/util/converter';

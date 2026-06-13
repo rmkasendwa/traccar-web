@@ -18,13 +18,13 @@ import {
   ListItemButton,
   ListItemText,
   Tooltip,
-} from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import { useTheme } from '@mui/material/styles';
-import MapIcon from '@mui/icons-material/Map';
-import DnsIcon from '@mui/icons-material/Dns';
-import AddIcon from '@mui/icons-material/Add';
-import TuneIcon from '@mui/icons-material/Tune';
+} from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { useTheme } from '@/components/ui';
+import { MapIcon } from '@/components/icons';
+import { DnsIcon } from '@/components/icons';
+import { AddIcon } from '@/components/icons';
+import { TuneIcon } from '@/components/icons';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { useDeviceReadonly } from '../common/util/permissions';
 import DeviceRow from './DeviceRow';

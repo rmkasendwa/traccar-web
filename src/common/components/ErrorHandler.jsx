@@ -8,7 +8,7 @@ import {
   DialogContentText,
   DialogActions,
   Typography,
-} from '@mui/material';
+} from '@/components/ui';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { usePrevious } from '../../reactHelper';

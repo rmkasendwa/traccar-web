@@ -1,6 +1,6 @@
-import { useTheme } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useTheme } from '@/components/ui';
+import { ArrowBackIcon } from '@/components/icons';
+import { ArrowForwardIcon } from '@/components/icons';
 
 const BackIcon = () => {
   const theme = useTheme();

@@ -1,9 +1,9 @@
 import maplibregl from 'maplibre-gl';
 import { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import { useTheme } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import StraightenIcon from '@mui/icons-material/Straighten';
+import { useTheme } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { StraightenIcon } from '@/components/icons';
 import { map } from '../core/MapView';
 import { findFonts, toMapCoordinates } from '../core/mapUtil';
 import { useAttributePreference } from '../../common/util/preferences';

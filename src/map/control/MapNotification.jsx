@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { useTheme } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { useTheme } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { createRoot } from 'react-dom/client';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import { NotificationsIcon } from '@/components/icons';
 import { map } from '../core/MapView';
 
 const useStyles = makeStyles()((theme) => ({

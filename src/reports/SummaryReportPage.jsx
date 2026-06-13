@@ -11,8 +11,8 @@ import {
   TableRow,
   TableBody,
   TableCell,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+} from '@/components/ui';
+import { useTheme } from '@/components/ui';
 import {
   formatDistance,
   formatSpeed,

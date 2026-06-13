@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Autocomplete, TextField, Chip } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { Autocomplete, TextField, Chip } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { useAsyncTask } from '../../reactHelper';
 import fetchOrThrow from '../util/fetchOrThrow';
 

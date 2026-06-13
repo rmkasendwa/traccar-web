@@ -1,10 +1,10 @@
 import { useCallback, useReducer, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Table, TableRow, TableCell, TableHead, TableBody } from '@mui/material';
-import LinkIcon from '@mui/icons-material/Link';
-import PublishIcon from '@mui/icons-material/Publish';
-import ShareIcon from '@mui/icons-material/Share';
+import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
+import { LinkIcon } from '@/components/icons';
+import { PublishIcon } from '@/components/icons';
+import { ShareIcon } from '@/components/icons';
 import { useAsyncTask, useScrollToLoad, pageSize } from '../reactHelper';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';

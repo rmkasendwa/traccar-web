@@ -1,6 +1,6 @@
 import { useId, useEffect } from 'react';
 import turfCircle from '@turf/circle';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@/components/ui';
 import { map } from '../core/MapView';
 import { toMapCoordinates } from '../core/mapUtil';
 

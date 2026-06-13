@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useTheme, Menu, MenuItem } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { useTheme, Menu, MenuItem } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import { createRoot } from 'react-dom/client';
-import LayersIcon from '@mui/icons-material/Layers';
+import { LayersIcon } from '@/components/icons';
 import { map } from '../core/MapView';
 
 const useStyles = makeStyles()(() => ({

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from 'tss-react/mui';
+import { makeStyles } from '@/components/styles';
 import {
   IconButton,
   Tooltip,
@@ -8,14 +8,14 @@ import {
   ListItemText,
   ListItemButton,
   Typography,
-} from '@mui/material';
-import BatteryFullIcon from '@mui/icons-material/BatteryFull';
-import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
-import Battery60Icon from '@mui/icons-material/Battery60';
-import BatteryCharging60Icon from '@mui/icons-material/BatteryCharging60';
-import Battery20Icon from '@mui/icons-material/Battery20';
-import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
-import ErrorIcon from '@mui/icons-material/Error';
+} from '@/components/ui';
+import { BatteryFullIcon } from '@/components/icons';
+import { BatteryChargingFullIcon } from '@/components/icons';
+import { Battery60Icon } from '@/components/icons';
+import { BatteryCharging60Icon } from '@/components/icons';
+import { Battery20Icon } from '@/components/icons';
+import { BatteryCharging20Icon } from '@/components/icons';
+import { ErrorIcon } from '@/components/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { devicesActions } from '../store';

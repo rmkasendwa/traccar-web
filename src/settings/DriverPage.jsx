@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { TextField } from '@/components/ui';
+import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@/components/ui';
+import { ExpandMoreIcon } from '@/components/icons';
 import EditItemView from './components/EditItemView';
 import EditAttributesAccordion from './components/EditAttributesAccordion';
 import { useTranslation } from '../common/components/LocalizationProvider';

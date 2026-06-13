@@ -8,9 +8,9 @@ import {
   ListItemText,
   Toolbar,
   Typography,
-} from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import DeleteIcon from '@mui/icons-material/Delete';
+} from '@/components/ui';
+import { makeStyles } from '@/components/styles';
+import { DeleteIcon } from '@/components/icons';
 import { formatNotificationTitle, formatTime } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { eventsActions } from '../store';

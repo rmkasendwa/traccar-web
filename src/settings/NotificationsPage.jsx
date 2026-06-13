@@ -1,5 +1,5 @@
 import { useCallback, useReducer, useState } from 'react';
-import { Table, TableRow, TableCell, TableHead, TableBody } from '@mui/material';
+import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { useAsyncTask, useScrollToLoad, pageSize } from '../reactHelper';
 import { prefixString } from '../common/util/stringUtils';
 import { formatBoolean } from '../common/util/formatter';

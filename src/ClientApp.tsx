@@ -1,7 +1,8 @@
-import { createRoot } from 'react-dom/client';
+'use client';
+
+import { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { CssBaseline, StyledEngineProvider } from '@mui/material';
 import store from './store';
 import { LocalizationProvider } from './common/components/LocalizationProvider';
 import ErrorHandler from './common/components/ErrorHandler';
@@ -12,16 +13,16 @@ import ServerProvider from './ServerProvider';
 import ErrorBoundary from './ErrorBoundary';
 import AppThemeProvider from './AppThemeProvider';
 
-preloadImages();
+export default function ClientApp() {
+  useEffect(() => {
+    preloadImages();
+  }, []);
 
-const root = createRoot(document.getElementById('root'));
-root.render(
-  <ErrorBoundary>
-    <Provider store={store}>
-      <LocalizationProvider>
-        <StyledEngineProvider injectFirst>
+  return (
+    <ErrorBoundary>
+      <Provider store={store}>
+        <LocalizationProvider>
           <AppThemeProvider>
-            <CssBaseline />
             <ServerProvider>
               <BrowserRouter>
                 <Navigation />
@@ -30,8 +31,8 @@ root.render(
               <NativeInterface />
             </ServerProvider>
           </AppThemeProvider>
-        </StyledEngineProvider>
-      </LocalizationProvider>
-    </Provider>
-  </ErrorBoundary>,
-);
+        </LocalizationProvider>
+      </Provider>
+    </ErrorBoundary>
+  );
+}

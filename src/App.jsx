@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMediaQuery, useTheme } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { useMediaQuery, useTheme } from '@/components/ui';
+import { makeStyles } from '@/components/styles';
 import BottomMenu from './common/components/BottomMenu';
 import SocketController from './SocketController';
 import CachingController from './CachingController';
