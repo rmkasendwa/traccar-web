@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const PreferencesPage = dynamic(() => import('@/settings/PreferencesPage'), {
+const PreferencesPage = dynamic(() => import('@/features/settings/pages/PreferencesPage'), {
   ssr: false,
 });
 

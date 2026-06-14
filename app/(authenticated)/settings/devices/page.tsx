@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const DevicesPage = dynamic(() => import('@/settings/DevicesPage'), {
+const DevicesPage = dynamic(() => import('@/features/devices/pages/DevicesPage'), {
   ssr: false,
 });
 

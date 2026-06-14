@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const MaintenancePage = dynamic(() => import('@/settings/MaintenancePage'), {
+const MaintenancePage = dynamic(() => import('@/features/maintenance/pages/MaintenancePage'), {
   ssr: false,
 });
 

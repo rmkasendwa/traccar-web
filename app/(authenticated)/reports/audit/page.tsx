@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const AuditPage = dynamic(() => import('@/reports/AuditPage'), {
+const AuditPage = dynamic(() => import('@/features/reports/AuditPage'), {
   ssr: false,
 });
 

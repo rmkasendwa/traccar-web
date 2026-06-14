@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const StopReportPage = dynamic(() => import('@/reports/StopReportPage'), {
+const StopReportPage = dynamic(() => import('@/features/reports/StopReportPage'), {
   ssr: false,
 });
 

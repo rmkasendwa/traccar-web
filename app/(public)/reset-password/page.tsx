@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const ResetPasswordPage = dynamic(() => import('@/login/ResetPasswordPage'), {
+const ResetPasswordPage = dynamic(() => import('@/features/auth/ResetPasswordPage'), {
   ssr: false,
 });
 

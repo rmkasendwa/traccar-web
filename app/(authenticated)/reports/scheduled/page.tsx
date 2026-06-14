@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const ScheduledPage = dynamic(() => import('@/reports/ScheduledPage'), {
+const ScheduledPage = dynamic(() => import('@/features/reports/ScheduledPage'), {
   ssr: false,
 });
 

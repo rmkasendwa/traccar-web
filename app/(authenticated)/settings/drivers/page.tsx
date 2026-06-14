@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const DriversPage = dynamic(() => import('@/settings/DriversPage'), {
+const DriversPage = dynamic(() => import('@/features/drivers/pages/DriversPage'), {
   ssr: false,
 });
 

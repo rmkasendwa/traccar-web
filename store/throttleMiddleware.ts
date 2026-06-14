@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { sessionActions } from './session';
-import { devicesActions } from './devices';
+import { sessionActions } from '@/store/session';
+import { devicesActions } from '@/store/devices';
 
 const threshold = 3; // per second
 const minInterval = 1500;

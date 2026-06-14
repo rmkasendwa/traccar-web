@@ -1,0 +1,40 @@
+'use client';
+
+import { useEffect, type ReactNode } from 'react';
+import { Provider } from 'react-redux';
+import store from '@/store';
+import { LocalizationProvider } from '@/providers/localization/LocalizationProvider';
+import ErrorHandler from '@/controllers/ErrorHandler';
+import NativeInterface from '@/controllers/NativeInterface';
+import ServerProvider from '@/providers/ServerProvider';
+import ErrorBoundary from '@/providers/ErrorBoundary';
+import AppThemeProvider from '@/providers/AppThemeProvider';
+import QueryParameterController from '@/controllers/QueryParameterController';
+
+type AppProvidersProps = {
+  children: ReactNode;
+};
+
+export default function AppProviders({ children }: AppProvidersProps) {
+  useEffect(() => {
+    import('@/features/map/core/preloadImages').then(({ default: preloadImages }) =>
+      preloadImages(),
+    );
+  }, []);
+
+  return (
+    <ErrorBoundary>
+      <Provider store={store}>
+        <LocalizationProvider>
+          <AppThemeProvider>
+            <ServerProvider>
+              <QueryParameterController>{children}</QueryParameterController>
+              <ErrorHandler />
+              <NativeInterface />
+            </ServerProvider>
+          </AppThemeProvider>
+        </LocalizationProvider>
+      </Provider>
+    </ErrorBoundary>
+  );
+}

@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const EmulatorPage = dynamic(() => import('@/other/EmulatorPage'), {
+const EmulatorPage = dynamic(() => import('@/features/emulator/pages/EmulatorPage'), {
   ssr: false,
 });
 

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import AppProviders from '@/AppProviders';
+import AppProviders from '@/providers/AppProviders';
 import './globals.css';
 
 export const metadata: Metadata = {

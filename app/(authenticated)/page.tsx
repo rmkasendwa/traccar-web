@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const MainPage = dynamic(() => import('@/main/MainPage'), {
+const MainPage = dynamic(() => import('@/features/tracking/MainPage'), {
   ssr: false,
 });
 

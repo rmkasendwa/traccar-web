@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const GroupsPage = dynamic(() => import('@/settings/GroupsPage'), {
+const GroupsPage = dynamic(() => import('@/features/groups/pages/GroupsPage'), {
   ssr: false,
 });
 

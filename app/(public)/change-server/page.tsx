@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const ChangeServerPage = dynamic(() => import('@/login/ChangeServerPage'), {
+const ChangeServerPage = dynamic(() => import('@/features/auth/ChangeServerPage'), {
   ssr: false,
 });
 

@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const GeofenceReportPage = dynamic(() => import('@/reports/GeofenceReportPage'), {
+const GeofenceReportPage = dynamic(() => import('@/features/reports/GeofenceReportPage'), {
   ssr: false,
 });
 

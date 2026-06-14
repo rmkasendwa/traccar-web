@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const CalendarsPage = dynamic(() => import('@/settings/CalendarsPage'), {
+const CalendarsPage = dynamic(() => import('@/features/calendar/pages/CalendarsPage'), {
   ssr: false,
 });
 

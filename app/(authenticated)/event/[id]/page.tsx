@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const EventPage = dynamic(() => import('@/other/EventPage'), {
+const EventPage = dynamic(() => import('@/features/events/pages/EventPage'), {
   ssr: false,
 });
 

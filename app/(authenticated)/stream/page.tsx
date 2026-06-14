@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const StreamPage = dynamic(() => import('@/other/StreamPage'), {
+const StreamPage = dynamic(() => import('@/features/stream/pages/StreamPage'), {
   ssr: false,
 });
 

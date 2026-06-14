@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
-const App = dynamic(() => import('@/App'), {
+const App = dynamic(() => import('@/components/layout/AppShell'), {
   ssr: false,
 });
 

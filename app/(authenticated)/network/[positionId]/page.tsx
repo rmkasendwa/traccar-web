@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const NetworkPage = dynamic(() => import('@/other/NetworkPage'), {
+const NetworkPage = dynamic(() => import('@/features/positions/pages/NetworkPage'), {
   ssr: false,
 });
 

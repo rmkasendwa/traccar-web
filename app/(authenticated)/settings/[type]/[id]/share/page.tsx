@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const SharePage = dynamic(() => import('@/settings/SharePage'), {
+const SharePage = dynamic(() => import('@/features/users/pages/SharePage'), {
   ssr: false,
 });
 

@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const ServerPage = dynamic(() => import('@/settings/ServerPage'), {
+const ServerPage = dynamic(() => import('@/features/settings/pages/ServerPage'), {
   ssr: false,
 });
 

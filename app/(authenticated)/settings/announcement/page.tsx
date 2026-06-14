@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const AnnouncementPage = dynamic(() => import('@/settings/AnnouncementPage'), {
+const AnnouncementPage = dynamic(() => import('@/features/broadcast/pages/AnnouncementPage'), {
   ssr: false,
 });
 

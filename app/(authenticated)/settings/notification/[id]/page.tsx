@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const NotificationPage = dynamic(() => import('@/settings/NotificationPage'), {
+const NotificationPage = dynamic(() => import('@/features/notifications/pages/NotificationPage'), {
   ssr: false,
 });
 

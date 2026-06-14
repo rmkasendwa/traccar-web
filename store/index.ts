@@ -1,17 +1,17 @@
 // @ts-nocheck
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-import { errorsReducer as errors } from './errors';
-import { sessionReducer as session } from './session';
-import { devicesReducer as devices } from './devices';
-import { eventsReducer as events } from './events';
-import { motionReducer as motion } from './motion';
-import { geofencesReducer as geofences } from './geofences';
-import { groupsReducer as groups } from './groups';
-import { driversReducer as drivers } from './drivers';
-import { maintenancesReducer as maintenances } from './maintenances';
-import { calendarsReducer as calendars } from './calendars';
-import throttleMiddleware from './throttleMiddleware';
+import { errorsReducer as errors } from '@/store/errors';
+import { sessionReducer as session } from '@/store/session';
+import { devicesReducer as devices } from '@/store/devices';
+import { eventsReducer as events } from '@/store/events';
+import { motionReducer as motion } from '@/store/motion';
+import { geofencesReducer as geofences } from '@/store/geofences';
+import { groupsReducer as groups } from '@/store/groups';
+import { driversReducer as drivers } from '@/store/drivers';
+import { maintenancesReducer as maintenances } from '@/store/maintenances';
+import { calendarsReducer as calendars } from '@/store/calendars';
+import throttleMiddleware from '@/store/throttleMiddleware';
 
 const reducer = combineReducers({
   errors,
@@ -26,16 +26,16 @@ const reducer = combineReducers({
   calendars,
 });
 
-export { errorsActions } from './errors';
-export { sessionActions } from './session';
-export { devicesActions } from './devices';
-export { eventsActions } from './events';
-export { motionActions } from './motion';
-export { geofencesActions } from './geofences';
-export { groupsActions } from './groups';
-export { driversActions } from './drivers';
-export { maintenancesActions } from './maintenances';
-export { calendarsActions } from './calendars';
+export { errorsActions } from '@/store/errors';
+export { sessionActions } from '@/store/session';
+export { devicesActions } from '@/store/devices';
+export { eventsActions } from '@/store/events';
+export { motionActions } from '@/store/motion';
+export { geofencesActions } from '@/store/geofences';
+export { groupsActions } from '@/store/groups';
+export { driversActions } from '@/store/drivers';
+export { maintenancesActions } from '@/store/maintenances';
+export { calendarsActions } from '@/store/calendars';
 
 export default configureStore({
   reducer,

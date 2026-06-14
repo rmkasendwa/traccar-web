@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const RegisterPage = dynamic(() => import('@/login/RegisterPage'), {
+const RegisterPage = dynamic(() => import('@/features/auth/RegisterPage'), {
   ssr: false,
 });
 
