@@ -45,7 +45,7 @@ export const Paper = forwardRef(({ className, elevation = 1, square, sx, ...prop
   <div
     ref={ref}
     className={cn(
-      'bg-[var(--color-paper)]',
+      'bg-(--color-paper)',
       !square && 'rounded-md',
       elevation > 0 && 'shadow',
       className,
@@ -167,7 +167,7 @@ IconButton.displayName = 'IconButton';
 export const Fab = ({ className, size, ...props }) => (
   <IconButton
     className={cn(
-      'bg-[var(--color-primary)] text-white shadow-lg hover:bg-[var(--color-primary)]/90',
+      'bg-(--color-primary) text-white shadow-lg hover:bg-(--color-primary)/90',
       size === 'medium' && 'h-12 w-12',
       className,
     )}
@@ -201,10 +201,10 @@ ButtonGroup.displayName = 'ButtonGroup';
 
 const FieldShell = ({ label, error, helperText, fullWidth, children, className }) => (
   <label className={cn('flex flex-col gap-1 text-sm', fullWidth && 'w-full', className)}>
-    {label && <span className={error ? 'text-red-600' : 'text-[var(--color-muted)]'}>{label}</span>}
+    {label && <span className={error ? 'text-red-600' : 'text-(--color-muted)'}>{label}</span>}
     {children}
     {helperText && (
-      <span className={cn('text-xs', error ? 'text-red-600' : 'text-[var(--color-muted)]')}>
+      <span className={cn('text-xs', error ? 'text-red-600' : 'text-(--color-muted)')}>
         {helperText}
       </span>
     )}
@@ -251,7 +251,7 @@ export const TextField = forwardRef(
       control = <textarea ref={ref} rows={rows} className={common} {...htmlInput} {...props} />;
     } else {
       control = (
-        <div className="flex items-center rounded-md border border-[var(--color-divider)] focus-within:border-[var(--color-primary)]">
+        <div className="flex items-center rounded-md border border-(--color-divider) focus-within:border-(--color-primary)">
           {inputSlot.startAdornment}
           <input
             ref={ref}
@@ -283,13 +283,13 @@ export const FormControl = ({ fullWidth, className, ...props }) => (
   <div className={cn('flex flex-col gap-1', fullWidth && 'w-full', className)} {...props} />
 );
 export const InputLabel = ({ className, ...props }) => (
-  <label className={cn('text-sm text-[var(--color-muted)]', className)} {...props} />
+  <label className={cn('text-sm text-(--color-muted)', className)} {...props} />
 );
 export const OutlinedInput = forwardRef(
   ({ className, startAdornment, endAdornment, fullWidth, size, ...props }, ref) => (
     <div
       className={cn(
-        'flex items-center rounded-md border border-[var(--color-divider)]',
+        'flex items-center rounded-md border border-(--color-divider)',
         fullWidth && 'w-full',
       )}
     >
@@ -309,7 +309,7 @@ export const OutlinedInput = forwardRef(
 );
 OutlinedInput.displayName = 'OutlinedInput';
 export const InputAdornment = ({ position, className, ...props }) => (
-  <span className={cn('inline-flex px-2 text-[var(--color-muted)]', className)} {...props} />
+  <span className={cn('inline-flex px-2 text-(--color-muted)', className)} {...props} />
 );
 
 export const MenuItem = ({
@@ -346,7 +346,7 @@ export const Select = forwardRef(
     <select
       ref={ref}
       className={cn(
-        'min-h-10 rounded-md border border-[var(--color-divider)] bg-[var(--color-paper)] px-3',
+        'min-h-10 rounded-md border border-(--color-divider) bg-(--color-paper) px-3',
         fullWidth && 'w-full',
         className,
       )}
@@ -375,7 +375,7 @@ export const Checkbox = forwardRef(({ className, ...props }, ref) => (
   <input
     ref={ref}
     type="checkbox"
-    className={cn('h-4 w-4 accent-[var(--color-primary)]', className)}
+    className={cn('h-4 w-4 accent-(--color-primary)', className)}
     {...props}
   />
 ));
@@ -385,7 +385,7 @@ export const Switch = forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     type="checkbox"
     role="switch"
-    className={cn('h-5 w-10 accent-[var(--color-primary)]', className)}
+    className={cn('h-5 w-10 accent-(--color-primary)', className)}
     {...props}
   />
 ));
@@ -403,7 +403,7 @@ export const FormGroup = ({ className, ...props }) => (
 export const Link = ({ className, underline, color, ...props }) => (
   <a
     className={cn(
-      'cursor-pointer text-[var(--color-primary)] hover:underline',
+      'cursor-pointer text-(--color-primary) hover:underline',
       colorClass(color),
       className,
     )}
@@ -411,7 +411,7 @@ export const Link = ({ className, underline, color, ...props }) => (
   />
 );
 export const Divider = ({ className, ...props }) => (
-  <hr className={cn('border-0 border-t border-[var(--color-divider)]', className)} {...props} />
+  <hr className={cn('border-0 border-t border-(--color-divider)', className)} {...props} />
 );
 export const Chip = ({ label, onDelete, className, ...props }) => (
   <span
@@ -459,7 +459,7 @@ export const Badge = ({ badgeContent, variant, invisible, children, className })
 export const AppBar = ({ className, color, position = 'fixed', ...props }) => (
   <header
     className={cn(
-      'z-30 w-full border-b border-[var(--color-divider)] bg-[var(--color-paper)] shadow-sm',
+      'z-30 w-full border-b border-(--color-divider) bg-(--color-paper) shadow-sm',
       position === 'fixed' && 'fixed top-0',
       position === 'sticky' && 'sticky top-0',
       className,
@@ -532,7 +532,7 @@ export const ListItemText = ({
       </Primary>
       {secondary && (
         <Secondary
-          className="block truncate text-sm text-[var(--color-muted)]"
+          className="block truncate text-sm text-(--color-muted)"
           {...slotProps?.secondary}
         >
           {secondary}
@@ -544,7 +544,7 @@ export const ListItemText = ({
 };
 export const ListSubheader = ({ className, ...props }) => (
   <div
-    className={cn('px-4 py-2 text-xs font-semibold uppercase text-[var(--color-muted)]', className)}
+    className={cn('px-4 py-2 text-xs font-semibold uppercase text-(--color-muted)', className)}
     {...props}
   />
 );
@@ -566,7 +566,7 @@ export const Dialog = ({ open, onClose, fullWidth, maxWidth, children, className
         role="dialog"
         aria-modal="true"
         className={cn(
-          'max-h-[90vh] overflow-auto rounded-lg bg-[var(--color-paper)] shadow-xl',
+          'max-h-[90vh] overflow-auto rounded-lg bg-(--color-paper) shadow-xl',
           fullWidth && 'w-full',
           maxWidth === 'xs' ? 'max-w-sm' : maxWidth === 'sm' ? 'max-w-xl' : 'max-w-2xl',
           className,
@@ -580,11 +580,11 @@ export const DialogContent = ({ className, ...props }) => (
   <div className={cn('p-5', className)} {...props} />
 );
 export const DialogContentText = ({ className, ...props }) => (
-  <p className={cn('text-[var(--color-muted)]', className)} {...props} />
+  <p className={cn('text-(--color-muted)', className)} {...props} />
 );
 export const DialogActions = ({ className, ...props }) => (
   <div
-    className={cn('flex justify-end gap-2 border-t border-[var(--color-divider)] p-4', className)}
+    className={cn('flex justify-end gap-2 border-t border-(--color-divider) p-4', className)}
     {...props}
   />
 );
@@ -595,7 +595,7 @@ const Floating = ({ open, anchorEl, children, className }) => {
   return createPortal(
     <div
       className={cn(
-        'fixed z-50 min-w-40 overflow-hidden rounded-md border border-[var(--color-divider)] bg-[var(--color-paper)] py-1 shadow-xl',
+        'fixed z-50 min-w-40 overflow-hidden rounded-md border border-(--color-divider) bg-(--color-paper) py-1 shadow-xl',
         className,
       )}
       style={{ top: rect ? rect.bottom + 4 : '50%', left: rect ? rect.left : '50%' }}
@@ -634,11 +634,7 @@ export const Drawer = ({
   if (!open && variant !== 'permanent') return null;
   const content = (
     <aside
-      className={cn(
-        'h-full bg-[var(--color-paper)] shadow-xl',
-        slotProps?.paper?.className,
-        className,
-      )}
+      className={cn('h-full bg-(--color-paper) shadow-xl', slotProps?.paper?.className, className)}
     >
       {children}
     </aside>
@@ -674,7 +670,7 @@ export const Snackbar = ({
   return createPortal(
     <div
       className={cn(
-        'fixed bottom-5 left-1/2 z-[60] flex -translate-x-1/2 items-center gap-3 rounded-md bg-slate-900 px-4 py-3 text-white shadow-xl',
+        'fixed bottom-5 left-1/2 z-60 flex -translate-x-1/2 items-center gap-3 rounded-md bg-slate-900 px-4 py-3 text-white shadow-xl',
         className,
       )}
     >
@@ -721,7 +717,7 @@ export const TableFooter = (props) => <tfoot {...props} />;
 export const TableRow = ({ className, hover, selected, ...props }) => (
   <tr
     className={cn(
-      'border-b border-[var(--color-divider)]',
+      'border-b border-(--color-divider)',
       hover && 'hover:bg-black/5 dark:hover:bg-white/5',
       selected && 'bg-black/5 dark:bg-white/5',
       className,
@@ -812,7 +808,7 @@ export const Accordion = ({
   const open = expanded ?? localOpen;
   const parts = Children.toArray(children);
   return (
-    <div className={cn('border-b border-[var(--color-divider)]', className)} {...props}>
+    <div className={cn('border-b border-(--color-divider)', className)} {...props}>
       {parts.map((child) =>
         isValidElement(child)
           ? cloneElement(child, {
@@ -850,7 +846,7 @@ export const BottomNavigation = ({
 }) => (
   <nav
     className={cn(
-      'flex min-h-14 items-stretch border-t border-[var(--color-divider)] bg-[var(--color-paper)]',
+      'flex min-h-14 items-stretch border-t border-(--color-divider) bg-(--color-paper)',
       className,
     )}
     {...props}
@@ -878,7 +874,7 @@ export const BottomNavigationAction = ({
     type="button"
     className={cn(
       'flex flex-1 flex-col items-center justify-center text-xs',
-      selected ? 'text-[var(--color-primary)]' : 'text-[var(--color-muted)]',
+      selected ? 'text-(--color-primary)' : 'text-(--color-muted)',
       className,
     )}
     {...props}
@@ -899,12 +895,7 @@ export const Skeleton = ({ variant, width, height, className }) => (
   />
 );
 export const Slider = forwardRef(({ className, ...props }, ref) => (
-  <input
-    ref={ref}
-    type="range"
-    className={cn('accent-[var(--color-primary)]', className)}
-    {...props}
-  />
+  <input ref={ref} type="range" className={cn('accent-(--color-primary)', className)} {...props} />
 ));
 Slider.displayName = 'Slider';
 
