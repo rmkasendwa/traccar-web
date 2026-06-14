@@ -313,6 +313,16 @@ export const MenuItem = ({
   />
 );
 
+const optionText = (children) =>
+  Children.toArray(children)
+    .map((child) => {
+      if (typeof child === 'string' || typeof child === 'number') {
+        return child;
+      }
+      return isValidElement(child) ? optionText(child.props.children) : '';
+    })
+    .join('');
+
 export const Select = forwardRef(
   ({ children, label, fullWidth, className, onChange, ...props }, ref) => (
     <select
@@ -327,8 +337,12 @@ export const Select = forwardRef(
     >
       {Children.map(children, (child) =>
         isValidElement(child) ? (
-          <option value={child.props.value} disabled={child.props.disabled}>
-            {child.props.children}
+          <option
+            key={child.key ?? child.props.value}
+            value={child.props.value}
+            disabled={child.props.disabled}
+          >
+            {optionText(child.props.children)}
           </option>
         ) : (
           child

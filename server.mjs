@@ -12,7 +12,7 @@ const hostname = process.env.HOST ?? '0.0.0.0';
 const port = Number.parseInt(process.env.PORT ?? '3000', 10);
 const backendUrl = process.env.BACKEND_URL ?? 'https://api.traccar.infinitedebugger.com';
 
-const app = next({ dev, hostname, port });
+const app = next({ dev, hostname, port, webpack: true });
 const handle = app.getRequestHandler();
 const proxy = httpProxy.createProxyServer({
   target: backendUrl,
@@ -29,6 +29,7 @@ proxy.on('error', (error, request, response) => {
 });
 
 await app.prepare();
+const handleUpgrade = app.getUpgradeHandler();
 
 const server = http.createServer((request, response) => {
   if (request.url?.startsWith('/api/')) {
@@ -42,7 +43,7 @@ server.on('upgrade', (request, socket, head) => {
   if (request.url?.startsWith('/api/')) {
     proxy.ws(request, socket, head);
   } else {
-    socket.destroy();
+    handleUpgrade(request, socket, head);
   }
 });
 
