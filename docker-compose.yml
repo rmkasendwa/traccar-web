@@ -1,0 +1,11 @@
+services:
+  web:
+    build:
+      context: .
+    environment:
+      HOST: 0.0.0.0
+      PORT: ${PORT:-3000}
+      BACKEND_URL: ${BACKEND_URL:-https://api.traccar.infinitedebugger.com}
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    restart: unless-stopped

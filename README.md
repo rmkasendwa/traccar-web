@@ -25,12 +25,50 @@ npm run dev
 `PORT` controls the web server port. `BACKEND_URL` controls where HTTP and WebSocket
 requests under `/api` are proxied, which keeps Traccar session cookies same-origin.
 
+## Project Structure
+
+```text
+app/          Next.js routes, layouts, and route composition
+components/   Shared UI primitives and application layouts
+controllers/  Global side effects and runtime controllers
+features/     Domain-specific pages, components, hooks, and utilities
+lib/          Shared adapters, API helpers, and non-UI utilities
+providers/    Application-wide providers and context setup
+store/        Redux store, slices, reducers, and middleware
+types/        Shared TypeScript declarations
+public/       Static assets
+```
+
 ## Production
 
 ```bash
 npm run build
 PORT=3000 BACKEND_URL=http://localhost:8082 npm start
 ```
+
+## Docker
+
+Build and run the production image:
+
+```bash
+docker build -t traccar-web .
+docker run --rm \
+  -p 3000:3000 \
+  -e PORT=3000 \
+  -e BACKEND_URL=https://api.traccar.infinitedebugger.com \
+  traccar-web
+```
+
+Or use Docker Compose:
+
+```bash
+PORT=3000 \
+BACKEND_URL=https://api.traccar.infinitedebugger.com \
+docker compose up --build
+```
+
+The container runs the custom Next.js server, preserving same-origin HTTP and WebSocket
+proxying for all `/api` requests.
 
 ## Team
 
