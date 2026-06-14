@@ -4,10 +4,11 @@ import { configs as importConfigs } from 'eslint-plugin-import-x';
 import reactHooks from 'eslint-plugin-react-hooks';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default [
   {
-    ignores: ['build/**', '.next/**', 'switcher.js', 'theme.js'],
+    ignores: ['build/**', '.next/**', 'next-env.d.ts', 'switcher.js', 'theme.js'],
   },
   js.configs.recommended,
   eslintReact.configs.recommended,
@@ -19,7 +20,7 @@ export default [
     },
   },
   {
-    files: ['src/components/**/*.{js,jsx}'],
+    files: ['src/components/**/*.{ts,tsx}'],
     rules: {
       'no-unused-vars': 'off',
       '@eslint-react/no-children-map': 'off',
@@ -31,10 +32,17 @@ export default [
     },
   },
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['src/lib/router.tsx'],
+    rules: {
+      '@eslint-react/no-forward-ref': 'off',
+    },
+  },
+  {
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      parser: tseslint.parser,
       parserOptions: { ecmaFeatures: { jsx: true } },
       globals: {
         ...globals.browser,
@@ -47,7 +55,7 @@ export default [
     settings: {
       'import-x/resolver': {
         node: {
-          extensions: ['.js', '.jsx', '.json'],
+          extensions: ['.ts', '.tsx', '.json'],
         },
       },
     },
@@ -56,7 +64,7 @@ export default [
       'import-x/no-unresolved': [
         'warn',
         {
-          ignore: ['\\.svg', '^@/'],
+          ignore: ['\\.svg', '^@/', '^next/', '^dayjs/'],
         },
       ],
       'import-x/no-duplicates': 'off',

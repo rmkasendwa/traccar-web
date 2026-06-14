@@ -4,7 +4,7 @@
 
 Traccar is open source server for various GPS tracking devices. This repository contains web interface for the Traccar platform. For back-end checkout [main Traccar repository](https://github.com/tananaev/traccar).
 
-The app uses Next.js, TypeScript, Tailwind CSS, React, Redux, and MapLibre.
+The app uses the Next.js App Router, TypeScript, Tailwind CSS, React, Redux, and MapLibre.
 
 ## Development
 
