@@ -20,7 +20,7 @@ export default [
     },
   },
   {
-    files: ['src/components/**/*.{ts,tsx}'],
+    files: ['components/**/*.{ts,tsx}'],
     rules: {
       'no-unused-vars': 'off',
       '@eslint-react/no-children-map': 'off',
@@ -32,7 +32,7 @@ export default [
     },
   },
   {
-    files: ['src/lib/router.tsx'],
+    files: ['lib/router.tsx'],
     rules: {
       '@eslint-react/no-forward-ref': 'off',
     },

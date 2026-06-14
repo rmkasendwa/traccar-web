@@ -1,11 +1,16 @@
 import http from 'node:http';
 import next from 'next';
 import httpProxy from 'http-proxy';
+import nextEnv from '@next/env';
+
+const { loadEnvConfig } = nextEnv;
 
 const dev = process.env.NODE_ENV !== 'production';
+loadEnvConfig(process.cwd(), dev);
+
 const hostname = process.env.HOST ?? '0.0.0.0';
 const port = Number.parseInt(process.env.PORT ?? '3000', 10);
-const backendUrl = process.env.BACKEND_URL ?? 'http://localhost:8082';
+const backendUrl = process.env.BACKEND_URL ?? 'https://api.traccar.infinitedebugger.com';
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
