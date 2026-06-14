@@ -175,19 +175,28 @@ export const Fab = ({ className, size, ...props }) => (
   />
 );
 
-export const ButtonGroup = forwardRef(({ children, fullWidth, className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'inline-flex [&>button]:rounded-none [&>button:first-child]:rounded-l-md [&>button:last-child]:rounded-r-md',
-      fullWidth && 'w-full [&>button:first-child]:flex-1',
-      className,
-    )}
-    {...props}
-  >
-    {children}
-  </div>
-));
+export const ButtonGroup = forwardRef(
+  ({ children, fullWidth, variant, color, className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        'inline-flex [&>button]:rounded-none [&>button:first-child]:rounded-l-md [&>button:last-child]:rounded-r-md',
+        fullWidth && 'w-full [&>button:first-child]:flex-1',
+        className,
+      )}
+      {...props}
+    >
+      {Children.map(children, (child) =>
+        isValidElement(child)
+          ? cloneElement(child, {
+              variant: child.props.variant ?? variant,
+              color: child.props.color ?? color,
+            })
+          : child,
+      )}
+    </div>
+  ),
+);
 ButtonGroup.displayName = 'ButtonGroup';
 
 const FieldShell = ({ label, error, helperText, fullWidth, children, className }) => (
@@ -277,12 +286,21 @@ export const InputLabel = ({ className, ...props }) => (
   <label className={cn('text-sm text-[var(--color-muted)]', className)} {...props} />
 );
 export const OutlinedInput = forwardRef(
-  ({ className, startAdornment, endAdornment, ...props }, ref) => (
-    <div className="flex items-center rounded-md border border-[var(--color-divider)]">
+  ({ className, startAdornment, endAdornment, fullWidth, size, ...props }, ref) => (
+    <div
+      className={cn(
+        'flex items-center rounded-md border border-[var(--color-divider)]',
+        fullWidth && 'w-full',
+      )}
+    >
       {startAdornment}
       <input
         ref={ref}
-        className={cn('min-h-10 min-w-0 flex-1 bg-transparent px-3 outline-none', className)}
+        className={cn(
+          'min-w-0 flex-1 bg-transparent px-3 outline-none',
+          size === 'small' ? 'min-h-9' : 'min-h-10',
+          className,
+        )}
         {...props}
       />
       {endAdornment}
@@ -449,12 +467,15 @@ export const AppBar = ({ className, color, position = 'fixed', ...props }) => (
     {...props}
   />
 );
-export const Toolbar = ({ className, ...props }) => (
-  <div className={cn('flex min-h-14 items-center gap-2 px-4', className)} {...props} />
+export const Toolbar = ({ className, disableGutters, ...props }) => (
+  <div
+    className={cn('flex min-h-14 items-center gap-2', !disableGutters && 'px-4', className)}
+    {...props}
+  />
 );
 
-export const List = ({ className, subheader, ...props }) => (
-  <div className={cn('py-1', className)} {...props}>
+export const List = ({ className, subheader, dense, disablePadding, ...props }) => (
+  <div className={cn(!disablePadding && 'py-1', dense && 'text-sm', className)} {...props}>
     {subheader}
     {props.children}
   </div>
@@ -769,7 +790,14 @@ export const AccordionSummary = ({ children, expandIcon, __toggle }) => (
 export const AccordionDetails = ({ children, __open, className }) =>
   __open ? <div className={cn('px-4 pb-4', className)}>{children}</div> : null;
 
-export const BottomNavigation = ({ value, onChange, className, ...props }) => (
+export const BottomNavigation = ({
+  value,
+  onChange,
+  showLabels,
+  children,
+  className,
+  ...props
+}) => (
   <nav
     className={cn(
       'flex min-h-14 items-stretch border-t border-[var(--color-divider)] bg-[var(--color-paper)]',
@@ -777,17 +805,25 @@ export const BottomNavigation = ({ value, onChange, className, ...props }) => (
     )}
     {...props}
   >
-    {Children.map(props.children, (child) =>
+    {Children.map(children, (child) =>
       isValidElement(child)
         ? cloneElement(child, {
             selected: child.props.value === value,
+            showLabel: showLabels,
             onClick: (event) => onChange?.(event, child.props.value),
           })
         : child,
     )}
   </nav>
 );
-export const BottomNavigationAction = ({ label, icon, selected, className, ...props }) => (
+export const BottomNavigationAction = ({
+  label,
+  icon,
+  selected,
+  showLabel = true,
+  className,
+  ...props
+}) => (
   <button
     type="button"
     className={cn(
@@ -798,7 +834,7 @@ export const BottomNavigationAction = ({ label, icon, selected, className, ...pr
     {...props}
   >
     {icon}
-    <span>{label}</span>
+    {showLabel && <span>{label}</span>}
   </button>
 );
 

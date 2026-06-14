@@ -61,20 +61,23 @@ const MapView = ({ children }) => {
   const [mapReady, setMapReady] = useState(false);
 
   const mapStyles = useMapStyles();
-  const activeMapStyles = useAttributePreference(
-    'activeMapStyles',
-    'locationIqStreets,locationIqDark,openFreeMap',
-  );
+  const activeMapStyles = useAttributePreference('activeMapStyles', 'openFreeMap,osm');
   const [selectedStyleId, setSelectedStyleId] = usePersistedState(
     'selectedMapStyle',
-    usePreference('map', 'locationIqStreets'),
+    usePreference('map', 'openFreeMap'),
   );
   const mapboxAccessToken = useAttributePreference('mapboxAccessToken');
   const maxZoom = useAttributePreference('web.maxZoom');
 
   const styles = useMemo(() => {
     const filtered = mapStyles.filter((s) => s.available && activeMapStyles.includes(s.id));
-    return filtered.length ? filtered : mapStyles.filter((s) => s.id === 'osm');
+    const fallback = mapStyles.find((s) => s.id === 'osm');
+    if (!filtered.length) {
+      return fallback ? [fallback] : [];
+    }
+    return fallback && !filtered.some((style) => style.id === fallback.id)
+      ? [...filtered, fallback]
+      : filtered;
   }, [mapStyles, activeMapStyles]);
 
   useAsyncTask(async () => {
@@ -107,24 +110,35 @@ const MapView = ({ children }) => {
   useEffect(() => {
     const style = styles.find((s) => s.id === selectedStyleId);
     if (!style) {
-      setSelectedStyleId(styles[0].id);
+      if (styles.length) {
+        setSelectedStyleId(styles[0].id);
+      }
       return;
     }
     updateReadyValue(false);
     map.coordinateSystem = style.coordinateSystem;
-    map.setStyle(style.style, { diff: false });
-    map.setTransformRequest(style.transformRequest);
-    let timeoutId;
-    const waiting = () => {
-      if (!map.loaded()) {
-        timeoutId = setTimeout(waiting, 33);
-      } else {
-        initMap();
-        updateReadyValue(true);
+
+    let styleLoaded = false;
+    const handleStyleLoad = async () => {
+      styleLoaded = true;
+      await initMap();
+      updateReadyValue(true);
+      map.resize();
+    };
+    const handleError = () => {
+      if (!styleLoaded && style.id !== 'osm') {
+        setSelectedStyleId('osm');
       }
     };
-    map.once('styledata', waiting);
-    return () => clearTimeout(timeoutId);
+
+    map.once('style.load', handleStyleLoad);
+    map.on('error', handleError);
+    map.setTransformRequest(style.transformRequest);
+    map.setStyle(style.style, { diff: false });
+    return () => {
+      map.off('style.load', handleStyleLoad);
+      map.off('error', handleError);
+    };
   }, [styles, selectedStyleId, setSelectedStyleId]);
 
   useEffect(() => {
@@ -139,7 +153,10 @@ const MapView = ({ children }) => {
     const currentEl = containerRef.current;
     currentEl.appendChild(element);
     map.resize();
+    const resizeObserver = new ResizeObserver(() => map.resize());
+    resizeObserver.observe(currentEl);
     return () => {
+      resizeObserver.disconnect();
       currentEl.removeChild(element);
     };
   }, [containerRef]);

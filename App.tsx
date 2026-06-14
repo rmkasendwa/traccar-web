@@ -16,9 +16,16 @@ import Loader from './common/components/Loader';
 import fetchOrThrow from './common/util/fetchOrThrow';
 
 const useStyles = makeStyles()(() => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100dvh',
+    minHeight: 0,
+  },
   page: {
-    flexGrow: 1,
-    overflow: 'auto',
+    flex: 1,
+    minHeight: 0,
+    overflow: 'hidden',
   },
   menu: {
     zIndex: 4,
@@ -79,7 +86,7 @@ const App = ({ children }: AppProps) => {
     return <TermsDialog open onCancel={() => navigate('/login')} onAccept={() => acceptTerms()} />;
   }
   return (
-    <>
+    <div className={classes.root}>
       <SocketController />
       <CachingController />
       <UpdateController />
@@ -90,7 +97,7 @@ const App = ({ children }: AppProps) => {
           <BottomMenu />
         </div>
       )}
-    </>
+    </div>
   );
 };
 
