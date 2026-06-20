@@ -744,8 +744,8 @@ export const Card = ({ className, ...props }) => (
 export const CardContent = ({ className, ...props }) => (
   <div className={cn('p-4', className)} {...props} />
 );
-export const CardActions = ({ className, ...props }) => (
-  <div className={cn('flex items-center gap-2 p-2', className)} {...props} />
+export const CardActions = ({ className, disableSpacing, ...props }) => (
+  <div className={cn('flex items-center gap-2', !disableSpacing && 'p-2', className)} {...props} />
 );
 export const CardMedia = ({
   component: Component = 'div',
