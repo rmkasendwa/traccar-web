@@ -1,15 +1,23 @@
 // @ts-nocheck
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, TextField, Typography, Snackbar, IconButton } from '@/components/ui';
+import { Button, Snackbar } from '@/components/ui';
 import { makeStyles } from '@/components/ui/styles';
 import { useNavigate } from '@/lib/router';
 import LoginLayout from '@/features/auth/LoginLayout';
+import {
+  AuthFooter,
+  AuthLinkButton,
+  AuthMessage,
+  AuthPasswordField,
+  AuthTextField,
+  getPasswordStrength,
+  PasswordStrengthMeter,
+} from '@/features/auth/AuthForm';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import { snackBarDurationShortMs } from '@/lib/duration';
-import { useCatch, useAsyncTask } from '@/lib/react';
+import { useAsyncTask } from '@/lib/react';
 import { sessionActions } from '@/store';
-import BackIcon from '@/components/ui/BackIcon';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 
 const useStyles = makeStyles()((theme) => ({
@@ -18,15 +26,10 @@ const useStyles = makeStyles()((theme) => ({
     flexDirection: 'column',
     gap: theme.spacing(2),
   },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: theme.spacing(3),
-    fontWeight: 500,
-    marginLeft: theme.spacing(1),
-    textTransform: 'uppercase',
+  match: {
+    marginTop: theme.spacing(-1),
+    color: theme.palette.success.main,
+    fontSize: 12,
   },
 }));
 
@@ -42,8 +45,13 @@ const RegisterPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [totpKey, setTotpKey] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [touched, setTouched] = useState({});
 
   useAsyncTask(
     async ({ signal }) => {
@@ -55,77 +63,127 @@ const RegisterPage = () => {
     [totpForce, setTotpKey],
   );
 
-  const handleSubmit = useCatch(async (event) => {
-    event.preventDefault();
-    await fetchOrThrow('/api/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, totpKey }),
-    });
-    setSnackbarOpen(true);
+  const emailRequired = !server.newServer;
+  const validate = () => ({
+    name: name.trim() ? '' : 'Please enter your name.',
+    email:
+      !emailRequired || /(.+)@(.+)\.(.{2,})/.test(email)
+        ? ''
+        : 'Please enter a valid email address.',
+    password: password.length >= 8 ? '' : 'Password must contain at least 8 characters.',
+    confirmPassword: confirmPassword && password === confirmPassword ? '' : 'Passwords must match.',
+    totpKey: totpForce && !totpKey ? 'The verification key is still loading.' : '',
   });
 
+  const errors = validate();
+  const passwordMatches = password && confirmPassword && password === confirmPassword;
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setSubmitted(true);
+    setSubmitError('');
+    if (Object.values(errors).some(Boolean) || getPasswordStrength(password).score < 1) {
+      return;
+    }
+    try {
+      await fetchOrThrow('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, totpKey }),
+      });
+      setSnackbarOpen(true);
+    } catch (error) {
+      setSubmitError(
+        error.message || 'Registration failed. Please check your details and try again.',
+      );
+    }
+  };
+
   return (
-    <LoginLayout>
+    <LoginLayout
+      onSubmit={handleSubmit}
+      title={t('loginRegister')}
+      subtitle="Create your account with a name, email address, and secure password."
+    >
       <div className={classes.container}>
-        <div className={classes.header}>
-          {!server.newServer && (
-            <IconButton color="primary" onClick={() => navigate('/login')}>
-              <BackIcon />
-            </IconButton>
-          )}
-          <Typography className={classes.title} color="primary">
-            {t('loginRegister')}
-          </Typography>
-        </div>
-        <TextField
+        {submitError && <AuthMessage tone="error">{submitError}</AuthMessage>}
+        <AuthTextField
           required
           label={t('sharedName')}
           name="name"
           value={name}
           autoComplete="name"
           autoFocus
+          helperText="This is the display name shown inside the application."
+          errorText={errors.name}
+          touched={submitted || touched.name}
+          onBlur={() => setTouched((current) => ({ ...current, name: true }))}
           onChange={(event) => setName(event.target.value)}
         />
-        <TextField
-          required
+        <AuthTextField
+          required={emailRequired}
           type="email"
           label={t('userEmail')}
           name="email"
           value={email}
           autoComplete="email"
+          helperText="Used for account sign in and password recovery."
+          errorText={errors.email}
+          touched={submitted || touched.email}
+          onBlur={() => setTouched((current) => ({ ...current, email: true }))}
           onChange={(event) => setEmail(event.target.value)}
         />
-        <TextField
-          required
+        <AuthPasswordField
           label={t('userPassword')}
           name="password"
           value={password}
-          type="password"
-          autoComplete="current-password"
+          visible={showPassword}
+          onToggleVisible={() => setShowPassword(!showPassword)}
+          autoComplete="new-password"
+          helperText="Must contain at least 8 characters."
+          errorText={errors.password}
+          touched={submitted || touched.password}
+          onBlur={() => setTouched((current) => ({ ...current, password: true }))}
           onChange={(event) => setPassword(event.target.value)}
         />
+        <PasswordStrengthMeter password={password} />
+        <AuthPasswordField
+          label="Confirm password"
+          name="confirmPassword"
+          value={confirmPassword}
+          visible={showPassword}
+          onToggleVisible={() => setShowPassword(!showPassword)}
+          autoComplete="new-password"
+          helperText="Re-enter your password to avoid typos."
+          errorText={errors.confirmPassword}
+          touched={submitted || touched.confirmPassword}
+          onBlur={() => setTouched((current) => ({ ...current, confirmPassword: true }))}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+        />
+        {passwordMatches && <div className={classes.match}>Passwords match.</div>}
         {totpForce && (
-          <TextField
+          <AuthTextField
             required
             label={t('loginTotpKey')}
             name="totpKey"
             value={totpKey || ''}
+            helperText="Save this key in your authenticator app before continuing."
+            errorText={errors.totpKey}
+            touched={submitted || touched.totpKey}
             slotProps={{
               input: { readOnly: true },
             }}
           />
         )}
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleSubmit}
-          type="submit"
-          disabled={!name || !password || !(server.newServer || /(.+)@(.+)\.(.{2,})/.test(email))}
-          fullWidth
-        >
+        <Button variant="contained" color="secondary" type="submit" fullWidth>
           {t('loginRegister')}
         </Button>
+        {!server.newServer && (
+          <AuthFooter>
+            <span>Already have an account?</span>
+            <AuthLinkButton onClick={() => navigate('/login')}>Sign in</AuthLinkButton>
+          </AuthFooter>
+        )}
       </div>
       <Snackbar
         open={snackbarOpen}

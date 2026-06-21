@@ -1,31 +1,31 @@
 // @ts-nocheck
 import { useEffect, useRef, useState } from 'react';
 import {
-  useMediaQuery,
   Select,
   MenuItem,
   FormControl,
   Button,
-  TextField,
-  Link,
   Snackbar,
   IconButton,
   Tooltip,
-  InputAdornment,
 } from '@/components/ui';
 import CountryFlag from 'react-country-flag';
 import { makeStyles } from '@/components/ui/styles';
 import { CloseIcon } from '@/components/ui/icons';
 import { VpnLockIcon } from '@/components/ui/icons';
 import { QrCode2Icon } from '@/components/ui/icons';
-import { VisibilityIcon } from '@/components/ui/icons';
-import { VisibilityOffIcon } from '@/components/ui/icons';
-import { useTheme } from '@/components/ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from '@/lib/router';
 import { sessionActions } from '@/store';
 import { useLocalization, useTranslation } from '@/providers/localization/LocalizationProvider';
 import LoginLayout from '@/features/auth/LoginLayout';
+import {
+  AuthFooter,
+  AuthLinkButton,
+  AuthMessage,
+  AuthPasswordField,
+  AuthTextField,
+} from '@/features/auth/AuthForm';
 import usePersistedState from '@/lib/usePersistedState';
 import {
   generateLoginToken,
@@ -33,7 +33,6 @@ import {
   nativeEnvironment,
   nativePostMessage,
 } from '@/controllers/NativeInterface';
-import LogoImage from '@/features/auth/LogoImage';
 import { useCatch } from '@/lib/react';
 import QrCodeDialog from '@/components/ui/QrCodeDialog';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
@@ -54,19 +53,20 @@ const useStyles = makeStyles()((theme) => ({
   },
   extraContainer: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: theme.spacing(4),
-    marginTop: theme.spacing(2),
+    flexDirection: 'column',
+    gap: theme.spacing(1.25),
   },
   registerButton: {
     minWidth: 'unset',
   },
-  link: {
-    cursor: 'pointer',
-  },
   flag: {
     marginRight: theme.spacing(1),
+  },
+  forgot: {
+    alignSelf: 'flex-end',
+    minHeight: 'auto',
+    padding: 0,
+    fontWeight: 700,
   },
 }));
 
@@ -74,7 +74,6 @@ const LoginPage = () => {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const theme = useTheme();
   const t = useTranslation();
 
   const { languages, language, setLocalLanguage } = useLocalization();
@@ -90,6 +89,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [touched, setTouched] = useState({});
   const [showServerTooltip, setShowServerTooltip] = useState(false);
   const [showQr, setShowQr] = useState(false);
 
@@ -109,9 +110,21 @@ const LoginPage = () => {
   const [announcementShown, setAnnouncementShown] = useState(false);
   const announcement = useSelector((state) => state.session.server.announcement);
 
+  const validate = () => ({
+    email: email.trim() ? '' : 'Please enter your email address or username.',
+    password: password ? '' : 'Please enter your password.',
+    code: codeEnabled && !code.trim() ? 'Please enter your verification code.' : '',
+  });
+
+  const errors = validate();
+
   const handlePasswordLogin = async (event) => {
     event.preventDefault();
+    setSubmitted(true);
     setFailed(false);
+    if (Object.values(errors).some(Boolean)) {
+      return;
+    }
     try {
       const query = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
       const response = await fetch('/api/session', {
@@ -127,6 +140,7 @@ const LoginPage = () => {
         navigate(target, { replace: true });
       } else if (response.status === 401 && response.headers.get('WWW-Authenticate') === 'TOTP') {
         setCodeEnabled(true);
+        setFailed(false);
       } else {
         throw Error(await response.text());
       }
@@ -166,7 +180,15 @@ const LoginPage = () => {
   }, []);
 
   return (
-    <LoginLayout>
+    <LoginLayout
+      onSubmit={handlePasswordLogin}
+      title={openIdForced ? 'Single sign-on' : 'Welcome back'}
+      subtitle={
+        openIdForced
+          ? 'Continue with your organization account.'
+          : 'Sign in with your account credentials to continue.'
+      }
+    >
       <div className={classes.options}>
         {nativeEnvironment && changeEnabled && (
           <IconButton color="primary" onClick={() => navigate('/change-server')}>
@@ -200,66 +222,72 @@ const LoginPage = () => {
         )}
       </div>
       <div className={classes.container}>
-        {useMediaQuery(theme.breakpoints.down('lg')) && (
-          <LogoImage color={theme.palette.primary.main} />
+        {failed && (
+          <AuthMessage tone="error">
+            Invalid username or password. Check your details and try again.
+          </AuthMessage>
         )}
         {!openIdForced && (
           <>
-            <TextField
+            <AuthTextField
               required
-              error={failed}
-              label={t('userEmail')}
+              label="Email or username"
               name="email"
               value={email}
               autoComplete="email"
               autoFocus={!email}
-              onChange={(e) => setEmail(e.target.value)}
-              helperText={failed && 'Invalid username or password'}
+              helperText="Use the email address or username for your account."
+              errorText={errors.email}
+              touched={submitted || touched.email}
+              onBlur={() => setTouched((current) => ({ ...current, email: true }))}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setFailed(false);
+              }}
             />
-            <TextField
-              required
-              error={failed}
+            <AuthPasswordField
               label={t('userPassword')}
               name="password"
               value={password}
-              type={showPassword ? 'text' : 'password'}
+              visible={showPassword}
+              onToggleVisible={() => setShowPassword(!showPassword)}
               autoComplete="current-password"
               autoFocus={!!email}
-              onChange={(e) => setPassword(e.target.value)}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                        size="small"
-                      >
-                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
+              helperText="Keep your password private."
+              errorText={errors.password}
+              touched={submitted || touched.password}
+              onBlur={() => setTouched((current) => ({ ...current, password: true }))}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setFailed(false);
               }}
             />
             {codeEnabled && (
-              <TextField
+              <AuthTextField
                 required
-                error={failed}
                 label={t('loginTotpCode')}
                 name="code"
                 value={code}
                 type="number"
+                helperText="Enter the current code from your authenticator app."
+                errorText={errors.code}
+                touched={submitted || touched.code}
+                onBlur={() => setTouched((current) => ({ ...current, code: true }))}
                 onChange={(e) => setCode(e.target.value)}
               />
             )}
-            <Button
-              onClick={handlePasswordLogin}
-              type="submit"
-              variant="contained"
-              color="secondary"
-              disabled={!email || !password || (codeEnabled && !code)}
-            >
+            {emailEnabled && (
+              <Button
+                type="button"
+                variant="text"
+                color="primary"
+                className={classes.forgot}
+                onClick={() => navigate('/reset-password')}
+              >
+                Forgot your password?
+              </Button>
+            )}
+            <Button type="submit" variant="contained" color="secondary" fullWidth>
               {t('loginLogin')}
             </Button>
           </>
@@ -272,24 +300,10 @@ const LoginPage = () => {
         {!openIdForced && (
           <div className={classes.extraContainer}>
             {registrationEnabled && (
-              <Link
-                onClick={() => navigate('/register')}
-                className={classes.link}
-                underline="none"
-                variant="caption"
-              >
-                {t('loginRegister')}
-              </Link>
-            )}
-            {emailEnabled && (
-              <Link
-                onClick={() => navigate('/reset-password')}
-                className={classes.link}
-                underline="none"
-                variant="caption"
-              >
-                {t('loginReset')}
-              </Link>
+              <AuthFooter>
+                <span>Don't have an account?</span>
+                <AuthLinkButton onClick={() => navigate('/register')}>Register</AuthLinkButton>
+              </AuthFooter>
             )}
           </div>
         )}

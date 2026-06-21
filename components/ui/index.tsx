@@ -199,12 +199,15 @@ export const ButtonGroup = forwardRef(
 );
 ButtonGroup.displayName = 'ButtonGroup';
 
-const FieldShell = ({ label, error, helperText, fullWidth, children, className }) => (
+const FieldShell = ({ label, error, helperText, helperId, fullWidth, children, className }) => (
   <label className={cn('flex flex-col gap-1 text-sm', fullWidth && 'w-full', className)}>
     {label && <span className={error ? 'text-red-600' : 'text-(--color-muted)'}>{label}</span>}
     {children}
     {helperText && (
-      <span className={cn('text-xs', error ? 'text-red-600' : 'text-(--color-muted)')}>
+      <span
+        id={helperId}
+        className={cn('text-xs', error ? 'text-red-600' : 'text-(--color-muted)')}
+      >
         {helperText}
       </span>
     )}
@@ -216,6 +219,7 @@ export const TextField = forwardRef(
     {
       label,
       helperText,
+      helperId,
       error,
       fullWidth,
       multiline,
@@ -268,6 +272,7 @@ export const TextField = forwardRef(
       <FieldShell
         label={label}
         helperText={helperText}
+        helperId={helperId}
         error={error}
         fullWidth={fullWidth}
         className={className}

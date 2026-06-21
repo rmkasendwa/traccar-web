@@ -6,7 +6,6 @@ import { makeStyles } from '@/components/ui/styles';
 import {
   Autocomplete,
   Button,
-  Container,
   createFilterOptions,
   Dialog,
   DialogActions,
@@ -18,6 +17,8 @@ import { Scanner } from '@yudiel/react-qr-scanner';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import Loader from '@/components/ui/Loader';
 import { errorsActions } from '@/store';
+import LoginLayout from '@/features/auth/LoginLayout';
+import { AuthFooter, AuthLinkButton, AuthMessage } from '@/features/auth/AuthForm';
 
 const currentServer = `${window.location.protocol}//${window.location.host}`;
 
@@ -35,23 +36,23 @@ const officialServers = [
 const useStyles = makeStyles()((theme) => ({
   icon: {
     textAlign: 'center',
-    fontSize: '10rem',
+    fontSize: '3rem',
     color: theme.palette.neutral.main,
   },
   container: {
-    textAlign: 'center',
-    padding: theme.spacing(5, 3),
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
   },
   field: {
-    margin: theme.spacing(3, 0),
+    margin: 0,
   },
   buttons: {
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
     display: 'flex',
-    justifyContent: 'space-evenly',
-    '& > *': {
-      flexBasis: '30%',
+    gap: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
     },
   },
   scannerVideo: {
@@ -79,6 +80,15 @@ const ChangeServerPage = () => {
       return parsed.protocol === 'http:' || parsed.protocol === 'https:';
     } catch {
       return false;
+    }
+  };
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    if (inputValue && validateUrl(inputValue)) {
+      handleSubmit(inputValue);
+    } else {
+      setInvalid(true);
     }
   };
 
@@ -110,47 +120,62 @@ const ChangeServerPage = () => {
 
   return (
     <>
-      <Container maxWidth="xs" className={classes.container}>
-        <VpnLockIcon className={classes.icon} />
-        <Autocomplete
-          freeSolo
-          className={classes.field}
-          options={officialServers}
-          renderInput={(params) => (
-            <TextField {...params} label={t('settingsServer')} error={invalid} />
+      <LoginLayout
+        onSubmit={handleFormSubmit}
+        title="Change server"
+        subtitle="Connect this client to a different Traccar server."
+      >
+        <div className={classes.container}>
+          <VpnLockIcon className={classes.icon} />
+          {invalid && (
+            <AuthMessage tone="error">
+              Enter a full server URL starting with http:// or https://.
+            </AuthMessage>
           )}
-          value={currentServer}
-          onChange={(_, value) =>
-            value && validateUrl(value) ? handleSubmit(value) : setInvalid(true)
-          }
-          inputValue={inputValue}
-          onInputChange={(_, value) => {
-            setInputValue(value);
-            setInvalid(false);
-          }}
-          filterOptions={filter}
-        />
-        <div className={classes.buttons}>
-          <Button color="primary" variant="outlined" onClick={() => navigate(-1)}>
-            {t('sharedCancel')}
-          </Button>
-          {Boolean(navigator?.mediaDevices?.getUserMedia) && (
-            <Button color="primary" variant="outlined" onClick={() => setScannerOpen(true)}>
-              {t('sharedQrCode')}
-            </Button>
-          )}
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={() =>
-              inputValue && validateUrl(inputValue) ? handleSubmit(inputValue) : setInvalid(true)
+          <Autocomplete
+            freeSolo
+            className={classes.field}
+            options={officialServers}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                required
+                label={`${t('settingsServer')} *`}
+                error={invalid}
+                helperText="Example: https://server.example.com"
+              />
+            )}
+            value={currentServer}
+            onChange={(_, value) =>
+              value && validateUrl(value) ? handleSubmit(value) : setInvalid(true)
             }
-            disabled={!inputValue || invalid}
-          >
-            {t('sharedSave')}
-          </Button>
+            inputValue={inputValue}
+            onInputChange={(_, value) => {
+              setInputValue(value);
+              setInvalid(false);
+            }}
+            filterOptions={filter}
+          />
+          <div className={classes.buttons}>
+            {Boolean(navigator?.mediaDevices?.getUserMedia) && (
+              <Button
+                type="button"
+                color="primary"
+                variant="outlined"
+                onClick={() => setScannerOpen(true)}
+              >
+                {t('sharedQrCode')}
+              </Button>
+            )}
+            <Button type="submit" color="primary" variant="contained" fullWidth>
+              {t('sharedSave')}
+            </Button>
+          </div>
+          <AuthFooter>
+            <AuthLinkButton onClick={() => navigate(-1)}>{t('sharedCancel')}</AuthLinkButton>
+          </AuthFooter>
         </div>
-      </Container>
+      </LoginLayout>
 
       <Dialog fullWidth maxWidth="sm" open={scannerOpen} onClose={() => setScannerOpen(false)}>
         <DialogContent>
