@@ -72,14 +72,27 @@ export default async function Page({ searchParams }: RegisterPageProps) {
           <span>
             Name <span className="font-bold text-red-600">*</span>
           </span>
-          <input className={inputClass} name="name" autoComplete="name" required />
+          <input
+            className={inputClass}
+            name="name"
+            placeholder="John Doe"
+            autoComplete="name"
+            required
+          />
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-slate-600">
           <span>
             Email <span className="font-bold text-red-600">*</span>
           </span>
-          <input className={inputClass} name="email" type="email" autoComplete="email" required />
+          <input
+            className={inputClass}
+            name="email"
+            type="email"
+            placeholder="john@example.com"
+            autoComplete="email"
+            required
+          />
           <span className="text-xs text-slate-500">
             Used for account sign in and password recovery.
           </span>
@@ -89,7 +102,12 @@ export default async function Page({ searchParams }: RegisterPageProps) {
           <span>
             Password <span className="font-bold text-red-600">*</span>
           </span>
-          <PasswordInput className={inputClass} name="password" autoComplete="new-password" />
+          <PasswordInput
+            className={inputClass}
+            name="password"
+            autoComplete="new-password"
+            placeholder="Enter your password"
+          />
           <span className="text-xs text-slate-500">Must contain at least 8 characters.</span>
         </label>
 
@@ -101,6 +119,7 @@ export default async function Page({ searchParams }: RegisterPageProps) {
             className={inputClass}
             name="confirmPassword"
             autoComplete="new-password"
+            placeholder="Confirm your password"
           />
         </label>
 
