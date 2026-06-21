@@ -2,7 +2,7 @@
 
 import { useEffect, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
-import store from '@/store';
+import store, { sessionActions } from '@/store';
 import { LocalizationProvider } from '@/providers/localization/LocalizationProvider';
 import ErrorHandler from '@/controllers/ErrorHandler';
 import NativeInterface from '@/controllers/NativeInterface';
@@ -13,9 +13,14 @@ import QueryParameterController from '@/controllers/QueryParameterController';
 
 type AppProvidersProps = {
   children: ReactNode;
+  initialServer?: unknown;
 };
 
-export default function AppProviders({ children }: AppProvidersProps) {
+export default function AppProviders({ children, initialServer }: AppProvidersProps) {
+  if (initialServer && !store.getState().session.server) {
+    store.dispatch(sessionActions.updateServer(initialServer));
+  }
+
   useEffect(() => {
     import('@/features/map/core/preloadImages').then(({ default: preloadImages }) =>
       preloadImages(),

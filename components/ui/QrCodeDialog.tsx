@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogActions, TextField, Button, useTheme } from '@/components/ui';
 import { makeStyles } from '@/components/ui/styles';
 import { QRCode } from 'react-qr-code';
@@ -18,10 +18,14 @@ const QrCodeDialog = ({ open, onClose }) => {
   const theme = useTheme();
   const t = useTranslation();
 
-  const [serverUrl, setServerUrl] = useState(window.location.origin);
+  const [serverUrl, setServerUrl] = useState('');
   const [queryParams, setQueryParams] = useState('');
 
   const fullUrl = queryParams ? `${serverUrl}?${queryParams}` : serverUrl;
+
+  useEffect(() => {
+    setServerUrl(window.location.origin);
+  }, []);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>

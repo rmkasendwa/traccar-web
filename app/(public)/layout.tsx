@@ -1,38 +1,21 @@
-'use client';
+import type { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
+import { fetchFromRequestOrigin } from '@/lib/serverFetch';
 
-import { useEffect, useState, type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from '@/lib/router';
-import Loader from '@/components/ui/Loader';
-import { sessionActions } from '@/store';
-
-export default function PublicLayout({ children }: { children: ReactNode }) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [allowed, setAllowed] = useState(false);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch('/api/session', { signal: controller.signal })
-      .then(async (response) => {
-        if (response.ok) {
-          dispatch(sessionActions.updateUser(await response.json()));
-          navigate('/', { replace: true });
-        } else {
-          setAllowed(true);
-        }
-      })
-      .catch((error) => {
-        if (error.name !== 'AbortError') {
-          setAllowed(true);
-        }
-      });
-    return () => controller.abort();
-  }, [dispatch, navigate]);
-
-  if (!allowed) {
-    return <Loader />;
+const redirectAuthenticatedUsers = async () => {
+  let authenticated = false;
+  try {
+    const response = await fetchFromRequestOrigin('/api/session');
+    authenticated = Boolean(response?.ok);
+  } catch {
+    // Treat session lookup failures as logged out so recovery/login remains reachable.
   }
+  if (authenticated) {
+    redirect('/');
+  }
+};
 
+export default async function PublicLayout({ children }: { children: ReactNode }) {
+  await redirectAuthenticatedUsers();
   return children;
 }

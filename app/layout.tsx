@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import AppProviders from '@/providers/AppProviders';
+import { fetchFromRequestOrigin } from '@/lib/serverFetch';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -18,11 +19,22 @@ export const viewport: Viewport = {
   themeColor: '#1a237e',
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+const getInitialServer = async () => {
+  try {
+    const response = await fetchFromRequestOrigin('/api/server');
+    return response?.ok ? response.json() : null;
+  } catch {
+    return null;
+  }
+};
+
+export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+  const initialServer = await getInitialServer();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <AppProviders>{children}</AppProviders>
+        <AppProviders initialServer={initialServer}>{children}</AppProviders>
       </body>
     </html>
   );
