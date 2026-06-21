@@ -94,7 +94,14 @@ export default async function Page({ searchParams }: ResetPasswordPageProps) {
             <span>
               Email <span className="font-bold text-red-600">*</span>
             </span>
-            <input className={inputClass} name="email" type="email" autoComplete="email" required />
+            <input
+              className={inputClass}
+              name="email"
+              type="email"
+              placeholder="john@example.com"
+              autoComplete="email"
+              required
+            />
             <span className="text-xs text-slate-500">
               Used to find your account and send recovery instructions.
             </span>

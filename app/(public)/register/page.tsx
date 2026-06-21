@@ -106,7 +106,7 @@ export default async function Page({ searchParams }: RegisterPageProps) {
             className={inputClass}
             name="password"
             autoComplete="new-password"
-            placeholder="Enter your password"
+            placeholder="Create a strong password"
           />
           <span className="text-xs text-slate-500">Must contain at least 8 characters.</span>
         </label>
