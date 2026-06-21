@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import AuthShell from '@/components/auth/AuthShell';
 import PasswordInput from '@/components/auth/PasswordInput';
 import { applyResponseCookies, fetchFromRequestOrigin } from '@/lib/serverFetch';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 type LoginPageProps = {
   searchParams: Promise<{ error?: string; totp?: string; email?: string; created?: string }>;
@@ -64,13 +64,6 @@ export default async function Page({ searchParams }: LoginPageProps) {
             Account created. You can sign in now.
           </p>
         )}
-        {error && (
-          <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900">
-            {error === 'missing'
-              ? 'Please enter your email or username and password.'
-              : 'Invalid username or password. Check your details and try again.'}
-          </p>
-        )}
 
         {!openIdForced && (
           <form action={login} className="flex flex-col gap-4" noValidate>
@@ -83,6 +76,7 @@ export default async function Page({ searchParams }: LoginPageProps) {
                 name="email"
                 autoComplete="email"
                 defaultValue={params.email || ''}
+                placeholder="john@example.com"
                 required
               />
               <span className="text-xs text-slate-500">
@@ -91,13 +85,22 @@ export default async function Page({ searchParams }: LoginPageProps) {
             </label>
 
             <label className="flex flex-col gap-1 text-sm text-slate-600">
-              <span>
-                Password <span className="font-bold text-red-600">*</span>
+              <span className="flex items-center justify-between">
+                <span>
+                  Password <span className="font-bold text-red-600">*</span>
+                </span>
+                <Link
+                  className="text-xs font-semibold text-blue-900 hover:underline"
+                  href="/reset-password"
+                >
+                  Forgot your password?
+                </Link>
               </span>
               <PasswordInput
                 className={inputClass}
                 name="password"
                 autoComplete="current-password"
+                placeholder="Enter your password"
               />
             </label>
 
@@ -106,21 +109,26 @@ export default async function Page({ searchParams }: LoginPageProps) {
                 <span>
                   Verification code <span className="font-bold text-red-600">*</span>
                 </span>
-                <input className={inputClass} name="code" inputMode="numeric" required />
+                <input
+                  className={inputClass}
+                  name="code"
+                  inputMode="numeric"
+                  placeholder="Enter your verification code"
+                  required
+                />
                 <span className="text-xs text-slate-500">
                   Enter the current code from your authenticator app.
                 </span>
               </label>
             )}
 
-            <div className="flex justify-end">
-              <Link
-                className="text-sm font-semibold text-blue-900 hover:underline"
-                href="/reset-password"
-              >
-                Forgot your password?
-              </Link>
-            </div>
+            {error && (
+              <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+                {error === 'missing'
+                  ? 'Please enter your email or username and password.'
+                  : 'Invalid username or password. Check your details and try again.'}
+              </p>
+            )}
 
             <button className="min-h-11 rounded-md bg-emerald-700 px-4 font-medium text-white hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2">
               Sign in
