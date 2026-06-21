@@ -45,7 +45,9 @@ export default async function Page({ searchParams }: ChangeServerPageProps) {
         )}
 
         <label className="flex flex-col gap-1 text-sm text-slate-600">
-          Server <span className="font-bold text-red-600">*</span>
+          <span>
+            Server <span className="font-bold text-red-600">*</span>
+          </span>
           <input
             className="min-h-11 rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800"
             name="server"

@@ -9,8 +9,8 @@ type AuthShellProps = {
 export default function AuthShell({ title, subtitle, children }: AuthShellProps) {
   return (
     <main className="min-h-dvh bg-slate-50 text-slate-950">
-      <div className="mx-auto flex min-h-dvh w-full max-w-7xl flex-col md:flex-row">
-        <aside className="flex bg-blue-950 p-6 text-white md:basis-[42%] md:flex-col md:justify-between md:p-12">
+      <div className="flex min-h-dvh w-full flex-col md:flex-row">
+        <aside className="flex bg-blue-950 p-6 text-white md:basis-[44%] md:flex-col md:justify-between md:p-12 lg:basis-[40%]">
           <span
             role="img"
             aria-label="Traccar"

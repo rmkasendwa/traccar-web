@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import AuthShell from '@/components/auth/AuthShell';
+import PasswordInput from '@/components/auth/PasswordInput';
 import { fetchFromRequestOrigin } from '@/lib/serverFetch';
 
 type RegisterPageProps = {
@@ -52,6 +53,8 @@ const errorMessage = (error?: string) =>
 
 export default async function Page({ searchParams }: RegisterPageProps) {
   const { error } = await searchParams;
+  const inputClass =
+    'min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800';
 
   return (
     <AuthShell
@@ -66,49 +69,38 @@ export default async function Page({ searchParams }: RegisterPageProps) {
         )}
 
         <label className="flex flex-col gap-1 text-sm text-slate-600">
-          Name <span className="font-bold text-red-600">*</span>
-          <input
-            className="min-h-11 rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800"
-            name="name"
-            autoComplete="name"
-            required
-          />
+          <span>
+            Name <span className="font-bold text-red-600">*</span>
+          </span>
+          <input className={inputClass} name="name" autoComplete="name" required />
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-slate-600">
-          Email <span className="font-bold text-red-600">*</span>
-          <input
-            className="min-h-11 rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-          />
+          <span>
+            Email <span className="font-bold text-red-600">*</span>
+          </span>
+          <input className={inputClass} name="email" type="email" autoComplete="email" required />
           <span className="text-xs text-slate-500">
             Used for account sign in and password recovery.
           </span>
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-slate-600">
-          Password <span className="font-bold text-red-600">*</span>
-          <input
-            className="min-h-11 rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            required
-          />
+          <span>
+            Password <span className="font-bold text-red-600">*</span>
+          </span>
+          <PasswordInput className={inputClass} name="password" autoComplete="new-password" />
           <span className="text-xs text-slate-500">Must contain at least 8 characters.</span>
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-slate-600">
-          Confirm password <span className="font-bold text-red-600">*</span>
-          <input
-            className="min-h-11 rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800"
+          <span>
+            Confirm password <span className="font-bold text-red-600">*</span>
+          </span>
+          <PasswordInput
+            className={inputClass}
             name="confirmPassword"
-            type="password"
             autoComplete="new-password"
-            required
           />
         </label>
 

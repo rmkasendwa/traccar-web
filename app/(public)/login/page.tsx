@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import AuthShell from '@/components/auth/AuthShell';
+import PasswordInput from '@/components/auth/PasswordInput';
 import { applyResponseCookies, fetchFromRequestOrigin } from '@/lib/serverFetch';
 
 type LoginPageProps = {
@@ -52,8 +53,8 @@ export default async function Page({ searchParams }: LoginPageProps) {
   const error = params.error;
   const openIdEnabled = Boolean(server?.openIdEnabled);
   const openIdForced = Boolean(server?.openIdEnabled && server?.openIdForce);
-  const registrationEnabled = Boolean(server?.registration);
-  const emailEnabled = Boolean(server?.emailEnabled);
+  const inputClass =
+    'min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800';
 
   return (
     <AuthShell title="Welcome back" subtitle="Sign in with your account credentials to continue.">
@@ -74,9 +75,11 @@ export default async function Page({ searchParams }: LoginPageProps) {
         {!openIdForced && (
           <form action={login} className="flex flex-col gap-4" noValidate>
             <label className="flex flex-col gap-1 text-sm text-slate-600">
-              Email or username <span className="font-bold text-red-600">*</span>
+              <span>
+                Email or username <span className="font-bold text-red-600">*</span>
+              </span>
               <input
-                className="min-h-11 rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800"
+                className={inputClass}
                 name="email"
                 autoComplete="email"
                 defaultValue={params.email || ''}
@@ -88,39 +91,36 @@ export default async function Page({ searchParams }: LoginPageProps) {
             </label>
 
             <label className="flex flex-col gap-1 text-sm text-slate-600">
-              Password <span className="font-bold text-red-600">*</span>
-              <input
-                className="min-h-11 rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800"
+              <span>
+                Password <span className="font-bold text-red-600">*</span>
+              </span>
+              <PasswordInput
+                className={inputClass}
                 name="password"
-                type="password"
                 autoComplete="current-password"
-                required
               />
             </label>
 
             {showTotp && (
               <label className="flex flex-col gap-1 text-sm text-slate-600">
-                Verification code <span className="font-bold text-red-600">*</span>
-                <input
-                  className="min-h-11 rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800"
-                  name="code"
-                  inputMode="numeric"
-                  required
-                />
+                <span>
+                  Verification code <span className="font-bold text-red-600">*</span>
+                </span>
+                <input className={inputClass} name="code" inputMode="numeric" required />
                 <span className="text-xs text-slate-500">
                   Enter the current code from your authenticator app.
                 </span>
               </label>
             )}
 
-            {emailEnabled && (
+            <div className="flex justify-end">
               <Link
-                className="self-end text-sm font-semibold text-blue-900 hover:underline"
+                className="text-sm font-semibold text-blue-900 hover:underline"
                 href="/reset-password"
               >
                 Forgot your password?
               </Link>
-            )}
+            </div>
 
             <button className="min-h-11 rounded-md bg-emerald-700 px-4 font-medium text-white hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2">
               Sign in
@@ -137,7 +137,7 @@ export default async function Page({ searchParams }: LoginPageProps) {
           </a>
         )}
 
-        {registrationEnabled && !openIdForced && (
+        {!openIdForced && (
           <p className="text-center text-sm text-slate-600">
             Don&apos;t have an account?{' '}
             <Link className="font-semibold text-blue-900 hover:underline" href="/register">
