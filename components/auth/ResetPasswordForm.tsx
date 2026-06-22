@@ -1,13 +1,14 @@
 'use client';
 
-import Link from 'next/link';
-import { useActionState, useState, type ChangeEvent } from 'react';
 import Field from '@/components/auth/Field';
 import PasswordInput from '@/components/auth/PasswordInput';
 import SubmitButton from '@/components/auth/SubmitButton';
 import type { AuthFormState } from '@/components/auth/formState';
 import { emptyAuthFormState } from '@/components/auth/formState';
 import useLiveFormErrors from '@/components/auth/useLiveFormErrors';
+import Link from 'next/link';
+import { useActionState, useState, type ChangeEvent } from 'react';
+import PasswordStrengthMeter from './PasswordStrengthMeter';
 
 type ResetPasswordFormProps = {
   action: (state: AuthFormState, formData: FormData) => Promise<AuthFormState>;
@@ -149,6 +150,7 @@ export default function ResetPasswordForm({
               }}
             />
           </Field>
+          <PasswordStrengthMeter password={password} />
 
           <Field
             label="Confirm password"
