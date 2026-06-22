@@ -8,6 +8,8 @@ type PasswordInputProps = {
   autoComplete: string;
   className: string;
   placeholder?: string;
+  invalid?: boolean;
+  describedBy?: string;
 };
 
 export default function PasswordInput({
@@ -15,6 +17,8 @@ export default function PasswordInput({
   autoComplete,
   className,
   placeholder,
+  invalid,
+  describedBy,
 }: PasswordInputProps) {
   const [visible, setVisible] = useState(false);
 
@@ -26,6 +30,8 @@ export default function PasswordInput({
         type={visible ? 'text' : 'password'}
         autoComplete={autoComplete}
         placeholder={placeholder}
+        aria-invalid={invalid || undefined}
+        aria-describedby={describedBy}
         required
       />
       <button
