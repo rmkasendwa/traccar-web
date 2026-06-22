@@ -18,9 +18,7 @@ export default function QueryParameterController({ children }: QueryParameterCon
   const dispatch = useDispatch();
   const { setLocalLanguage } = useLocalization();
   const [searchParams, setSearchParams] = useSearchParams();
-  const hasQueryParams = ['locale', 'token', 'uniqueId', 'openid'].some((key) =>
-    searchParams.has(key),
-  );
+  const hasQueryParams = ['locale', 'uniqueId', 'openid'].some((key) => searchParams.has(key));
 
   useAsyncTask(
     async ({ signal }: { signal: AbortSignal }) => {
@@ -30,16 +28,11 @@ export default function QueryParameterController({ children }: QueryParameterCon
 
       const newParams = new URLSearchParams(searchParams);
       const locale = searchParams.get('locale');
-      const token = searchParams.get('token');
       const uniqueId = searchParams.get('uniqueId');
 
       if (locale) {
         Reflect.apply(setLocalLanguage, null, [locale]);
         newParams.delete('locale');
-      }
-      if (token) {
-        await fetch(`/api/session?token=${encodeURIComponent(token)}`, { signal });
-        newParams.delete('token');
       }
       if (uniqueId) {
         const response = await fetchOrThrow(

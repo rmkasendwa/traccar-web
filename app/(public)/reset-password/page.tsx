@@ -5,7 +5,7 @@ import { fetchFromRequestOrigin } from '@/lib/serverFetch';
 import { redirect } from 'next/navigation';
 
 type ResetPasswordPageProps = {
-  searchParams: Promise<{ passwordReset?: string }>;
+  searchParams: Promise<{ token?: string }>;
 };
 
 const resetPassword = async (_state: AuthFormState, formData: FormData): Promise<AuthFormState> => {
@@ -57,7 +57,7 @@ const resetPassword = async (_state: AuthFormState, formData: FormData): Promise
 
 export default async function Page({ searchParams }: ResetPasswordPageProps) {
   const params = await searchParams;
-  const token = params.passwordReset || '';
+  const token = params.token || '';
   const hasToken = Boolean(token);
 
   return (

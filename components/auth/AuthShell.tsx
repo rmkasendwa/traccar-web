@@ -30,7 +30,7 @@ export default function AuthShell({ title, subtitle, children }: AuthShellProps)
           </div>
         </aside>
         <section className="flex flex-1 items-center justify-center p-4 sm:p-8">
-          <div className="w-full max-w-[464px] rounded-lg border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/10 sm:p-10">
+          <div className="w-full max-w-116 rounded-lg border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/10 sm:p-10">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold">{title}</h2>
               <p className="mt-1 text-sm leading-6 text-slate-600">{subtitle}</p>
