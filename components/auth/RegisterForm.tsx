@@ -7,6 +7,7 @@ import PasswordInput from '@/components/auth/PasswordInput';
 import SubmitButton from '@/components/auth/SubmitButton';
 import type { AuthFormState } from '@/components/auth/formState';
 import { emptyAuthFormState } from '@/components/auth/formState';
+import useLiveFormErrors from '@/components/auth/useLiveFormErrors';
 
 type RegisterFormProps = {
   action: (state: AuthFormState, formData: FormData) => Promise<AuthFormState>;
@@ -15,6 +16,30 @@ type RegisterFormProps = {
 
 const inputClass =
   'min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800 aria-invalid:border-red-500';
+
+const registerValidators = {
+  name: (formData: FormData) =>
+    String(formData.get('name') || '').trim() ? '' : 'Name is required.',
+  email: (formData: FormData) => {
+    const email = String(formData.get('email') || '').trim();
+    if (!email) return 'Email is required.';
+    if (!/(.+)@(.+)\.(.{2,})/.test(email)) return 'Enter a valid email address.';
+    return '';
+  },
+  password: (formData: FormData) => {
+    const password = String(formData.get('password') || '');
+    if (!password) return 'Password is required.';
+    if (password.length < 8) return 'Password must contain at least 8 characters.';
+    return '';
+  },
+  confirmPassword: (formData: FormData) => {
+    const password = String(formData.get('password') || '');
+    const confirmPassword = String(formData.get('confirmPassword') || '');
+    if (!confirmPassword) return 'Confirm your password.';
+    if (password !== confirmPassword) return 'Passwords must match.';
+    return '';
+  },
+};
 
 const validateRegister = (formData: FormData): AuthFormState | null => {
   const name = String(formData.get('name') || '').trim();
@@ -55,6 +80,7 @@ export default function RegisterForm({
     },
     initialState,
   );
+  const { errors, fieldProps } = useLiveFormErrors(state.errors, registerValidators);
 
   return (
     <form action={formAction} className="flex flex-col gap-4" noValidate>
@@ -64,15 +90,16 @@ export default function RegisterForm({
         </p>
       )}
 
-      <Field label="Name" name="name" required error={state.errors?.name}>
+      <Field label="Name" name="name" required error={errors.name}>
         <input
           className={inputClass}
           name="name"
           placeholder="John Doe"
           autoComplete="name"
           defaultValue={state.values?.name || ''}
-          aria-invalid={Boolean(state.errors?.name)}
+          aria-invalid={Boolean(errors.name)}
           aria-describedby="name-helper"
+          {...fieldProps('name')}
         />
       </Field>
 
@@ -80,7 +107,7 @@ export default function RegisterForm({
         label="Email"
         name="email"
         required
-        error={state.errors?.email}
+        error={errors.email}
         helper="Used for account sign in and password recovery."
       >
         <input
@@ -90,8 +117,9 @@ export default function RegisterForm({
           placeholder="john@example.com"
           autoComplete="email"
           defaultValue={state.values?.email || ''}
-          aria-invalid={Boolean(state.errors?.email)}
+          aria-invalid={Boolean(errors.email)}
           aria-describedby="email-helper"
+          {...fieldProps('email')}
         />
       </Field>
 
@@ -99,7 +127,7 @@ export default function RegisterForm({
         label="Password"
         name="password"
         required
-        error={state.errors?.password}
+        error={errors.password}
         helper="Must contain at least 8 characters."
       >
         <PasswordInput
@@ -107,8 +135,9 @@ export default function RegisterForm({
           name="password"
           autoComplete="new-password"
           placeholder="Create a strong password"
-          invalid={Boolean(state.errors?.password)}
+          invalid={Boolean(errors.password)}
           describedBy="password-helper"
+          {...fieldProps('password')}
         />
       </Field>
 
@@ -116,15 +145,16 @@ export default function RegisterForm({
         label="Confirm password"
         name="confirmPassword"
         required
-        error={state.errors?.confirmPassword}
+        error={errors.confirmPassword}
       >
         <PasswordInput
           className={inputClass}
           name="confirmPassword"
           autoComplete="new-password"
           placeholder="Confirm your password"
-          invalid={Boolean(state.errors?.confirmPassword)}
+          invalid={Boolean(errors.confirmPassword)}
           describedBy="confirmPassword-helper"
+          {...fieldProps('confirmPassword')}
         />
       </Field>
 

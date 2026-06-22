@@ -1,12 +1,13 @@
 'use client';
 
-import Link from 'next/link';
-import { useActionState } from 'react';
 import Field from '@/components/auth/Field';
 import PasswordInput from '@/components/auth/PasswordInput';
 import SubmitButton from '@/components/auth/SubmitButton';
 import type { AuthFormState } from '@/components/auth/formState';
 import { emptyAuthFormState } from '@/components/auth/formState';
+import useLiveFormErrors from '@/components/auth/useLiveFormErrors';
+import Link from 'next/link';
+import { useActionState } from 'react';
 
 type LoginFormProps = {
   action: (state: AuthFormState, formData: FormData) => Promise<AuthFormState>;
@@ -17,6 +18,15 @@ type LoginFormProps = {
 
 const inputClass =
   'min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800 aria-invalid:border-red-500';
+
+const loginValidators = {
+  email: (formData: FormData) =>
+    String(formData.get('email') || '').trim() ? '' : 'Email or username is required.',
+  password: (formData: FormData) =>
+    String(formData.get('password') || '') ? '' : 'Password is required.',
+  code: (formData: FormData) =>
+    String(formData.get('code') || '').trim() ? '' : 'Verification code is required.',
+};
 
 const validateLogin = (formData: FormData, totp?: boolean): AuthFormState | null => {
   const email = String(formData.get('email') || '').trim();
@@ -55,28 +65,17 @@ export default function LoginForm({
     },
     initialState,
   );
+  const { errors, fieldProps } = useLiveFormErrors(state.errors, loginValidators);
 
   return (
     <div className="flex flex-col gap-4">
-      {state.message && (
-        <p
-          className={`rounded-md border p-3 text-sm ${
-            state.status === 'success'
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
-              : 'border-red-200 bg-red-50 text-red-900'
-          }`}
-        >
-          {state.message}
-        </p>
-      )}
-
       {!openIdForced && (
         <form action={formAction} className="flex flex-col gap-4" noValidate>
           <Field
             label="Email or username"
             name="email"
             required
-            error={state.errors?.email}
+            error={errors.email}
             helper="Use the email address or username for your account."
           >
             <input
@@ -85,8 +84,9 @@ export default function LoginForm({
               autoComplete="email"
               defaultValue={state.values?.email || ''}
               placeholder="john@example.com"
-              aria-invalid={Boolean(state.errors?.email)}
+              aria-invalid={Boolean(errors.email)}
               aria-describedby="email-helper"
+              {...fieldProps('email')}
             />
           </Field>
 
@@ -94,7 +94,7 @@ export default function LoginForm({
             label="Password"
             name="password"
             required
-            error={state.errors?.password}
+            error={errors.password}
             labelEnd={
               <Link
                 className="text-xs font-semibold text-blue-900 hover:underline"
@@ -109,8 +109,9 @@ export default function LoginForm({
               name="password"
               autoComplete="current-password"
               placeholder="Enter your password"
-              invalid={Boolean(state.errors?.password)}
+              invalid={Boolean(errors.password)}
               describedBy="password-helper"
+              {...fieldProps('password')}
             />
           </Field>
 
@@ -119,7 +120,7 @@ export default function LoginForm({
               label="Verification code"
               name="code"
               required
-              error={state.errors?.code}
+              error={errors.code}
               helper="Enter the current code from your authenticator app."
             >
               <input
@@ -127,10 +128,23 @@ export default function LoginForm({
                 name="code"
                 inputMode="numeric"
                 placeholder="Enter your verification code"
-                aria-invalid={Boolean(state.errors?.code)}
+                aria-invalid={Boolean(errors.code)}
                 aria-describedby="code-helper"
+                {...fieldProps('code')}
               />
             </Field>
+          )}
+
+          {state.message && (
+            <p
+              className={`rounded-md border p-3 text-sm ${
+                state.status === 'success'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                  : 'border-red-200 bg-red-50 text-red-900'
+              }`}
+            >
+              {state.message}
+            </p>
           )}
 
           <SubmitButton pendingText="Signing in...">Sign in</SubmitButton>

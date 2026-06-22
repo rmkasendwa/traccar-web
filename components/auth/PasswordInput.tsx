@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type InputHTMLAttributes } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
-type PasswordInputProps = {
+type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'className'> & {
   name: string;
   autoComplete: string;
   className: string;
@@ -19,6 +19,7 @@ export default function PasswordInput({
   placeholder,
   invalid,
   describedBy,
+  ...props
 }: PasswordInputProps) {
   const [visible, setVisible] = useState(false);
 
@@ -33,6 +34,7 @@ export default function PasswordInput({
         aria-invalid={invalid || undefined}
         aria-describedby={describedBy}
         required
+        {...props}
       />
       <button
         type="button"
