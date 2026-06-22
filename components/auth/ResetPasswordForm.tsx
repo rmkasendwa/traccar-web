@@ -134,6 +134,7 @@ export default function ResetPasswordForm({
             <PasswordInput
               className={inputClass}
               name="password"
+              placeholder="Create a new password"
               autoComplete="new-password"
               invalid={Boolean(errors.password)}
               describedBy="password-helper"
@@ -158,6 +159,7 @@ export default function ResetPasswordForm({
             <PasswordInput
               className={inputClass}
               name="confirmPassword"
+              placeholder="Confirm your new password"
               autoComplete="new-password"
               invalid={Boolean(errors.confirmPassword)}
               describedBy="confirmPassword-helper"
