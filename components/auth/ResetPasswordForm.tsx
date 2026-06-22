@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useActionState } from 'react';
+import { useActionState, useState, type ChangeEvent } from 'react';
 import Field from '@/components/auth/Field';
 import PasswordInput from '@/components/auth/PasswordInput';
 import SubmitButton from '@/components/auth/SubmitButton';
@@ -80,6 +80,11 @@ export default function ResetPasswordForm({
     initialState,
   );
   const { errors, fieldProps } = useLiveFormErrors(state.errors, resetValidators);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const passwordFieldProps = fieldProps('password');
+  const confirmPasswordFieldProps = fieldProps('confirmPassword');
 
   return (
     <form action={formAction} className="flex flex-col gap-4" noValidate>
@@ -132,7 +137,15 @@ export default function ResetPasswordForm({
               autoComplete="new-password"
               invalid={Boolean(errors.password)}
               describedBy="password-helper"
-              {...fieldProps('password')}
+              value={password}
+              visible={passwordVisible}
+              onVisibleChange={setPasswordVisible}
+              onBlur={passwordFieldProps.onBlur}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setPassword(event.target.value);
+                passwordFieldProps.onChange(event);
+                confirmPasswordFieldProps.onChange(event);
+              }}
             />
           </Field>
 
@@ -148,7 +161,14 @@ export default function ResetPasswordForm({
               autoComplete="new-password"
               invalid={Boolean(errors.confirmPassword)}
               describedBy="confirmPassword-helper"
-              {...fieldProps('confirmPassword')}
+              value={confirmPassword}
+              visible={passwordVisible}
+              onVisibleChange={setPasswordVisible}
+              onBlur={confirmPasswordFieldProps.onBlur}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setConfirmPassword(event.target.value);
+                confirmPasswordFieldProps.onChange(event);
+              }}
             />
           </Field>
         </>

@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useActionState } from 'react';
+import { useActionState, useState, type ChangeEvent } from 'react';
 import Field from '@/components/auth/Field';
 import PasswordInput from '@/components/auth/PasswordInput';
+import PasswordStrengthMeter from '@/components/auth/PasswordStrengthMeter';
 import SubmitButton from '@/components/auth/SubmitButton';
 import type { AuthFormState } from '@/components/auth/formState';
 import { emptyAuthFormState } from '@/components/auth/formState';
@@ -81,6 +82,11 @@ export default function RegisterForm({
     initialState,
   );
   const { errors, fieldProps } = useLiveFormErrors(state.errors, registerValidators);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const passwordFieldProps = fieldProps('password');
+  const confirmPasswordFieldProps = fieldProps('confirmPassword');
 
   return (
     <form action={formAction} className="flex flex-col gap-4" noValidate>
@@ -137,9 +143,18 @@ export default function RegisterForm({
           placeholder="Create a strong password"
           invalid={Boolean(errors.password)}
           describedBy="password-helper"
-          {...fieldProps('password')}
+          value={password}
+          visible={passwordVisible}
+          onVisibleChange={setPasswordVisible}
+          onBlur={passwordFieldProps.onBlur}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setPassword(event.target.value);
+            passwordFieldProps.onChange(event);
+            confirmPasswordFieldProps.onChange(event);
+          }}
         />
       </Field>
+      <PasswordStrengthMeter password={password} />
 
       <Field
         label="Confirm password"
@@ -154,7 +169,14 @@ export default function RegisterForm({
           placeholder="Confirm your password"
           invalid={Boolean(errors.confirmPassword)}
           describedBy="confirmPassword-helper"
-          {...fieldProps('confirmPassword')}
+          value={confirmPassword}
+          visible={passwordVisible}
+          onVisibleChange={setPasswordVisible}
+          onBlur={confirmPasswordFieldProps.onBlur}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setConfirmPassword(event.target.value);
+            confirmPasswordFieldProps.onChange(event);
+          }}
         />
       </Field>
 

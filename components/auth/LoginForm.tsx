@@ -7,7 +7,7 @@ import type { AuthFormState } from '@/components/auth/formState';
 import { emptyAuthFormState } from '@/components/auth/formState';
 import useLiveFormErrors from '@/components/auth/useLiveFormErrors';
 import Link from 'next/link';
-import { useActionState } from 'react';
+import { useActionState, useState, type ChangeEvent } from 'react';
 
 type LoginFormProps = {
   action: (state: AuthFormState, formData: FormData) => Promise<AuthFormState>;
@@ -66,6 +66,8 @@ export default function LoginForm({
     initialState,
   );
   const { errors, fieldProps } = useLiveFormErrors(state.errors, loginValidators);
+  const [password, setPassword] = useState('');
+  const passwordFieldProps = fieldProps('password');
 
   return (
     <div className="flex flex-col gap-4">
@@ -111,7 +113,12 @@ export default function LoginForm({
               placeholder="Enter your password"
               invalid={Boolean(errors.password)}
               describedBy="password-helper"
-              {...fieldProps('password')}
+              value={password}
+              onBlur={passwordFieldProps.onBlur}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setPassword(event.target.value);
+                passwordFieldProps.onChange(event);
+              }}
             />
           </Field>
 
