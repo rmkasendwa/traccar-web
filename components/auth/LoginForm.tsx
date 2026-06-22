@@ -73,6 +73,18 @@ export default function LoginForm({
     <div className="flex flex-col gap-4">
       {!openIdForced && (
         <form action={formAction} className="flex flex-col gap-4" noValidate>
+          {state.message && (
+            <p
+              className={`rounded-md border p-3 text-sm ${
+                state.status === 'success'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                  : 'border-red-200 bg-red-50 text-red-900'
+              }`}
+            >
+              {state.message}
+            </p>
+          )}
+
           <Field
             label="Email or username"
             name="email"
@@ -140,18 +152,6 @@ export default function LoginForm({
                 {...fieldProps('code')}
               />
             </Field>
-          )}
-
-          {state.message && (
-            <p
-              className={`rounded-md border p-3 text-sm ${
-                state.status === 'success'
-                  ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
-                  : 'border-red-200 bg-red-50 text-red-900'
-              }`}
-            >
-              {state.message}
-            </p>
           )}
 
           <SubmitButton pendingText="Signing in...">Sign in</SubmitButton>
