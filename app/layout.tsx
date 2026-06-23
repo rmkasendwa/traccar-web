@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import NextTopLoader from 'nextjs-toploader';
 import type { ReactNode } from 'react';
 import AppProviders from '@/providers/AppProviders';
 import { fetchFromRequestOrigin } from '@/lib/serverFetch';
@@ -34,6 +35,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
+        <NextTopLoader
+          color="var(--color-primary)"
+          height={3}
+          showSpinner={false}
+          shadow={false}
+          zIndex={9999}
+        />
         <AppProviders initialServer={initialServer}>{children}</AppProviders>
       </body>
     </html>
