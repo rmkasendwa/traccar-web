@@ -8,9 +8,9 @@ type AuthShellProps = {
 
 export default function AuthShell({ title, subtitle, children }: AuthShellProps) {
   return (
-    <main className="min-h-dvh bg-slate-50 text-slate-950">
-      <div className="flex min-h-dvh w-full flex-col md:flex-row">
-        <aside className="flex bg-blue-950 p-6 text-white md:basis-[44%] md:flex-col md:justify-between md:p-12 lg:basis-[40%]">
+    <main className="h-dvh overflow-hidden bg-slate-50 text-slate-950">
+      <div className="flex h-full w-full flex-col overflow-hidden md:flex-row">
+        <aside className="flex shrink-0 bg-blue-950 p-6 text-white md:h-full md:basis-[44%] md:flex-col md:justify-between md:overflow-hidden md:p-12 lg:basis-[40%]">
           <span
             role="img"
             aria-label="Traccar"
@@ -29,13 +29,15 @@ export default function AuthShell({ title, subtitle, children }: AuthShellProps)
             </p>
           </div>
         </aside>
-        <section className="flex flex-1 items-center justify-center p-4 sm:p-8">
-          <div className="w-full max-w-116 rounded-lg border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/10 sm:p-10">
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold">{title}</h2>
-              <p className="mt-1 text-sm leading-6 text-slate-600">{subtitle}</p>
+        <section className="min-h-0 flex-1 overflow-y-auto">
+          <div className="flex min-h-full w-full items-center justify-center p-4 py-8 sm:p-8 md:py-10">
+            <div className="w-full max-w-116 rounded-lg border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/10 sm:p-10">
+              <div className="mb-6">
+                <h2 className="text-2xl font-semibold">{title}</h2>
+                <p className="mt-1 text-sm leading-6 text-slate-600">{subtitle}</p>
+              </div>
+              {children}
             </div>
-            {children}
           </div>
         </section>
       </div>
