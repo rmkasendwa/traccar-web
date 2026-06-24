@@ -5,9 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {
-  Battery,
   BatteryCharging,
+  BatteryFull,
   BatteryLow,
+  BatteryMedium,
+  BatteryWarning,
   Filter,
   Plus,
   Search,
@@ -48,7 +50,15 @@ const BatteryState = ({ deviceId, selected }: { deviceId: number; selected: bool
 
   if (batteryLevel == null) return null;
 
-  const Icon = charging ? BatteryCharging : batteryLevel <= 20 ? BatteryLow : Battery;
+  const Icon = charging
+    ? BatteryCharging
+    : batteryLevel > 75
+      ? BatteryFull
+      : batteryLevel > 40
+        ? BatteryMedium
+        : batteryLevel > 15
+          ? BatteryLow
+          : BatteryWarning;
   const color = selected
     ? 'text-white/90'
     : batteryLevel <= 20

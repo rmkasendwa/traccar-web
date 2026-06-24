@@ -1,11 +1,29 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
-import { Battery, BatteryCharging, ExternalLink, Pencil, Route, Send, X } from 'lucide-react';
+import {
+  BatteryCharging,
+  BatteryFull,
+  BatteryLow,
+  BatteryMedium,
+  BatteryWarning,
+  Ellipsis,
+  ExternalLink,
+  MapPinned,
+  Pencil,
+  Route,
+  Send,
+  Share2,
+  Video,
+  X,
+} from 'lucide-react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from '@/lib/router';
+import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import { useDeviceReadonly, useRestriction } from '@/lib/permissions';
+import FloatingPanel from '@/features/tracking/components/FloatingPanel';
 
 dayjs.extend(relativeTime);
 
@@ -18,49 +36,26 @@ type SelectedDeviceCardProps = {
 const ActionButton = ({
   label,
   onClick,
-  href,
   disabled,
   children,
 }: {
   label: string;
   onClick?: () => void;
-  href?: string;
   disabled?: boolean;
   children: ReactNode;
-}) => {
-  const className =
-    'flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2.5 text-[0.68rem] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-35';
-
-  if (href) {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        className={className}
-        aria-label={label}
-        title={label}
-      >
-        {children}
-        <span className="truncate">{label}</span>
-      </a>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={className}
-      aria-label={label}
-      title={label}
-    >
-      {children}
-      <span className="truncate">{label}</span>
-    </button>
-  );
-};
+}) => (
+  <button
+    type="button"
+    onClick={onClick}
+    disabled={disabled}
+    className="flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2.5 text-[0.68rem] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-35"
+    aria-label={label}
+    title={label}
+  >
+    {children}
+    <span className="truncate">{label}</span>
+  </button>
+);
 
 export default function SelectedDeviceCard({
   deviceId,
@@ -69,11 +64,25 @@ export default function SelectedDeviceCard({
 }: SelectedDeviceCardProps) {
   const navigate = useNavigate();
   const device = useSelector((state: any) => state.devices.items[deviceId]);
+  const user = useSelector((state: any) => state.session.user);
+  const shareDisabled = useSelector((state: any) => state.session.server.attributes.disableShare);
+  const readonly = useRestriction('readonly');
+  const deviceReadonly = useDeviceReadonly();
+  const [moreOpen, setMoreOpen] = useState(false);
+
   if (!device) return null;
 
   const batteryLevel = position?.attributes?.batteryLevel;
   const charging = position?.attributes?.charge;
-  const BatteryIcon = charging ? BatteryCharging : Battery;
+  const BatteryIcon = charging
+    ? BatteryCharging
+    : batteryLevel > 75
+      ? BatteryFull
+      : batteryLevel > 40
+        ? BatteryMedium
+        : batteryLevel > 15
+          ? BatteryLow
+          : BatteryWarning;
   const statusColor =
     device.status === 'online'
       ? 'bg-emerald-500'
@@ -89,6 +98,26 @@ export default function SelectedDeviceCard({
       : null,
     position?.address ? ['Address', position.address] : null,
   ].filter(Boolean) as string[][];
+
+  const createGeofence = async () => {
+    if (!position) return;
+    const response = await fetchOrThrow('/api/geofences', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Geofence',
+        area: `CIRCLE (${position.latitude} ${position.longitude}, 50)`,
+      }),
+    });
+    const geofence = await response.json();
+    await fetchOrThrow('/api/permissions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deviceId, geofenceId: geofence.id }),
+    });
+    setMoreOpen(false);
+    navigate(`/settings/geofence/${geofence.id}`);
+  };
 
   return (
     <section className="absolute bottom-24 left-1/2 z-20 w-[min(calc(100%-1.5rem),27rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/70 bg-white/95 text-slate-900 shadow-2xl backdrop-blur md:bottom-5 md:left-[calc(50%+11rem)]">
@@ -132,20 +161,19 @@ export default function SelectedDeviceCard({
             </div>
           ))}
         </dl>
+
+        {position && (
+          <button
+            type="button"
+            onClick={() => navigate(`/position/${position.id}`)}
+            className="mt-3 text-xs font-semibold text-sky-700 transition hover:text-sky-900 hover:underline"
+          >
+            More Details
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-4 border-t border-slate-100 bg-slate-50/70 p-1.5">
-        <ActionButton
-          label="Google Maps"
-          href={
-            position
-              ? `https://www.google.com/maps/search/?api=1&query=${position.latitude}%2C${position.longitude}`
-              : undefined
-          }
-          disabled={!position}
-        >
-          <ExternalLink size={18} />
-        </ActionButton>
         <ActionButton
           label="Replay"
           onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
@@ -159,9 +187,81 @@ export default function SelectedDeviceCard({
         >
           <Send size={18} />
         </ActionButton>
-        <ActionButton label="Edit" onClick={() => navigate(`/settings/device/${deviceId}`)}>
+        <ActionButton
+          label="Edit"
+          onClick={() => navigate(`/settings/device/${deviceId}`)}
+          disabled={deviceReadonly}
+        >
           <Pencil size={18} />
         </ActionButton>
+        <FloatingPanel
+          open={moreOpen}
+          onOpenChange={setMoreOpen}
+          placement="top-end"
+          className="w-56"
+          trigger={(props, ref) => (
+            <button
+              {...props}
+              ref={ref as any}
+              type="button"
+              className="flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2.5 text-[0.68rem] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-sky-700"
+              aria-label="More device actions"
+              title="More"
+            >
+              <Ellipsis size={19} />
+              <span>More</span>
+            </button>
+          )}
+        >
+          <button
+            type="button"
+            disabled={!position || position.protocol !== 'jt808'}
+            onClick={() => {
+              setMoreOpen(false);
+              navigate(`/stream?deviceId=${deviceId}`);
+            }}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Video size={17} />
+            Live Video
+          </button>
+          {!readonly && (
+            <button
+              type="button"
+              disabled={!position}
+              onClick={createGeofence}
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <MapPinned size={17} />
+              Create Geofence
+            </button>
+          )}
+          {position && (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${position.latitude}%2C${position.longitude}`}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setMoreOpen(false)}
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm hover:bg-slate-100"
+            >
+              <ExternalLink size={17} />
+              Google Maps
+            </a>
+          )}
+          {!shareDisabled && !user.temporary && (
+            <button
+              type="button"
+              onClick={() => {
+                setMoreOpen(false);
+                navigate(`/settings/device/${deviceId}/share`);
+              }}
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-sky-700 hover:bg-sky-50"
+            >
+              <Share2 size={17} />
+              Share
+            </button>
+          )}
+        </FloatingPanel>
       </div>
     </section>
   );
