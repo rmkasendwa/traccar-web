@@ -25,10 +25,10 @@ type MainPageProps = {
 
 const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
   const dispatch = useDispatch();
-  const storedDevices = useSelector((state: any) => Object.values(state.devices.items) as any[]);
-  const storedPositions = useSelector(
-    (state: any) => Object.values(state.session.positions) as any[],
-  );
+  const deviceItems = useSelector((state: any) => state.devices.items);
+  const positionItems = useSelector((state: any) => state.session.positions);
+  const storedDevices = useMemo(() => Object.values(deviceItems) as any[], [deviceItems]);
+  const storedPositions = useMemo(() => Object.values(positionItems) as any[], [positionItems]);
   const devices = storedDevices.length ? storedDevices : initialDevices;
   const positions = storedPositions.length ? storedPositions : initialPositions;
   const selectedDeviceId = useSelector((state: any) => state.devices.selectedId);
