@@ -47,6 +47,20 @@ body {
   height: 42px;
 }
 
+.maplibregl-ctrl-group button.map-style-control {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: #334155;
+  background-image: none !important;
+}
+
+.maplibregl-ctrl-group button.map-style-control > svg {
+  display: block;
+  margin: 0;
+}
+
 @media (min-width: 768px) {
   .maplibregl-ctrl-top-left,
   .maplibregl-ctrl-bottom-left {

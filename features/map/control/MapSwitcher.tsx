@@ -86,7 +86,7 @@ const MapSwitcher = ({ styles, selectedId, onSelect }: MapSwitcherProps) => {
         button.title = 'Map style';
         button.setAttribute('aria-label', 'Choose map style');
         button.setAttribute('aria-haspopup', 'menu');
-        button.className = 'maplibregl-ctrl-icon flex items-center justify-center text-slate-700';
+        button.className = 'maplibregl-ctrl-icon map-style-control';
         button.onclick = () => setOpen((current) => !current);
         element.appendChild(button);
         refs.setReference(button);

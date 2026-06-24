@@ -1,12 +1,18 @@
 'use client';
 
-/* eslint-disable no-unused-vars */
-
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { Filter, Plus, Search, SlidersHorizontal } from 'lucide-react';
+import {
+  Battery,
+  BatteryCharging,
+  BatteryLow,
+  Filter,
+  Plus,
+  Search,
+  SlidersHorizontal,
+} from 'lucide-react';
 import { useNavigate } from '@/lib/router';
 import { devicesActions } from '@/store';
 import FloatingPanel from '@/features/tracking/components/FloatingPanel';
@@ -33,6 +39,34 @@ type DeviceSidebarProps = {
   statusFilter: string[];
   onStatusFilterChange: (value: string[]) => void;
   mobile?: boolean;
+};
+
+const BatteryState = ({ deviceId, selected }: { deviceId: number; selected: boolean }) => {
+  const position = useSelector((state: any) => state.session.positions[deviceId]);
+  const batteryLevel = position?.attributes?.batteryLevel;
+  const charging = position?.attributes?.charge;
+
+  if (batteryLevel == null) return null;
+
+  const Icon = charging ? BatteryCharging : batteryLevel <= 20 ? BatteryLow : Battery;
+  const color = selected
+    ? 'text-white/90'
+    : batteryLevel <= 20
+      ? 'text-rose-400'
+      : batteryLevel <= 50
+        ? 'text-amber-400'
+        : 'text-emerald-400';
+
+  return (
+    <span
+      className={`flex shrink-0 items-center gap-1 text-[0.68rem] font-semibold tabular-nums ${color}`}
+      title={`Battery level: ${Math.round(batteryLevel)}%${charging ? ' · charging' : ''}`}
+      aria-label={`Battery level ${Math.round(batteryLevel)} percent${charging ? ', charging' : ''}`}
+    >
+      <Icon size={16} strokeWidth={2} />
+      {Math.round(batteryLevel)}%
+    </span>
+  );
 };
 
 export default function DeviceSidebar({
@@ -202,10 +236,13 @@ export default function DeviceSidebar({
                       <span className="sr-only">{clock}</span>
                     </span>
                   </span>
-                  <span
-                    className={`text-[0.65rem] font-semibold uppercase tracking-wider ${selected ? 'text-white/80' : 'text-slate-500'}`}
-                  >
-                    {device.category || 'GPS'}
+                  <span className="flex shrink-0 flex-col items-end gap-1.5">
+                    <span
+                      className={`text-[0.65rem] font-semibold uppercase tracking-wider ${selected ? 'text-white/80' : 'text-slate-500'}`}
+                    >
+                      {device.category || 'GPS'}
+                    </span>
+                    <BatteryState deviceId={device.id} selected={selected} />
                   </span>
                 </button>
               );
