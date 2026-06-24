@@ -1,12 +1,14 @@
-'use client';
-
 import type { ReactNode } from 'react';
-import dynamic from 'next/dynamic';
+import { redirect } from 'next/navigation';
+import AppShell from '@/components/layout/AppShell';
+import { fetchFromRequestOrigin } from '@/lib/serverFetch';
 
-const App = dynamic(() => import('@/components/layout/AppShell'), {
-  ssr: false,
-});
+export default async function AuthenticatedLayout({ children }: { children: ReactNode }) {
+  const response = await fetchFromRequestOrigin('/api/session');
+  if (!response?.ok) {
+    redirect('/login');
+  }
 
-export default function AuthenticatedLayout({ children }: { children: ReactNode }) {
-  return <App>{children}</App>;
+  const user = await response.json();
+  return <AppShell initialUser={user}>{children}</AppShell>;
 }

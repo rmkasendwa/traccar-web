@@ -1,181 +1,150 @@
-// @ts-nocheck
-import { lazy, Suspense, useState, useCallback, useEffect } from 'react';
-import { Paper } from '@/components/ui';
-import { makeStyles } from '@/components/ui/styles';
-import { useTheme } from '@/components/ui';
-import { useMediaQuery } from '@/components/ui';
+'use client';
+
+import dynamic from 'next/dynamic';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import DeviceList from '@/features/devices/components/DeviceList';
-import BottomMenu from '@/components/layout/BottomMenu';
-import StatusCard from '@/features/devices/components/StatusCard';
-import { devicesActions } from '@/store';
+import { Menu, X } from 'lucide-react';
+import { devicesActions, sessionActions } from '@/store';
 import usePersistedState from '@/lib/usePersistedState';
 import EventsDrawer from '@/features/tracking/EventsDrawer';
-import useFilter from '@/features/devices/hooks/useFilter';
-import MainToolbar from '@/features/devices/components/MainToolbar';
-import { useAttributePreference } from '@/lib/preferences';
+import DeviceSidebar from '@/features/tracking/components/DeviceSidebar';
+import HomeNavigation from '@/features/tracking/components/HomeNavigation';
+import SelectedDeviceCard from '@/features/tracking/components/SelectedDeviceCard';
 
-const MainMap = lazy(() => import('@/features/tracking/MainMap'));
+const MainMap = dynamic(() => import('@/features/tracking/MainMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-full w-full animate-pulse bg-[linear-gradient(135deg,#dbe5df_0%,#eef3ef_45%,#d7e1dc_100%)]" />
+  ),
+});
 
-const useStyles = makeStyles()((theme) => ({
-  root: {
-    height: '100%',
-  },
-  sidebar: {
-    pointerEvents: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    [theme.breakpoints.up('md')]: {
-      position: 'fixed',
-      left: 0,
-      top: 0,
-      height: `calc(100% - ${theme.spacing(3)})`,
-      width: theme.dimensions.drawerWidthDesktop,
-      margin: theme.spacing(1.5),
-      zIndex: 3,
-    },
-    [theme.breakpoints.down('md')]: {
-      height: '100%',
-      width: '100%',
-    },
-  },
-  header: {
-    pointerEvents: 'auto',
-    zIndex: 6,
-  },
-  footer: {
-    pointerEvents: 'auto',
-    zIndex: 5,
-  },
-  middle: {
-    flex: 1,
-    display: 'grid',
-    minHeight: 0,
-  },
-  contentMap: {
-    pointerEvents: 'auto',
-    gridArea: '1 / 1',
-  },
-  contentList: {
-    pointerEvents: 'auto',
-    gridArea: '1 / 1',
-    zIndex: 4,
-    display: 'flex',
-    minHeight: 0,
-  },
-}));
+type MainPageProps = {
+  initialDevices: any[];
+  initialPositions: any[];
+};
 
-const MainPage = () => {
-  const { classes } = useStyles();
+const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
   const dispatch = useDispatch();
-  const theme = useTheme();
-
-  const desktop = useMediaQuery(theme.breakpoints.up('md'));
-
-  const mapOnSelect = useAttributePreference('mapOnSelect', true);
-
-  const selectedDeviceId = useSelector((state) => state.devices.selectedId);
-  const positions = useSelector((state) => state.session.positions);
-  const [filteredPositions, setFilteredPositions] = useState([]);
-  const selectedPosition = filteredPositions.find(
-    (position) => selectedDeviceId && position.deviceId === selectedDeviceId,
+  const storedDevices = useSelector((state: any) => Object.values(state.devices.items) as any[]);
+  const storedPositions = useSelector(
+    (state: any) => Object.values(state.session.positions) as any[],
   );
-
-  const [filteredDevices, setFilteredDevices] = useState([]);
+  const devices = storedDevices.length ? storedDevices : initialDevices;
+  const positions = storedPositions.length ? storedPositions : initialPositions;
+  const selectedDeviceId = useSelector((state: any) => state.devices.selectedId);
+  const user = useSelector((state: any) => state.session.user);
 
   const [keyword, setKeyword] = useState('');
-  const [filter, setFilter] = usePersistedState('deviceFilter', {
-    statuses: [],
-    groups: [],
-    geofences: [],
-  });
-  const [filterSort, setFilterSort] = usePersistedState('filterSort', '');
-  const [filterMap, setFilterMap] = usePersistedState('filterMap', false);
-
-  const [devicesOpen, setDevicesOpen] = useState(desktop);
+  const [statusFilter, setStatusFilter] = usePersistedState('homeStatusFilter', []);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [eventsOpen, setEventsOpen] = useState(false);
 
-  const onEventsClick = useCallback(() => setEventsOpen(true), [setEventsOpen]);
+  useEffect(() => {
+    dispatch(devicesActions.refresh(initialDevices));
+    if (user && initialPositions.length) {
+      dispatch(sessionActions.updatePositions(initialPositions));
+    }
+  }, [dispatch, initialDevices, initialPositions, user]);
 
   useEffect(() => {
-    if (!desktop && mapOnSelect && selectedDeviceId) {
-      setDevicesOpen(false);
+    if (selectedDeviceId) {
+      setSidebarOpen(false);
     }
-  }, [desktop, mapOnSelect, selectedDeviceId]);
+  }, [selectedDeviceId]);
 
-  useFilter(
-    keyword,
-    filter,
-    filterSort,
-    filterMap,
-    positions,
-    setFilteredDevices,
-    setFilteredPositions,
-  );
+  const filteredDevices = useMemo(() => {
+    const query = keyword.trim().toLocaleLowerCase();
+    return devices
+      .filter((device) => !query || device.name?.toLocaleLowerCase().includes(query))
+      .filter((device) => !statusFilter.length || statusFilter.includes(device.status))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [devices, keyword, statusFilter]);
+
+  const filteredPositions = useMemo(() => {
+    const ids = new Set(filteredDevices.map((device) => device.id));
+    return positions.filter((position) => ids.has(position.deviceId));
+  }, [filteredDevices, positions]);
+
+  const selectedPosition = positions.find((position) => position.deviceId === selectedDeviceId);
 
   return (
-    <div className={classes.root}>
-      {desktop && (
-        <Suspense fallback={null}>
-          <MainMap
-            filteredPositions={filteredPositions}
-            selectedPosition={selectedPosition}
-            onEventsClick={onEventsClick}
-          />
-        </Suspense>
-      )}
-      <div className={classes.sidebar}>
-        <Paper square elevation={3} className={classes.header}>
-          <MainToolbar
-            filteredDevices={filteredDevices}
-            devicesOpen={devicesOpen}
-            setDevicesOpen={setDevicesOpen}
-            keyword={keyword}
-            setKeyword={setKeyword}
-            filter={filter}
-            setFilter={setFilter}
-            filterSort={filterSort}
-            setFilterSort={setFilterSort}
-            filterMap={filterMap}
-            setFilterMap={setFilterMap}
-          />
-        </Paper>
-        <div className={classes.middle}>
-          {!desktop && (
-            <div className={classes.contentMap}>
-              <Suspense fallback={null}>
-                <MainMap
-                  filteredPositions={filteredPositions}
-                  selectedPosition={selectedPosition}
-                  onEventsClick={onEventsClick}
-                />
-              </Suspense>
-            </div>
-          )}
-          <Paper
-            square
-            className={classes.contentList}
-            style={devicesOpen ? {} : { visibility: 'hidden' }}
-          >
-            <DeviceList devices={filteredDevices} />
-          </Paper>
-        </div>
-        {desktop && (
-          <div className={classes.footer}>
-            <BottomMenu />
-          </div>
-        )}
+    <main className="relative h-full min-h-0 overflow-hidden bg-slate-100">
+      <div className="absolute inset-0">
+        <MainMap
+          filteredPositions={filteredPositions}
+          selectedPosition={selectedPosition}
+          onEventsClick={() => setEventsOpen(true)}
+        />
       </div>
-      <EventsDrawer open={eventsOpen} onClose={() => setEventsOpen(false)} />
+
+      <div className="pointer-events-none absolute inset-0 z-10 hidden p-3 md:block">
+        <aside className="pointer-events-auto flex h-full w-88 flex-col overflow-hidden rounded-[1.4rem] border border-white/10 bg-slate-950/95 text-white shadow-2xl shadow-slate-950/25 backdrop-blur">
+          <DeviceSidebar
+            devices={filteredDevices}
+            allDevices={devices}
+            keyword={keyword}
+            onKeywordChange={setKeyword}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
+          />
+          <HomeNavigation />
+        </aside>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setSidebarOpen(true)}
+        className="absolute left-3 top-3 z-20 grid h-11 w-11 place-items-center rounded-xl border border-white/70 bg-white/95 text-slate-800 shadow-lg backdrop-blur md:hidden"
+        aria-label="Open devices"
+      >
+        <Menu size={21} />
+      </button>
+
+      <div
+        className={`absolute inset-0 z-30 bg-slate-950/35 transition-opacity md:hidden ${
+          sidebarOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
+      <aside
+        className={`absolute inset-y-0 left-0 z-40 flex w-[min(90vw,23rem)] flex-col bg-slate-950 text-white shadow-2xl transition-transform duration-300 md:hidden ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <button
+          type="button"
+          className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-lg text-slate-300 hover:bg-white/10 hover:text-white"
+          onClick={() => setSidebarOpen(false)}
+          aria-label="Close devices"
+        >
+          <X size={20} />
+        </button>
+        <DeviceSidebar
+          devices={filteredDevices}
+          allDevices={devices}
+          keyword={keyword}
+          onKeywordChange={setKeyword}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          mobile
+        />
+      </aside>
+
       {selectedDeviceId && (
-        <StatusCard
+        <SelectedDeviceCard
           deviceId={selectedDeviceId}
           position={selectedPosition}
           onClose={() => dispatch(devicesActions.selectId(null))}
-          desktopPadding={theme.dimensions.drawerWidthDesktop}
         />
       )}
-    </div>
+
+      <div className="absolute inset-x-3 bottom-3 z-20 md:hidden">
+        <HomeNavigation mobile />
+      </div>
+
+      <EventsDrawer open={eventsOpen} onClose={() => setEventsOpen(false)} />
+    </main>
   );
 };
 

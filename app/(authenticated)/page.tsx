@@ -1,11 +1,19 @@
-'use client';
+import MainPage from '@/features/tracking/MainPage';
+import { fetchFromRequestOrigin } from '@/lib/serverFetch';
 
-import dynamic from 'next/dynamic';
+const readJson = async (path: string) => {
+  const response = await fetchFromRequestOrigin(path);
+  if (!response?.ok) {
+    throw new Error(`Unable to load ${path}`);
+  }
+  return response.json();
+};
 
-const MainPage = dynamic(() => import('@/features/tracking/MainPage'), {
-  ssr: false,
-});
+export default async function Page() {
+  const [devices, positions] = await Promise.all([
+    readJson('/api/devices'),
+    readJson('/api/positions').catch(() => []),
+  ]);
 
-export default function Page() {
-  return <MainPage />;
+  return <MainPage initialDevices={devices} initialPositions={positions} />;
 }

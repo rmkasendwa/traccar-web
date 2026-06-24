@@ -28,6 +28,32 @@ body {
   height: 100%;
 }
 
+.maplibregl-ctrl-top-right {
+  top: 12px;
+  right: 12px;
+}
+
+.maplibregl-ctrl-group {
+  overflow: hidden;
+  border: 1px solid rgb(226 232 240 / 0.9);
+  border-radius: 12px !important;
+  background: rgb(255 255 255 / 0.94) !important;
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.16) !important;
+  backdrop-filter: blur(12px);
+}
+
+.maplibregl-ctrl-group button {
+  width: 42px;
+  height: 42px;
+}
+
+@media (min-width: 768px) {
+  .maplibregl-ctrl-top-left,
+  .maplibregl-ctrl-bottom-left {
+    margin-left: 23.5rem;
+  }
+}
+
 body {
   margin: 0;
   overflow: hidden;

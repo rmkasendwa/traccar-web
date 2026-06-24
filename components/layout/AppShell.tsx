@@ -1,6 +1,8 @@
 // @ts-nocheck
+'use client';
+
 import type { ReactNode } from 'react';
-import { useNavigate } from '@/lib/router';
+import { useLocation, useNavigate } from '@/lib/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery, useTheme } from '@/components/ui';
 import { makeStyles } from '@/components/ui/styles';
@@ -8,7 +10,7 @@ import BottomMenu from '@/components/layout/BottomMenu';
 import SocketController from '@/controllers/SocketController';
 import CachingController from '@/controllers/CachingController';
 import { useCatch, useAsyncTask } from '@/lib/react';
-import { sessionActions } from '@/store';
+import store, { sessionActions } from '@/store';
 import UpdateController from '@/controllers/UpdateController';
 import MotionController from '@/controllers/MotionController';
 import TermsDialog from '@/components/ui/TermsDialog';
@@ -37,13 +39,19 @@ const useStyles = makeStyles()(() => ({
 
 type AppProps = {
   children: ReactNode;
+  initialUser?: unknown;
 };
 
-const App = ({ children }: AppProps) => {
+const App = ({ children, initialUser }: AppProps) => {
+  if (initialUser && !store.getState().session.user) {
+    store.dispatch(sessionActions.updateUser(initialUser));
+  }
+
   const { classes } = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -92,7 +100,7 @@ const App = ({ children }: AppProps) => {
       <UpdateController />
       <MotionController />
       <div className={classes.page}>{children}</div>
-      {!desktop && (
+      {!desktop && location.pathname !== '/' && (
         <div className={classes.menu}>
           <BottomMenu />
         </div>
