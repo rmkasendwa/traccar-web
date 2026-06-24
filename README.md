@@ -24,6 +24,8 @@ npm run dev
 
 `PORT` controls the web server port. `BACKEND_URL` controls where HTTP and WebSocket
 requests under `/api` are proxied, which keeps Traccar session cookies same-origin.
+The npm scripts set the Next.js mode in JavaScript, so they work unchanged in
+Windows Command Prompt, PowerShell, macOS, and Linux.
 
 ## Project Structure
 
@@ -43,8 +45,10 @@ public/       Static assets
 
 ```bash
 npm run build
-PORT=3000 BACKEND_URL=http://localhost:8082 npm start
+npm start
 ```
+
+Production also reads `PORT` and `BACKEND_URL` from `.env`.
 
 ## Docker
 

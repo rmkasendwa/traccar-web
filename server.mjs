@@ -5,7 +5,8 @@ import nextEnv from '@next/env';
 
 const { loadEnvConfig } = nextEnv;
 
-const dev = process.env.NODE_ENV !== 'production';
+const dev = process.argv.includes('--dev');
+process.env.NODE_ENV = dev ? 'development' : 'production';
 loadEnvConfig(process.cwd(), dev);
 
 const hostname = process.env.HOST ?? '0.0.0.0';

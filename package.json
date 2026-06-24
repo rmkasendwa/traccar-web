@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "next build --webpack",
-    "dev": "NODE_ENV=development NEXT_PRIVATE_TURBOPACK=0 node server.mjs",
+    "dev": "node server.mjs --dev",
     "lint": "eslint --max-warnings 0 .",
     "lint:fix": "eslint --fix --max-warnings 0 .",
-    "start": "NODE_ENV=production node server.mjs",
+    "start": "node server.mjs",
     "typecheck": "tsc --noEmit"
   },
   "browserslist": {
