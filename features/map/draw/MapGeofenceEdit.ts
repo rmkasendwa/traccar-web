@@ -7,10 +7,12 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from '@/lib/router';
 import { useTheme } from '@/components/ui';
+import { useAttributePreference } from '@/lib/preferences';
 import { map } from '@/features/map/core/MapView';
 import { findFonts, geofenceToFeature, geometryToArea } from '@/features/map/core/mapUtil';
 import { errorsActions, geofencesActions } from '@/store';
 import { useCatchCallback } from '@/lib/react';
+import { fitBoundsWithCameraMaxZoom } from '@/features/map/core/mapCamera';
 import drawTheme from '@/features/map/draw/theme';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
@@ -24,6 +26,7 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useTranslation();
+  const maxZoom = useAttributePreference('web.maxZoom');
 
   const draw = useMemo(
     () =>
@@ -149,7 +152,11 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
         new maplibregl.LngLatBounds(coordinates[0], coordinates[1]),
       );
       const canvas = map.getCanvas();
-      map.fitBounds(bounds, { padding: Math.min(canvas.width, canvas.height) * 0.1 });
+      fitBoundsWithCameraMaxZoom(
+        bounds,
+        { padding: Math.min(canvas.width, canvas.height) * 0.1 },
+        maxZoom,
+      );
     }
   }, [selectedGeofenceId, draw]);
 

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 const containsProperty = (object, key) => object.hasOwnProperty(key) && object[key] !== null;
 
-export const usePreference = (key, defaultValue) =>
+export const usePreference = (key, defaultValue?) =>
   useSelector((state) => {
     if (state.session.server.forceSettings) {
       if (containsProperty(state.session.server, key)) {
@@ -23,7 +23,7 @@ export const usePreference = (key, defaultValue) =>
     return defaultValue;
   });
 
-export const useAttributePreference = (key, defaultValue) =>
+export const useAttributePreference = (key, defaultValue?) =>
   useSelector((state) => {
     if (state.session.server.forceSettings) {
       if (containsProperty(state.session.server.attributes, key)) {

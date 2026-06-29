@@ -6,6 +6,7 @@ import { map } from '@/features/map/core/MapView';
 import { usePrevious } from '@/lib/react';
 import { useAttributePreference } from '@/lib/preferences';
 import { toMapCoordinates } from '@/features/map/core/mapUtil';
+import { easeToWithCameraMaxZoom } from '@/features/map/core/mapCamera';
 
 const MapSelectedDevice = () => {
   const currentTime = useSelector((state) => state.devices.selectTime);
@@ -33,11 +34,14 @@ const MapSelectedDevice = () => {
         (mapFollow && positionChanged)) &&
       position
     ) {
-      map.easeTo({
-        center: toMapCoordinates(position.longitude, position.latitude),
-        zoom: Math.max(map.getZoom(), selectZoom),
-        offset: [0, -dimensions.popupMapOffset / 2],
-      });
+      easeToWithCameraMaxZoom(
+        {
+          center: toMapCoordinates(position.longitude, position.latitude),
+          zoom: Math.max(map.getZoom(), selectZoom),
+          offset: [0, -dimensions.popupMapOffset / 2],
+        },
+        selectZoom,
+      );
     }
   }, [
     currentId,

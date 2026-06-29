@@ -9,6 +9,7 @@ import { mapIconKey } from '@/features/map/core/preloadImages';
 import { useAttributePreference } from '@/lib/preferences';
 import { useCatchCallback } from '@/lib/react';
 import { findFonts, fromMapCoordinates, toMapCoordinates } from '@/features/map/core/mapUtil';
+import { easeToWithCameraMaxZoom } from '@/features/map/core/mapCamera';
 
 const MapPositions = ({
   positions,
@@ -26,6 +27,7 @@ const MapPositions = ({
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const iconScale = useAttributePreference('iconScale', desktop ? 0.75 : 1);
+  const maxZoom = useAttributePreference('web.maxZoom');
 
   const devices = useSelector((state) => state.devices.items);
   const selectedDeviceId = useSelector((state) => state.devices.selectedId);
@@ -99,12 +101,15 @@ const MapPositions = ({
       });
       const clusterId = features[0].properties.cluster_id;
       const zoom = await map.getSource(id).getClusterExpansionZoom(clusterId);
-      map.easeTo({
-        center: features[0].geometry.coordinates,
-        zoom,
-      });
+      easeToWithCameraMaxZoom(
+        {
+          center: features[0].geometry.coordinates,
+          zoom,
+        },
+        maxZoom,
+      );
     },
-    [clusters, id],
+    [clusters, id, maxZoom],
   );
 
   useEffect(() => {

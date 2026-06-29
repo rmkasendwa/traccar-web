@@ -18,8 +18,10 @@ import {
 } from '@floating-ui/react';
 import { LoaderCircle, MapPin, Search, X } from 'lucide-react';
 import { useTheme } from '@/components/ui';
+import { useAttributePreference } from '@/lib/preferences';
 import { map } from '@/features/map/core/MapView';
 import { toMapCoordinates } from '@/features/map/core/mapUtil';
+import { fitBoundsWithCameraMaxZoom } from '@/features/map/core/mapCamera';
 import { errorsActions } from '@/store';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
@@ -27,6 +29,7 @@ const MapGeocoder = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const t = useTranslation();
+  const maxZoom = useAttributePreference('web.maxZoom');
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
@@ -127,12 +130,13 @@ const MapGeocoder = () => {
 
   const selectResult = (feature: any) => {
     const [minX, minY, maxX, maxY] = feature.bbox;
-    map.fitBounds(
+    fitBoundsWithCameraMaxZoom(
       [toMapCoordinates(minX, minY), toMapCoordinates(maxX, maxY)] as [
         [number, number],
         [number, number],
       ],
       { padding: 40 },
+      maxZoom,
     );
     setOpen(false);
     setQuery('');
