@@ -56,6 +56,20 @@ body {
   background-image: none !important;
 }
 
+.maplibregl-ctrl-group button.map-tool-control {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: #334155;
+  background-image: none !important;
+}
+
+.maplibregl-ctrl-group button.map-tool-control > svg {
+  display: block;
+  margin: 0;
+}
+
 .maplibregl-ctrl-group button.map-style-control > svg {
   display: block;
   margin: 0;

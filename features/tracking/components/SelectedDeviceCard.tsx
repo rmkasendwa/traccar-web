@@ -3,14 +3,18 @@
 import { useState, type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  ArrowUpRight,
   BatteryCharging,
   BatteryFull,
   BatteryLow,
   BatteryMedium,
   BatteryWarning,
+  Clock3,
   Ellipsis,
   ExternalLink,
+  Gauge,
   MapPinned,
+  Navigation,
   Pencil,
   Route,
   Send,
@@ -48,13 +52,39 @@ const ActionButton = ({
     type="button"
     onClick={onClick}
     disabled={disabled}
-    className="flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2.5 text-[0.68rem] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-35"
+    className="group flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2 text-[0.66rem] font-semibold text-slate-500 transition hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-35"
     aria-label={label}
     title={label}
   >
-    {children}
+    <span className="grid h-7 w-7 place-items-center rounded-lg transition group-hover:bg-white group-hover:shadow-sm">
+      {children}
+    </span>
     <span className="truncate">{label}</span>
   </button>
+);
+
+const Metric = ({
+  icon,
+  label,
+  value,
+  accent = false,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+  accent?: boolean;
+}) => (
+  <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50/80 p-2.5">
+    <div className="flex items-center gap-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-slate-400">
+      {icon}
+      {label}
+    </div>
+    <p
+      className={`mt-1 truncate text-sm font-semibold ${accent ? 'text-emerald-600' : 'text-slate-800'}`}
+    >
+      {value}
+    </p>
+  </div>
 );
 
 export default function SelectedDeviceCard({
@@ -83,21 +113,12 @@ export default function SelectedDeviceCard({
         : batteryLevel > 15
           ? BatteryLow
           : BatteryWarning;
-  const statusColor =
-    device.status === 'online'
-      ? 'bg-emerald-500'
-      : device.status === 'offline'
-        ? 'bg-slate-400'
-        : 'bg-amber-400';
-
-  const rows = [
-    ['Last update', device.lastUpdate ? dayjs(device.lastUpdate).fromNow() : 'No update'],
-    position?.speed != null ? ['Speed', `${Math.round(position.speed)} kn`] : null,
-    batteryLevel != null
-      ? ['Battery', `${Math.round(batteryLevel)}%${charging ? ' · charging' : ''}`]
-      : null,
-    position?.address ? ['Address', position.address] : null,
-  ].filter(Boolean) as string[][];
+  const statusOnline = device.status === 'online';
+  const statusColor = statusOnline
+    ? 'bg-emerald-400 shadow-emerald-400/40'
+    : device.status === 'offline'
+      ? 'bg-slate-400'
+      : 'bg-amber-400 shadow-amber-400/40';
 
   const createGeofence = async () => {
     if (!position) return;
@@ -120,55 +141,74 @@ export default function SelectedDeviceCard({
   };
 
   return (
-    <section className="absolute bottom-24 left-1/2 z-20 w-[min(calc(100%-1.5rem),27rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/70 bg-white/95 text-slate-900 shadow-2xl backdrop-blur md:bottom-5 md:left-[calc(50%+11rem)]">
-      <div className="p-4 pb-3">
-        <div className="flex items-start gap-3">
-          <span className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${statusColor}`} />
-          <div className="min-w-0 flex-1">
-            <h2 className="truncate text-base font-semibold">{device.name}</h2>
-            <div className="mt-1 flex items-center gap-2 text-xs capitalize text-slate-500">
-              <span>{device.status || 'Unknown'}</span>
+    <section className="absolute bottom-24 left-1/2 z-20 w-[min(calc(100%-1.5rem),25rem)] -translate-x-1/2 overflow-hidden rounded-[1.4rem] border border-white/50 bg-white/97 text-slate-900 shadow-[0_24px_60px_-20px_rgba(15,23,42,0.45)] backdrop-blur-xl md:bottom-5 md:left-[calc(50%+11rem)]">
+      <header className="relative overflow-hidden bg-slate-950 px-4 pb-4 pt-3.5 text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_0%,rgba(14,165,233,0.32),transparent_48%)]" />
+        <div className="relative flex items-start gap-3">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/10 text-sky-300 shadow-inner">
+            <Navigation size={20} fill="currentColor" />
+          </span>
+          <div className="min-w-0 flex-1 pt-0.5">
+            <h2 className="truncate text-base font-semibold tracking-tight">{device.name}</h2>
+            <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[0.7rem] text-slate-300">
+              <span className="flex items-center gap-1.5 capitalize">
+                <span className={`h-2 w-2 rounded-full shadow-md ${statusColor}`} />
+                {device.status || 'Unknown'}
+              </span>
               {batteryLevel != null && (
-                <>
-                  <span className="h-1 w-1 rounded-full bg-slate-300" />
-                  <span className="flex items-center gap-1 normal-case">
-                    <BatteryIcon size={14} />
-                    {Math.round(batteryLevel)}%
-                  </span>
-                </>
+                <span className="flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-slate-200">
+                  <BatteryIcon size={13} />
+                  {Math.round(batteryLevel)}%{charging ? ' · charging' : ''}
+                </span>
               )}
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="grid h-9 w-9 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="grid h-9 w-9 place-items-center rounded-xl text-slate-400 transition hover:bg-white/10 hover:text-white"
             aria-label="Close device details"
           >
             <X size={18} />
           </button>
         </div>
+      </header>
 
-        <dl className="mt-4 grid gap-2.5 border-t border-slate-100 pt-3">
-          {rows.slice(0, 4).map(([label, value]) => (
-            <div key={label} className="grid grid-cols-[5.5rem_1fr] gap-3 text-xs">
-              <dt className="text-slate-400">{label}</dt>
-              <dd
-                className={`text-right font-medium text-slate-700 ${label === 'Address' ? 'line-clamp-2' : 'truncate'}`}
-              >
-                {value}
-              </dd>
-            </div>
-          ))}
-        </dl>
+      <div className="p-3.5 pb-3">
+        <div className="grid grid-cols-3 gap-2">
+          <Metric
+            icon={<Clock3 size={12} />}
+            label="Updated"
+            value={device.lastUpdate ? dayjs(device.lastUpdate).fromNow() : 'No update'}
+            accent={statusOnline}
+          />
+          <Metric
+            icon={<Gauge size={12} />}
+            label="Speed"
+            value={position?.speed != null ? `${Math.round(position.speed)} kn` : '—'}
+          />
+          <Metric
+            icon={<BatteryIcon size={12} />}
+            label="Battery"
+            value={batteryLevel != null ? `${Math.round(batteryLevel)}%` : '—'}
+          />
+        </div>
+
+        {position?.address && (
+          <div className="mt-2.5 flex items-start gap-2.5 rounded-xl border border-slate-100 px-3 py-2.5">
+            <MapPinned size={15} className="mt-0.5 shrink-0 text-sky-600" />
+            <p className="line-clamp-2 text-xs leading-5 text-slate-600">{position.address}</p>
+          </div>
+        )}
 
         {position && (
           <button
             type="button"
             onClick={() => navigate(`/position/${position.id}`)}
-            className="mt-3 text-xs font-semibold text-sky-700 transition hover:text-sky-900 hover:underline"
+            className="mt-2.5 flex w-full items-center justify-between rounded-xl bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
           >
-            More Details
+            View position details
+            <ArrowUpRight size={15} />
           </button>
         )}
       </div>
@@ -204,11 +244,13 @@ export default function SelectedDeviceCard({
               {...props}
               ref={ref as any}
               type="button"
-              className="flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2.5 text-[0.68rem] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-sky-700"
+              className="group flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2 text-[0.66rem] font-semibold text-slate-500 transition hover:bg-sky-50 hover:text-sky-700"
               aria-label="More device actions"
               title="More"
             >
-              <Ellipsis size={19} />
+              <span className="grid h-7 w-7 place-items-center rounded-lg transition group-hover:bg-white group-hover:shadow-sm">
+                <Ellipsis size={19} />
+              </span>
               <span>More</span>
             </button>
           )}
@@ -222,8 +264,7 @@ export default function SelectedDeviceCard({
             }}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <Video size={17} />
-            Live Video
+            <Video size={17} /> Live Video
           </button>
           {!readonly && (
             <button
@@ -232,8 +273,7 @@ export default function SelectedDeviceCard({
               onClick={createGeofence}
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <MapPinned size={17} />
-              Create Geofence
+              <MapPinned size={17} /> Create Geofence
             </button>
           )}
           {position && (
@@ -244,8 +284,7 @@ export default function SelectedDeviceCard({
               onClick={() => setMoreOpen(false)}
               className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm hover:bg-slate-100"
             >
-              <ExternalLink size={17} />
-              Google Maps
+              <ExternalLink size={17} /> Google Maps
             </a>
           )}
           {!shareDisabled && !user.temporary && (
@@ -257,8 +296,7 @@ export default function SelectedDeviceCard({
               }}
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-sky-700 hover:bg-sky-50"
             >
-              <Share2 size={17} />
-              Share
+              <Share2 size={17} /> Share
             </button>
           )}
         </FloatingPanel>
