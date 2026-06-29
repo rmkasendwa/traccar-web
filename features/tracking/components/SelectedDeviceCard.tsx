@@ -52,16 +52,16 @@ const ActionButton = ({
 }) => {
   const tones = {
     violet: {
-      button: 'hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700',
-      icon: 'bg-violet-100 text-violet-600 group-hover:bg-violet-600 group-hover:text-white',
+      button: 'hover:border-violet-400/35 hover:bg-violet-400/10 hover:text-violet-200',
+      icon: 'from-violet-400 to-fuchsia-500 shadow-violet-500/25',
     },
     sky: {
-      button: 'hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700',
-      icon: 'bg-sky-100 text-sky-600 group-hover:bg-sky-600 group-hover:text-white',
+      button: 'hover:border-sky-400/35 hover:bg-sky-400/10 hover:text-sky-200',
+      icon: 'from-sky-400 to-cyan-500 shadow-sky-500/25',
     },
     amber: {
-      button: 'hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700',
-      icon: 'bg-amber-100 text-amber-600 group-hover:bg-amber-500 group-hover:text-white',
+      button: 'hover:border-amber-400/35 hover:bg-amber-400/10 hover:text-amber-200',
+      icon: 'from-amber-400 to-orange-500 shadow-amber-500/25',
     },
   }[tone];
 
@@ -70,12 +70,12 @@ const ActionButton = ({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`group flex min-w-0 flex-col items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-1.5 py-2.5 text-[0.68rem] font-semibold text-slate-600 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0 ${tones.button}`}
+      className={`group relative flex min-w-0 flex-col items-center gap-2 overflow-hidden rounded-2xl border border-white/8 bg-white/4.5 px-1.5 py-2.5 text-[0.68rem] font-semibold text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0 ${tones.button}`}
       aria-label={label}
       title={label}
     >
       <span
-        className={`grid h-9 w-9 place-items-center rounded-xl shadow-inner transition duration-200 ${tones.icon}`}
+        className={`grid h-9 w-9 place-items-center rounded-xl bg-linear-to-br text-white shadow-lg transition duration-200 group-hover:scale-105 ${tones.icon}`}
       >
         {children}
       </span>
@@ -96,7 +96,7 @@ const Metric = ({
   accent?: boolean;
 }) => (
   <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50/80 p-2.5">
-    <div className="flex items-center gap-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-slate-400">
+    <div className="flex items-center gap-1.5 text-[0.62rem] font-semibold uppercase tracking-widest text-slate-400">
       {icon}
       {label}
     </div>
@@ -234,96 +234,109 @@ export default function SelectedDeviceCard({
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-2 border-t border-slate-100 bg-[linear-gradient(180deg,rgba(248,250,252,0.75),rgba(241,245,249,0.95))] p-3">
-        <ActionButton
-          label="Replay"
-          tone="violet"
-          onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
-          disabled={!position}
-        >
-          <Route size={18} />
-        </ActionButton>
-        <ActionButton
-          label="Command"
-          tone="sky"
-          onClick={() => navigate(`/settings/device/${deviceId}/command`)}
-        >
-          <Send size={18} />
-        </ActionButton>
-        <ActionButton
-          label="Edit"
-          tone="amber"
-          onClick={() => navigate(`/settings/device/${deviceId}`)}
-          disabled={deviceReadonly}
-        >
-          <Pencil size={18} />
-        </ActionButton>
-        <FloatingPanel
-          open={moreOpen}
-          onOpenChange={setMoreOpen}
-          placement="top-end"
-          className="w-56"
-          trigger={(props, ref) => (
-            <button
-              {...props}
-              ref={ref as any}
-              type="button"
-              className="group flex min-w-0 flex-col items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-1.5 py-2.5 text-[0.68rem] font-semibold text-slate-600 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 hover:shadow-md"
-              aria-label="More device actions"
-              title="More"
-            >
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-slate-100 text-slate-600 shadow-inner transition duration-200 group-hover:bg-slate-800 group-hover:text-white">
-                <Ellipsis size={19} />
-              </span>
-              <span className="w-full truncate text-center">More</span>
-            </button>
-          )}
-        >
-          <button
-            type="button"
-            disabled={!position || position.protocol !== 'jt808'}
-            onClick={() => {
-              setMoreOpen(false);
-              navigate(`/stream?deviceId=${deviceId}`);
-            }}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+      <div className="relative overflow-hidden border-t border-slate-800 bg-slate-950 p-3">
+        <div className="pointer-events-none absolute -bottom-14 left-1/4 h-24 w-24 rounded-full bg-sky-500/15 blur-3xl" />
+        <div className="pointer-events-none absolute -right-8 -top-10 h-24 w-24 rounded-full bg-violet-500/15 blur-3xl" />
+        <div className="relative mb-2 flex items-center justify-between px-1">
+          <span className="text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Quick actions
+          </span>
+          <span className="flex items-center gap-1.5 text-[0.6rem] text-slate-600">
+            <span className="h-1 w-1 rounded-full bg-sky-400" />
+            Device controls
+          </span>
+        </div>
+        <div className="relative grid grid-cols-4 gap-2">
+          <ActionButton
+            label="Replay"
+            tone="violet"
+            onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
+            disabled={!position}
           >
-            <Video size={17} /> Live Video
-          </button>
-          {!readonly && (
+            <Route size={18} />
+          </ActionButton>
+          <ActionButton
+            label="Command"
+            tone="sky"
+            onClick={() => navigate(`/settings/device/${deviceId}/command`)}
+          >
+            <Send size={18} />
+          </ActionButton>
+          <ActionButton
+            label="Edit"
+            tone="amber"
+            onClick={() => navigate(`/settings/device/${deviceId}`)}
+            disabled={deviceReadonly}
+          >
+            <Pencil size={18} />
+          </ActionButton>
+          <FloatingPanel
+            open={moreOpen}
+            onOpenChange={setMoreOpen}
+            placement="top-end"
+            className="w-56"
+            trigger={(props, ref) => (
+              <button
+                {...props}
+                ref={ref as any}
+                type="button"
+                className="group flex min-w-0 flex-col items-center gap-2 rounded-2xl border border-white/8 bg-white/4.5 px-1.5 py-2.5 text-[0.68rem] font-semibold text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-slate-500/50 hover:bg-white/8 hover:text-white hover:shadow-lg"
+                aria-label="More device actions"
+                title="More"
+              >
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-linear-to-br from-slate-500 to-slate-700 text-white shadow-lg shadow-slate-950/30 transition duration-200 group-hover:scale-105">
+                  <Ellipsis size={19} />
+                </span>
+                <span className="w-full truncate text-center">More</span>
+              </button>
+            )}
+          >
             <button
               type="button"
-              disabled={!position}
-              onClick={createGeofence}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <MapPinned size={17} /> Create Geofence
-            </button>
-          )}
-          {position && (
-            <a
-              href={`https://www.google.com/maps/search/?api=1&query=${position.latitude}%2C${position.longitude}`}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => setMoreOpen(false)}
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm hover:bg-slate-100"
-            >
-              <ExternalLink size={17} /> Google Maps
-            </a>
-          )}
-          {!shareDisabled && !user.temporary && (
-            <button
-              type="button"
+              disabled={!position || position.protocol !== 'jt808'}
               onClick={() => {
                 setMoreOpen(false);
-                navigate(`/settings/device/${deviceId}/share`);
+                navigate(`/stream?deviceId=${deviceId}`);
               }}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-sky-700 hover:bg-sky-50"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <Share2 size={17} /> Share
+              <Video size={17} /> Live Video
             </button>
-          )}
-        </FloatingPanel>
+            {!readonly && (
+              <button
+                type="button"
+                disabled={!position}
+                onClick={createGeofence}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <MapPinned size={17} /> Create Geofence
+              </button>
+            )}
+            {position && (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${position.latitude}%2C${position.longitude}`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setMoreOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm hover:bg-slate-100"
+              >
+                <ExternalLink size={17} /> Google Maps
+              </a>
+            )}
+            {!shareDisabled && !user.temporary && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMoreOpen(false);
+                  navigate(`/settings/device/${deviceId}/share`);
+                }}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-sky-700 hover:bg-sky-50"
+              >
+                <Share2 size={17} /> Share
+              </button>
+            )}
+          </FloatingPanel>
+        </div>
       </div>
     </section>
   );

@@ -1,15 +1,15 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Menu, X } from 'lucide-react';
-import { devicesActions, sessionActions } from '@/store';
-import usePersistedState from '@/lib/usePersistedState';
 import EventsDrawer from '@/features/tracking/EventsDrawer';
 import DeviceSidebar from '@/features/tracking/components/DeviceSidebar';
 import HomeNavigation from '@/features/tracking/components/HomeNavigation';
 import SelectedDeviceCard from '@/features/tracking/components/SelectedDeviceCard';
+import usePersistedState from '@/lib/usePersistedState';
+import { devicesActions, sessionActions } from '@/store';
+import { Menu, X } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const MainMap = dynamic(() => import('@/features/tracking/MainMap'), {
   ssr: false,
@@ -38,6 +38,7 @@ const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
   const [statusFilter, setStatusFilter] = usePersistedState('homeStatusFilter', []);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [eventsOpen, setEventsOpen] = useState(false);
+  const hydratingSelection = useRef<number | null | undefined>(undefined);
 
   useEffect(() => {
     dispatch(devicesActions.refresh(initialDevices));
@@ -50,6 +51,37 @@ const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
     if (selectedDeviceId) {
       setSidebarOpen(false);
     }
+  }, [selectedDeviceId]);
+
+  useEffect(() => {
+    const restoreSelection = () => {
+      const value = new URLSearchParams(window.location.search).get('deviceId');
+      const parsed = value ? Number(value) : null;
+      const deviceId = parsed != null && Number.isFinite(parsed) ? parsed : null;
+      hydratingSelection.current = deviceId;
+      dispatch(devicesActions.selectId(deviceId));
+    };
+
+    restoreSelection();
+    window.addEventListener('popstate', restoreSelection);
+    return () => window.removeEventListener('popstate', restoreSelection);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (hydratingSelection.current !== undefined) {
+      if (selectedDeviceId === hydratingSelection.current) {
+        hydratingSelection.current = undefined;
+      }
+      return;
+    }
+
+    const url = new URL(window.location.href);
+    if (selectedDeviceId) {
+      url.searchParams.set('deviceId', String(selectedDeviceId));
+    } else {
+      url.searchParams.delete('deviceId');
+    }
+    window.history.replaceState(window.history.state, '', url);
   }, [selectedDeviceId]);
 
   const filteredDevices = useMemo(() => {
