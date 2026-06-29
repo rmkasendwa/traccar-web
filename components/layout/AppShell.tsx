@@ -4,8 +4,6 @@
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from '@/lib/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMediaQuery, useTheme } from '@/components/ui';
-import { makeStyles } from '@/components/ui/styles';
 import BottomMenu from '@/components/layout/BottomMenu';
 import SocketController from '@/controllers/SocketController';
 import CachingController from '@/controllers/CachingController';
@@ -17,26 +15,6 @@ import TermsDialog from '@/components/ui/TermsDialog';
 import Loader from '@/components/ui/Loader';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 
-const useStyles = makeStyles()(() => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100dvh',
-    minHeight: 0,
-  },
-  page: {
-    flex: 1,
-    minHeight: 0,
-    overflow: 'hidden',
-  },
-  menu: {
-    zIndex: 4,
-    '@media print': {
-      display: 'none',
-    },
-  },
-}));
-
 type AppProps = {
   children: ReactNode;
   initialUser?: unknown;
@@ -47,13 +25,9 @@ const App = ({ children, initialUser }: AppProps) => {
     store.dispatch(sessionActions.updateUser(initialUser));
   }
 
-  const { classes } = useStyles();
-  const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const desktop = useMediaQuery(theme.breakpoints.up('md'));
 
   const newServer = useSelector((state) => state.session.server.newServer);
   const termsUrl = useSelector((state) => state.session.server.attributes.termsUrl);
@@ -94,14 +68,14 @@ const App = ({ children, initialUser }: AppProps) => {
     return <TermsDialog open onCancel={() => navigate('/login')} onAccept={() => acceptTerms()} />;
   }
   return (
-    <div className={classes.root}>
+    <div className="flex h-dvh min-h-0 flex-col">
       <SocketController />
       <CachingController />
       <UpdateController />
       <MotionController />
-      <div className={classes.page}>{children}</div>
-      {!desktop && location.pathname !== '/' && (
-        <div className={classes.menu}>
+      <div className="min-h-0 flex-1 overflow-hidden">{children}</div>
+      {location.pathname !== '/' && (
+        <div className="z-40 shrink-0 md:hidden print:hidden">
           <BottomMenu />
         </div>
       )}

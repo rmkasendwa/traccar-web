@@ -144,6 +144,13 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
     hasRange && Number.isFinite(fromTime) && Number.isFinite(toTime) && fromTime < toTime;
   const normalizedFrom = validRange ? new Date(fromTime).toISOString() : '';
   const normalizedTo = validRange ? new Date(toTime).toISOString() : '';
+  const renderTime = new Date();
+  const initialCustomFrom = validRange
+    ? normalizedFrom.slice(0, 16)
+    : new Date(renderTime.getTime() - 60 * 60 * 1000).toISOString().slice(0, 16);
+  const initialCustomTo = validRange
+    ? normalizedTo.slice(0, 16)
+    : renderTime.toISOString().slice(0, 16);
 
   const devicesResult = await loadDevices();
   const selectedDevice = devicesResult.devices.find((device) => String(device.id) === deviceId);
@@ -209,6 +216,8 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
             initialFrom={validRange ? normalizedFrom : rawFrom}
             initialTo={validRange ? normalizedTo : rawTo}
             initialPeriod={rawPeriod}
+            initialCustomFrom={initialCustomFrom}
+            initialCustomTo={initialCustomTo}
           />
 
           {hasReplay && selectedDevice ? (

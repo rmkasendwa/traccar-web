@@ -3,15 +3,15 @@
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Gauge, Pause, Play, RotateCcw, RotateCw } from 'lucide-react';
+import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
 import type { ReplayPosition } from '@/features/replay/types';
 
 const ReplayMap = dynamic(() => import('@/features/replay/components/ReplayMap'), {
   ssr: false,
   loading: () => (
-    <div
-      className="h-full min-h-[19rem] animate-pulse bg-[linear-gradient(135deg,#dbe5df,#f1f5f2,#d7e1dc)]"
-      aria-label="Loading replay map"
-    />
+    <div className="h-full" aria-label="Loading replay map">
+      <ReplayMapPlaceholder />
+    </div>
   ),
 });
 

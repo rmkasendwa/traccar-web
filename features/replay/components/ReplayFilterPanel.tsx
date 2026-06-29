@@ -24,13 +24,6 @@ const periods: { value: Period; label: string }[] = [
   { value: 'custom', label: 'Custom range' },
 ];
 
-const localInputValue = (value?: string, fallback?: Date) => {
-  const date = value ? new Date(value) : fallback;
-  if (!date || Number.isNaN(date.getTime())) return '';
-  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
-  return local.toISOString().slice(0, 16);
-};
-
 const endOfDay = (date: Date) => {
   date.setHours(23, 59, 59, 999);
   return date;
@@ -73,6 +66,8 @@ type ReplayFilterPanelProps = {
   initialFrom?: string;
   initialTo?: string;
   initialPeriod?: string;
+  initialCustomFrom: string;
+  initialCustomTo: string;
 };
 
 export default function ReplayFilterPanel({
@@ -81,6 +76,8 @@ export default function ReplayFilterPanel({
   initialFrom,
   initialTo,
   initialPeriod,
+  initialCustomFrom,
+  initialCustomTo,
 }: ReplayFilterPanelProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -89,16 +86,16 @@ export default function ReplayFilterPanel({
     if (periods.some((item) => item.value === initialPeriod)) return initialPeriod as Period;
     return initialFrom && initialTo ? 'custom' : 'today';
   });
-  const [customFrom, setCustomFrom] = useState(() =>
-    localInputValue(initialFrom, new Date(Date.now() - 60 * 60 * 1000)),
-  );
-  const [customTo, setCustomTo] = useState(() => localInputValue(initialTo, new Date()));
+  const [customFrom, setCustomFrom] = useState(initialCustomFrom);
+  const [customTo, setCustomTo] = useState(initialCustomTo);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedDevice) return;
     const [from, to] =
-      period === 'custom' ? [new Date(customFrom), new Date(customTo)] : rangeFor(period);
+      period === 'custom'
+        ? [new Date(`${customFrom}Z`), new Date(`${customTo}Z`)]
+        : rangeFor(period);
     if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) return;
 
     const query = new URLSearchParams({
@@ -157,7 +154,7 @@ export default function ReplayFilterPanel({
       {period === 'custom' && (
         <div className="grid grid-cols-2 gap-2">
           <label className="grid min-w-0 gap-1 text-xs font-medium text-slate-500">
-            From
+            From (UTC)
             <input
               type="datetime-local"
               value={customFrom}
@@ -167,7 +164,7 @@ export default function ReplayFilterPanel({
             />
           </label>
           <label className="grid min-w-0 gap-1 text-xs font-medium text-slate-500">
-            To
+            To (UTC)
             <input
               type="datetime-local"
               value={customTo}

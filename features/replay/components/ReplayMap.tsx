@@ -12,6 +12,7 @@ import MapOverlay from '@/features/map/overlay/MapOverlay';
 import { map } from '@/features/map/core/MapView';
 import { toMapCoordinates } from '@/features/map/core/mapUtil';
 import { useMediaQuery, useTheme } from '@/components/ui';
+import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
 import type { ReplayPosition } from '@/features/replay/types';
 
 type ReplayMapProps = {
@@ -88,12 +89,22 @@ function CurrentPositionMarker({
 function ReplayMap({ positions, currentPosition, onSelectPosition }: ReplayMapProps) {
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
+  const [mapVisible, setMapVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const handlePointClick = useCallback(
     (_id: number, index: number) => onSelectPosition(index),
     [onSelectPosition],
   );
   const handleMarkerClick = useCallback(() => setShowDetails(true), []);
+
+  useEffect(() => {
+    const revealMap = () => setMapVisible(true);
+    map.on('idle', revealMap);
+    if (map.loaded()) revealMap();
+    return () => {
+      map.off('idle', revealMap);
+    };
+  }, []);
 
   return (
     <div className="relative h-full min-h-[19rem] overflow-hidden bg-slate-200">
@@ -111,6 +122,9 @@ function ReplayMap({ positions, currentPosition, onSelectPosition }: ReplayMapPr
           <CurrentPositionMarker position={currentPosition} onClick={handleMarkerClick} />
         )}
       </MapView>
+      <ReplayMapPlaceholder
+        className={`pointer-events-none absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none ${mapVisible ? 'opacity-0' : 'opacity-100'}`}
+      />
       <MapScale />
       {positions.length > 0 && (
         <MapCamera
