@@ -61,7 +61,7 @@ export default function ReplayPlayer({ positions }: ReplayPlayerProps) {
   const currentPosition = positions[index];
 
   return (
-    <section className="relative h-full min-h-[24rem] overflow-hidden bg-slate-200">
+    <section className="relative h-full min-h-96 overflow-hidden bg-slate-200">
       <div className="absolute inset-0">
         <ReplayMap
           positions={positions}
@@ -70,9 +70,13 @@ export default function ReplayPlayer({ positions }: ReplayPlayerProps) {
         />
       </div>
       {currentPosition && (
-        <div className="absolute inset-x-3 bottom-3 z-20 rounded-2xl border border-white/70 bg-white/92 px-4 py-3 shadow-2xl shadow-slate-950/20 backdrop-blur-xl md:left-[23.5rem] md:right-4 md:px-5">
+        <div className="absolute inset-x-3 bottom-3 z-20 rounded-2xl border border-white/70 bg-white/92 px-4 py-3 shadow-2xl shadow-slate-950/20 backdrop-blur-xl md:left-94 md:right-4 md:px-5">
           <div className="flex items-center justify-between gap-3 text-xs font-medium text-slate-500">
-            <time dateTime={currentPosition.fixTime} className="tabular-nums">
+            <time
+              dateTime={currentPosition.fixTime}
+              className="tabular-nums"
+              suppressHydrationWarning
+            >
               {new Date(currentPosition.fixTime).toLocaleString()}
             </time>
             <span aria-live="polite" className="tabular-nums">
