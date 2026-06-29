@@ -17,7 +17,10 @@ import {
   WifiOff,
 } from 'lucide-react';
 import ReplayFilterPanel from '@/features/replay/components/ReplayFilterPanel';
-import ReplayPlayer from '@/features/replay/components/ReplayPlayer';
+import ReplayPlayer, {
+  ReplayControls,
+  ReplayMapView,
+} from '@/features/replay/components/ReplayPlayer';
 import { calculateReplayStatistics, formatDuration } from '@/features/replay/lib/replay';
 import type { ReplayDevice, ReplayPosition } from '@/features/replay/types';
 import { fetchFromRequestOrigin } from '@/lib/serverFetch';
@@ -176,128 +179,136 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
 
   return (
     <main className="relative h-full min-h-0 overflow-hidden bg-slate-200">
-      <div className="absolute inset-0">
-        <ReplayPlayer positions={positionsResult.positions} />
-      </div>
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-[28rem] bg-linear-to-r from-slate-950/20 to-transparent md:block" />
+      <ReplayPlayer positions={positionsResult.positions}>
+        <div className="absolute inset-0">
+          <ReplayMapView />
+        </div>
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-md bg-linear-to-r from-slate-950/20 to-transparent md:block" />
 
-      <aside className="absolute inset-x-3 top-3 z-30 max-h-[calc(100%-10rem)] overflow-y-auto rounded-[1.35rem] border border-white/60 bg-white/94 shadow-2xl shadow-slate-950/25 backdrop-blur-xl md:inset-x-auto md:bottom-3 md:left-3 md:w-[22rem] md:max-h-none">
-        <header className="relative overflow-hidden rounded-t-[1.3rem] bg-slate-950 px-4 pb-4 pt-3 text-white">
-          <div className="pointer-events-none absolute -right-10 -top-16 h-36 w-36 rounded-full bg-sky-500/25 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-16 left-12 h-28 w-28 rounded-full bg-violet-500/20 blur-3xl" />
-          <div className="relative flex items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
-              <Link
-                href="/"
-                aria-label="Back to tracking"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/8 text-slate-300 transition hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-              >
-                <ArrowLeft size={18} aria-hidden="true" />
-              </Link>
-              <div className="min-w-0">
-                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-sky-300">
-                  History
-                </p>
-                <h1 className="truncate text-lg font-bold tracking-tight">Route replay</h1>
+        <aside className="absolute inset-x-3 top-3 z-30 max-h-[calc(100%-10rem)] overflow-y-auto rounded-[1.35rem] border border-white/60 bg-white/94 shadow-2xl shadow-slate-950/25 backdrop-blur-xl md:inset-x-auto md:bottom-3 md:left-3 md:w-88 md:max-h-none">
+          <header className="relative overflow-hidden rounded-t-[1.3rem] bg-slate-950 px-4 pb-4 pt-3 text-white">
+            <div className="pointer-events-none absolute -right-10 -top-16 h-36 w-36 rounded-full bg-sky-500/25 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-16 left-12 h-28 w-28 rounded-full bg-violet-500/20 blur-3xl" />
+            <div className="relative flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <Link
+                  href="/"
+                  aria-label="Back to tracking"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/8 text-slate-300 transition hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                >
+                  <ArrowLeft size={18} aria-hidden="true" />
+                </Link>
+                <div className="min-w-0">
+                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-sky-300">
+                    History
+                  </p>
+                  <h1 className="truncate text-lg font-bold tracking-tight">Route replay</h1>
+                </div>
               </div>
+              {hasReplay && (
+                <span className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[0.65rem] font-semibold text-emerald-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Loaded
+                </span>
+              )}
             </div>
-            {hasReplay && (
-              <span className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[0.65rem] font-semibold text-emerald-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Loaded
-              </span>
+          </header>
+
+          <div className="space-y-4 p-4">
+            <ReplayFilterPanel
+              devices={devicesResult.devices}
+              deviceId={deviceId}
+              initialFrom={validRange ? normalizedFrom : rawFrom}
+              initialTo={validRange ? normalizedTo : rawTo}
+              initialPeriod={rawPeriod}
+              initialCustomFrom={initialCustomFrom}
+              initialCustomTo={initialCustomTo}
+            />
+
+            {hasReplay && selectedDevice ? (
+              <>
+                <section aria-label="Replay summary" className="grid grid-cols-2 gap-2">
+                  {[
+                    {
+                      label: 'Distance',
+                      value: `${statistics.distanceKm.toFixed(1)} km`,
+                      icon: Route,
+                    },
+                    {
+                      label: 'Duration',
+                      value: formatDuration(statistics.durationMs),
+                      icon: Clock3,
+                    },
+                    {
+                      label: 'Max speed',
+                      value: `${statistics.maxSpeedKph.toFixed(0)} km/h`,
+                      icon: CircleGauge,
+                    },
+                    {
+                      label: 'GPS points',
+                      value: statistics.positionCount.toLocaleString(),
+                      icon: LocateFixed,
+                    },
+                  ].map(({ label, value, icon: Icon }) => (
+                    <article
+                      key={label}
+                      className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+                    >
+                      <div className="flex items-center gap-1.5 text-[0.66rem] font-semibold text-slate-500">
+                        <Icon size={13} className="text-sky-600" aria-hidden="true" /> {label}
+                      </div>
+                      <p className="mt-1 text-base font-bold tracking-tight text-slate-950">
+                        {value}
+                      </p>
+                    </article>
+                  ))}
+                </section>
+
+                <div className="space-y-4">
+                  <section aria-label="Replay controls">
+                    <ReplayControls />
+                  </section>
+
+                  <section className="rounded-xl border border-slate-200 bg-white p-3.5">
+                    <div className="flex items-center gap-3">
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-sky-50 text-sky-700">
+                        <Smartphone size={17} aria-hidden="true" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-slate-950">
+                          {selectedDevice.name}
+                        </p>
+                        <p className="text-[0.68rem] capitalize text-slate-500">
+                          {selectedDevice.status || 'Status unavailable'}
+                          {selectedDevice.model ? ` · ${selectedDevice.model}` : ''}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-3 flex items-start gap-2 border-t border-slate-100 pt-3 text-xs text-slate-500">
+                      <Navigation
+                        size={14}
+                        className="mt-0.5 shrink-0 text-sky-600"
+                        aria-hidden="true"
+                      />
+                      <div>
+                        <p>{formatDate(normalizedFrom)}</p>
+                        <p className="mt-0.5">to {formatDate(normalizedTo)}</p>
+                      </div>
+                    </div>
+                    <a
+                      href={`/api/positions/kml?${new URLSearchParams({ deviceId, from: normalizedFrom, to: normalizedTo })}`}
+                      className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+                    >
+                      <Download size={14} aria-hidden="true" /> Download route as KML
+                    </a>
+                  </section>
+                </div>
+              </>
+            ) : (
+              <StateCard type={state} />
             )}
           </div>
-        </header>
-
-        <div className="space-y-4 p-4">
-          <ReplayFilterPanel
-            devices={devicesResult.devices}
-            deviceId={deviceId}
-            initialFrom={validRange ? normalizedFrom : rawFrom}
-            initialTo={validRange ? normalizedTo : rawTo}
-            initialPeriod={rawPeriod}
-            initialCustomFrom={initialCustomFrom}
-            initialCustomTo={initialCustomTo}
-          />
-
-          {hasReplay && selectedDevice ? (
-            <>
-              <section aria-label="Replay summary" className="grid grid-cols-2 gap-2">
-                {[
-                  {
-                    label: 'Distance',
-                    value: `${statistics.distanceKm.toFixed(1)} km`,
-                    icon: Route,
-                  },
-                  {
-                    label: 'Duration',
-                    value: formatDuration(statistics.durationMs),
-                    icon: Clock3,
-                  },
-                  {
-                    label: 'Max speed',
-                    value: `${statistics.maxSpeedKph.toFixed(0)} km/h`,
-                    icon: CircleGauge,
-                  },
-                  {
-                    label: 'GPS points',
-                    value: statistics.positionCount.toLocaleString(),
-                    icon: LocateFixed,
-                  },
-                ].map(({ label, value, icon: Icon }) => (
-                  <article
-                    key={label}
-                    className="rounded-xl border border-slate-200 bg-slate-50 p-3"
-                  >
-                    <div className="flex items-center gap-1.5 text-[0.66rem] font-semibold text-slate-500">
-                      <Icon size={13} className="text-sky-600" aria-hidden="true" /> {label}
-                    </div>
-                    <p className="mt-1 text-base font-bold tracking-tight text-slate-950">
-                      {value}
-                    </p>
-                  </article>
-                ))}
-              </section>
-
-              <section className="rounded-xl border border-slate-200 bg-white p-3.5">
-                <div className="flex items-center gap-3">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-sky-50 text-sky-700">
-                    <Smartphone size={17} aria-hidden="true" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-slate-950">
-                      {selectedDevice.name}
-                    </p>
-                    <p className="text-[0.68rem] capitalize text-slate-500">
-                      {selectedDevice.status || 'Status unavailable'}
-                      {selectedDevice.model ? ` · ${selectedDevice.model}` : ''}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-3 flex items-start gap-2 border-t border-slate-100 pt-3 text-xs text-slate-500">
-                  <Navigation
-                    size={14}
-                    className="mt-0.5 shrink-0 text-sky-600"
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <p>{formatDate(normalizedFrom)}</p>
-                    <p className="mt-0.5">to {formatDate(normalizedTo)}</p>
-                  </div>
-                </div>
-                <a
-                  href={`/api/positions/kml?${new URLSearchParams({ deviceId, from: normalizedFrom, to: normalizedTo })}`}
-                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-                >
-                  <Download size={14} aria-hidden="true" /> Download route as KML
-                </a>
-              </section>
-            </>
-          ) : (
-            <StateCard type={state} />
-          )}
-        </div>
-      </aside>
+        </aside>
+      </ReplayPlayer>
     </main>
   );
 }

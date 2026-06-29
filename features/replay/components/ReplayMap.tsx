@@ -107,7 +107,7 @@ function ReplayMap({ positions, currentPosition, onSelectPosition }: ReplayMapPr
   }, []);
 
   return (
-    <div className="relative h-full min-h-[19rem] overflow-hidden bg-slate-200">
+    <div className="relative h-full min-h-76 overflow-hidden bg-slate-200">
       <MapView>
         <MapPadding start={desktop ? 376 : 0} />
         <MapOverlay />
