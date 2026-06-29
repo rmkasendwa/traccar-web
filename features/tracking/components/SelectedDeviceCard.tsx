@@ -41,27 +41,48 @@ const ActionButton = ({
   label,
   onClick,
   disabled,
+  tone,
   children,
 }: {
   label: string;
   onClick?: () => void;
   disabled?: boolean;
+  tone: 'violet' | 'sky' | 'amber';
   children: ReactNode;
-}) => (
-  <button
-    type="button"
-    onClick={onClick}
-    disabled={disabled}
-    className="group flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2 text-[0.66rem] font-semibold text-slate-500 transition hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-35"
-    aria-label={label}
-    title={label}
-  >
-    <span className="grid h-7 w-7 place-items-center rounded-lg transition group-hover:bg-white group-hover:shadow-sm">
-      {children}
-    </span>
-    <span className="truncate">{label}</span>
-  </button>
-);
+}) => {
+  const tones = {
+    violet: {
+      button: 'hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700',
+      icon: 'bg-violet-100 text-violet-600 group-hover:bg-violet-600 group-hover:text-white',
+    },
+    sky: {
+      button: 'hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700',
+      icon: 'bg-sky-100 text-sky-600 group-hover:bg-sky-600 group-hover:text-white',
+    },
+    amber: {
+      button: 'hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700',
+      icon: 'bg-amber-100 text-amber-600 group-hover:bg-amber-500 group-hover:text-white',
+    },
+  }[tone];
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`group flex min-w-0 flex-col items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-1.5 py-2.5 text-[0.68rem] font-semibold text-slate-600 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0 ${tones.button}`}
+      aria-label={label}
+      title={label}
+    >
+      <span
+        className={`grid h-9 w-9 place-items-center rounded-xl shadow-inner transition duration-200 ${tones.icon}`}
+      >
+        {children}
+      </span>
+      <span className="w-full truncate text-center">{label}</span>
+    </button>
+  );
+};
 
 const Metric = ({
   icon,
@@ -213,9 +234,10 @@ export default function SelectedDeviceCard({
         )}
       </div>
 
-      <div className="grid grid-cols-4 border-t border-slate-100 bg-slate-50/70 p-1.5">
+      <div className="grid grid-cols-4 gap-2 border-t border-slate-100 bg-[linear-gradient(180deg,rgba(248,250,252,0.75),rgba(241,245,249,0.95))] p-3">
         <ActionButton
           label="Replay"
+          tone="violet"
           onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
           disabled={!position}
         >
@@ -223,12 +245,14 @@ export default function SelectedDeviceCard({
         </ActionButton>
         <ActionButton
           label="Command"
+          tone="sky"
           onClick={() => navigate(`/settings/device/${deviceId}/command`)}
         >
           <Send size={18} />
         </ActionButton>
         <ActionButton
           label="Edit"
+          tone="amber"
           onClick={() => navigate(`/settings/device/${deviceId}`)}
           disabled={deviceReadonly}
         >
@@ -244,14 +268,14 @@ export default function SelectedDeviceCard({
               {...props}
               ref={ref as any}
               type="button"
-              className="group flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2 text-[0.66rem] font-semibold text-slate-500 transition hover:bg-sky-50 hover:text-sky-700"
+              className="group flex min-w-0 flex-col items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-1.5 py-2.5 text-[0.68rem] font-semibold text-slate-600 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 hover:shadow-md"
               aria-label="More device actions"
               title="More"
             >
-              <span className="grid h-7 w-7 place-items-center rounded-lg transition group-hover:bg-white group-hover:shadow-sm">
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-slate-100 text-slate-600 shadow-inner transition duration-200 group-hover:bg-slate-800 group-hover:text-white">
                 <Ellipsis size={19} />
               </span>
-              <span>More</span>
+              <span className="w-full truncate text-center">More</span>
             </button>
           )}
         >
