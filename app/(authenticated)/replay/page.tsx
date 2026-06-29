@@ -185,8 +185,8 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
         </div>
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-md bg-linear-to-r from-slate-950/20 to-transparent md:block" />
 
-        <aside className="absolute inset-x-3 top-3 z-30 max-h-[calc(100%-10rem)] overflow-y-auto rounded-[1.35rem] border border-white/60 bg-white/94 shadow-2xl shadow-slate-950/25 backdrop-blur-xl md:inset-x-auto md:bottom-3 md:left-3 md:w-88 md:max-h-none">
-          <header className="relative overflow-hidden rounded-t-[1.3rem] bg-slate-950 px-4 pb-4 pt-3 text-white">
+        <aside className="absolute inset-x-3 top-3 z-30 max-h-[calc(100%-10rem)] flex w-full flex-col overflow-hidden rounded-[1.35rem] border border-white/60 bg-white/94 shadow-2xl shadow-slate-950/25 backdrop-blur-xl md:inset-x-auto md:bottom-3 md:left-3 md:w-88 md:max-h-none">
+          <header className="sticky top-0 z-20 border-b border-white/10 bg-slate-950/95 px-4 pb-4 pt-3 text-white backdrop-blur">
             <div className="pointer-events-none absolute -right-10 -top-16 h-36 w-36 rounded-full bg-sky-500/25 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-16 left-12 h-28 w-28 rounded-full bg-violet-500/20 blur-3xl" />
             <div className="relative flex items-center justify-between gap-3">
@@ -213,7 +213,7 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
             </div>
           </header>
 
-          <div className="space-y-4 p-4">
+          <div className="flex-1 overflow-y-auto space-y-4 p-4">
             <ReplayFilterPanel
               devices={devicesResult.devices}
               deviceId={deviceId}
@@ -263,50 +263,49 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                   ))}
                 </section>
 
-                <div className="space-y-4">
-                  <section aria-label="Replay controls">
-                    <ReplayControls />
-                  </section>
-
-                  <section className="rounded-xl border border-slate-200 bg-white p-3.5">
-                    <div className="flex items-center gap-3">
-                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-sky-50 text-sky-700">
-                        <Smartphone size={17} aria-hidden="true" />
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-slate-950">
-                          {selectedDevice.name}
-                        </p>
-                        <p className="text-[0.68rem] capitalize text-slate-500">
-                          {selectedDevice.status || 'Status unavailable'}
-                          {selectedDevice.model ? ` · ${selectedDevice.model}` : ''}
-                        </p>
-                      </div>
+                <section className="rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm shadow-slate-950/5 backdrop-blur">
+                  <div className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-slate-950/5 px-4 py-3 shadow-inner">
+                    <span className="grid h-10 w-10 place-items-center rounded-2xl bg-sky-500/10 text-sky-700">
+                      <Smartphone size={18} aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-slate-950">
+                        {selectedDevice.name}
+                      </p>
+                      <p className="text-[0.68rem] capitalize text-slate-500">
+                        {selectedDevice.status || 'Status unavailable'}
+                        {selectedDevice.model ? ` · ${selectedDevice.model}` : ''}
+                      </p>
                     </div>
-                    <div className="mt-3 flex items-start gap-2 border-t border-slate-100 pt-3 text-xs text-slate-500">
-                      <Navigation
-                        size={14}
-                        className="mt-0.5 shrink-0 text-sky-600"
-                        aria-hidden="true"
-                      />
-                      <div>
-                        <p>{formatDate(normalizedFrom)}</p>
-                        <p className="mt-0.5">to {formatDate(normalizedTo)}</p>
-                      </div>
+                  </div>
+                  <div className="mt-4 grid gap-3 border-t border-slate-200/75 pt-4 text-xs text-slate-500">
+                    <div className="flex items-center gap-2">
+                      <Navigation size={14} className="text-sky-600" aria-hidden="true" />
+                      <span>
+                        {formatDate(normalizedFrom)} → {formatDate(normalizedTo)}
+                      </span>
                     </div>
                     <a
                       href={`/api/positions/kml?${new URLSearchParams({ deviceId, from: normalizedFrom, to: normalizedTo })}`}
-                      className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
                     >
                       <Download size={14} aria-hidden="true" /> Download route as KML
                     </a>
-                  </section>
-                </div>
+                  </div>
+                </section>
               </>
             ) : (
               <StateCard type={state} />
             )}
           </div>
+
+          {hasReplay && selectedDevice ? (
+            <div className="border-t border-slate-200/80 bg-white/95 p-4 shadow-inner">
+              <section aria-label="Replay controls" className="mx-auto max-w-lg">
+                <ReplayControls />
+              </section>
+            </div>
+          ) : null}
         </aside>
       </ReplayPlayer>
     </main>
