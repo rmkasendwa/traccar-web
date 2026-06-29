@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition, type FormEvent } from 'react';
+import { useEffect, useState, useTransition, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { CalendarDays, Search } from 'lucide-react';
 import type { ReplayDevice } from '@/features/replay/types';
@@ -88,6 +88,21 @@ export default function ReplayFilterPanel({
   });
   const [customFrom, setCustomFrom] = useState(initialCustomFrom);
   const [customTo, setCustomTo] = useState(initialCustomTo);
+  const [dirty, setDirty] = useState(!initialFrom || !initialTo);
+
+  useEffect(() => {
+    setSelectedDevice(deviceId);
+    setPeriod(
+      periods.some((item) => item.value === initialPeriod)
+        ? (initialPeriod as Period)
+        : initialFrom && initialTo
+          ? 'custom'
+          : 'today',
+    );
+    setCustomFrom(initialCustomFrom);
+    setCustomTo(initialCustomTo);
+    setDirty(!initialFrom || !initialTo);
+  }, [deviceId, initialCustomFrom, initialCustomTo, initialFrom, initialPeriod, initialTo]);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -113,7 +128,10 @@ export default function ReplayFilterPanel({
         Device
         <select
           value={selectedDevice}
-          onChange={(event) => setSelectedDevice(event.target.value)}
+          onChange={(event) => {
+            setSelectedDevice(event.target.value);
+            setDirty(true);
+          }}
           required
           className="h-11 min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium normal-case tracking-normal text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
         >
@@ -137,7 +155,10 @@ export default function ReplayFilterPanel({
             <button
               key={item.value}
               type="button"
-              onClick={() => setPeriod(item.value)}
+              onClick={() => {
+                setPeriod(item.value);
+                setDirty(true);
+              }}
               className={`rounded-lg border px-2.5 py-2 text-left text-xs font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
                 period === item.value
                   ? 'border-sky-300 bg-sky-50 text-sky-800 shadow-sm'
@@ -158,7 +179,10 @@ export default function ReplayFilterPanel({
             <input
               type="datetime-local"
               value={customFrom}
-              onChange={(event) => setCustomFrom(event.target.value)}
+              onChange={(event) => {
+                setCustomFrom(event.target.value);
+                setDirty(true);
+              }}
               required
               className="h-10 min-w-0 rounded-lg border border-slate-200 px-2 text-xs text-slate-800 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
             />
@@ -168,7 +192,10 @@ export default function ReplayFilterPanel({
             <input
               type="datetime-local"
               value={customTo}
-              onChange={(event) => setCustomTo(event.target.value)}
+              onChange={(event) => {
+                setCustomTo(event.target.value);
+                setDirty(true);
+              }}
               required
               className="h-10 min-w-0 rounded-lg border border-slate-200 px-2 text-xs text-slate-800 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
             />
@@ -179,7 +206,11 @@ export default function ReplayFilterPanel({
       <button
         type="submit"
         disabled={!selectedDevice || pending}
-        className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-sm font-semibold text-white shadow-lg shadow-slate-950/15 transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+        className={`inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold shadow-lg transition disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
+          dirty
+            ? 'bg-amber-400 text-amber-950 shadow-amber-500/20 hover:bg-amber-300'
+            : 'bg-slate-950 text-white shadow-slate-950/15 hover:bg-sky-700'
+        }`}
       >
         <Search size={16} aria-hidden="true" />
         {pending ? 'Loading route…' : 'Load replay'}
