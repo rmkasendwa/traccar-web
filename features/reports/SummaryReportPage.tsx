@@ -24,13 +24,12 @@ import {
 import ReportFilter, { updateReportParams } from '@/features/reports/components/ReportFilter';
 import { useAttributePreference } from '@/lib/preferences';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import PageLayout from '@/components/layout/PageLayout';
-import ReportsMenu from '@/features/reports/components/ReportsMenu';
 import usePersistedState from '@/lib/usePersistedState';
 import ColumnSelect from '@/features/reports/components/ColumnSelect';
 import { useCatch, useCatchCallback } from '@/lib/react';
 import useReportStyles from '@/features/reports/common/useReportStyles';
 import TableShimmer from '@/components/ui/TableShimmer';
+import ReportEmptyState from '@/features/reports/components/ReportEmptyState';
 import scheduleReport from '@/features/reports/common/scheduleReport';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import exportExcel from '@/features/reports/lib/exportExcel';
@@ -144,7 +143,7 @@ const SummaryReportPage = () => {
   };
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportSummary']}>
+    <div className="report-page">
       <div className={classes.header}>
         <ReportFilter
           onShow={onShow}
@@ -174,31 +173,35 @@ const SummaryReportPage = () => {
           <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
         </ReportFilter>
       </div>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('sharedDevice')}</TableCell>
-            {columns.map((key) => (
-              <TableCell key={key}>{t(columnsMap.get(key))}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!loading ? (
-            items.map((item) => (
-              <TableRow key={`${item.deviceId}_${Date.parse(item.startTime)}`}>
-                <TableCell>{devices[item.deviceId].name}</TableCell>
-                {columns.map((key) => (
-                  <TableCell key={key}>{formatValue(item, key)}</TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableShimmer columns={columns.length + 1} />
-          )}
-        </TableBody>
-      </Table>
-    </PageLayout>
+      {!loading && !items.length ? (
+        <ReportEmptyState />
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('sharedDevice')}</TableCell>
+              {columns.map((key) => (
+                <TableCell key={key}>{t(columnsMap.get(key))}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {!loading ? (
+              items.map((item) => (
+                <TableRow key={`${item.deviceId}_${Date.parse(item.startTime)}`}>
+                  <TableCell>{devices[item.deviceId].name}</TableCell>
+                  {columns.map((key) => (
+                    <TableCell key={key}>{formatValue(item, key)}</TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableShimmer columns={columns.length + 1} />
+            )}
+          </TableBody>
+        </Table>
+      )}
+    </div>
   );
 };
 

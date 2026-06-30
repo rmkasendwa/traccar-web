@@ -15,9 +15,8 @@ import { makeStyles } from '@/components/ui/styles';
 import { CheckCircleOutlinedIcon as CheckCircleOutlineIcon } from '@/components/ui/icons';
 import { HelpOutlinedIcon as HelpOutlineIcon } from '@/components/ui/icons';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import PageLayout from '@/components/layout/PageLayout';
-import ReportsMenu from '@/features/reports/components/ReportsMenu';
 import { sessionActions } from '@/store';
+import ReportEmptyState from '@/features/reports/components/ReportEmptyState';
 
 const useStyles = makeStyles()((theme) => ({
   columnAction: {
@@ -45,44 +44,51 @@ const LogsPage = () => {
   };
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'sharedLogs']}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell className={classes.columnAction} />
-            <TableCell>{t('deviceIdentifier')}</TableCell>
-            <TableCell>{t('positionProtocol')}</TableCell>
-            <TableCell>{t('commandData')}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {items.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell className={classes.columnAction} padding="none">
-                {item.deviceId ? (
-                  <IconButton color="success" size="small" disabled>
-                    <CheckCircleOutlineIcon fontSize="small" />
-                  </IconButton>
-                ) : (
-                  <Tooltip title={t('loginRegister')}>
-                    <IconButton
-                      color="error"
-                      size="small"
-                      onClick={() => registerDevice(item.uniqueId)}
-                    >
-                      <HelpOutlineIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </TableCell>
-              <TableCell>{item.uniqueId}</TableCell>
-              <TableCell>{item.protocol}</TableCell>
-              <TableCell>{item.data}</TableCell>
+    <div className="report-page">
+      {!items.length ? (
+        <ReportEmptyState
+          title="Waiting for device logs"
+          description="Incoming device communication will appear here in real time."
+        />
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell className={classes.columnAction} />
+              <TableCell>{t('deviceIdentifier')}</TableCell>
+              <TableCell>{t('positionProtocol')}</TableCell>
+              <TableCell>{t('commandData')}</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </PageLayout>
+          </TableHead>
+          <TableBody>
+            {items.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell className={classes.columnAction} padding="none">
+                  {item.deviceId ? (
+                    <IconButton color="success" size="small" disabled>
+                      <CheckCircleOutlineIcon fontSize="small" />
+                    </IconButton>
+                  ) : (
+                    <Tooltip title={t('loginRegister')}>
+                      <IconButton
+                        color="error"
+                        size="small"
+                        onClick={() => registerDevice(item.uniqueId)}
+                      >
+                        <HelpOutlineIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </TableCell>
+                <TableCell>{item.uniqueId}</TableCell>
+                <TableCell>{item.protocol}</TableCell>
+                <TableCell>{item.data}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </div>
   );
 };
 

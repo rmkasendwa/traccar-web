@@ -6,9 +6,8 @@ import { makeStyles } from '@/components/ui/styles';
 import { DeleteIcon } from '@/components/ui/icons';
 import { useAsyncTask } from '@/lib/react';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import PageLayout from '@/components/layout/PageLayout';
-import ReportsMenu from '@/features/reports/components/ReportsMenu';
 import TableShimmer from '@/components/ui/TableShimmer';
+import ReportEmptyState from '@/features/reports/components/ReportEmptyState';
 import RemoveDialog from '@/components/ui/RemoveDialog';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 
@@ -62,35 +61,42 @@ const ScheduledPage = () => {
   };
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportScheduled']}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('sharedType')}</TableCell>
-            <TableCell>{t('sharedDescription')}</TableCell>
-            <TableCell>{t('sharedCalendar')}</TableCell>
-            <TableCell className={classes.columnAction} />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!loading ? (
-            items.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{formatType(item.type)}</TableCell>
-                <TableCell>{item.description}</TableCell>
-                <TableCell>{calendars[item.calendarId].name}</TableCell>
-                <TableCell className={classes.columnAction} padding="none">
-                  <IconButton size="small" onClick={() => setRemovingId(item.id)}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))
-          ) : (
-            <TableShimmer columns={4} endAction />
-          )}
-        </TableBody>
-      </Table>
+    <div className="report-page">
+      {!loading && !items.length ? (
+        <ReportEmptyState
+          title="No scheduled reports"
+          description="Schedule a report from any report page to have it delivered automatically."
+        />
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('sharedType')}</TableCell>
+              <TableCell>{t('sharedDescription')}</TableCell>
+              <TableCell>{t('sharedCalendar')}</TableCell>
+              <TableCell className={classes.columnAction} />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {!loading ? (
+              items.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>{formatType(item.type)}</TableCell>
+                  <TableCell>{item.description}</TableCell>
+                  <TableCell>{calendars[item.calendarId].name}</TableCell>
+                  <TableCell className={classes.columnAction} padding="none">
+                    <IconButton size="small" onClick={() => setRemovingId(item.id)}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableShimmer columns={4} endAction />
+            )}
+          </TableBody>
+        </Table>
+      )}
       <RemoveDialog
         style={{ transform: 'none' }}
         open={!!removingId}
@@ -103,7 +109,7 @@ const ScheduledPage = () => {
           }
         }}
       />
-    </PageLayout>
+    </div>
   );
 };
 

@@ -4,13 +4,12 @@ import { useSelector } from 'react-redux';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@/components/ui';
 import ReportFilter from '@/features/reports/components/ReportFilter';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import PageLayout from '@/components/layout/PageLayout';
-import ReportsMenu from '@/features/reports/components/ReportsMenu';
 import ResizeHandle from '@/features/reports/components/ResizeHandle';
 import { useCatchCallback } from '@/lib/react';
 import MapView from '@/features/map/core/MapView';
 import useReportStyles from '@/features/reports/common/useReportStyles';
 import TableShimmer from '@/components/ui/TableShimmer';
+import ReportEmptyState from '@/features/reports/components/ReportEmptyState';
 import MapCamera from '@/features/map/MapCamera';
 import MapGeofence from '@/features/map/MapGeofence';
 import { formatTime } from '@/lib/formatter';
@@ -57,7 +56,7 @@ const CombinedReportPage = () => {
   }, []);
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportCombined']}>
+    <div className="report-page">
       <div className={classes.container}>
         {Boolean(items.length) && (
           <>
@@ -84,33 +83,37 @@ const CombinedReportPage = () => {
           <div className={classes.header}>
             <ReportFilter onShow={onShow} deviceType="multiple" loading={loading} />
           </div>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>{t('sharedDevice')}</TableCell>
-                <TableCell>{t('positionFixTime')}</TableCell>
-                <TableCell>{t('sharedType')}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!loading ? (
-                items.flatMap((item) =>
-                  item.events.map((event, index) => (
-                    <TableRow key={event.id}>
-                      <TableCell>{index ? '' : devices[item.deviceId].name}</TableCell>
-                      <TableCell>{formatTime(event.eventTime, 'seconds')}</TableCell>
-                      <TableCell>{t(prefixString('event', event.type))}</TableCell>
-                    </TableRow>
-                  )),
-                )
-              ) : (
-                <TableShimmer columns={3} />
-              )}
-            </TableBody>
-          </Table>
+          {!loading && !items.length ? (
+            <ReportEmptyState />
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t('sharedDevice')}</TableCell>
+                  <TableCell>{t('positionFixTime')}</TableCell>
+                  <TableCell>{t('sharedType')}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {!loading ? (
+                  items.flatMap((item) =>
+                    item.events.map((event, index) => (
+                      <TableRow key={event.id}>
+                        <TableCell>{index ? '' : devices[item.deviceId].name}</TableCell>
+                        <TableCell>{formatTime(event.eventTime, 'seconds')}</TableCell>
+                        <TableCell>{t(prefixString('event', event.type))}</TableCell>
+                      </TableRow>
+                    )),
+                  )
+                ) : (
+                  <TableShimmer columns={3} />
+                )}
+              </TableBody>
+            </Table>
+          )}
         </div>
       </div>
-    </PageLayout>
+    </div>
   );
 };
 

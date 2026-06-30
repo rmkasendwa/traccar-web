@@ -1,14 +1,12 @@
 // @ts-nocheck
 import { FormControl, InputLabel, MenuItem, Select } from '@/components/ui';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import useReportStyles from '@/features/reports/common/useReportStyles';
 
 const ColumnSelect = ({ columns, setColumns, columnsArray, rawValues, disabled }) => {
-  const { classes } = useReportStyles();
   const t = useTranslation();
 
   return (
-    <div className={classes.filterItem}>
+    <div className="min-w-0">
       <FormControl fullWidth>
         <InputLabel>{t('sharedColumns')}</InputLabel>
         <Select

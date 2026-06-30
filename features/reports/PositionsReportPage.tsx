@@ -6,8 +6,6 @@ import { GpsFixedIcon } from '@/components/ui/icons';
 import { LocationSearchingIcon } from '@/components/ui/icons';
 import ReportFilter, { updateReportParams } from '@/features/reports/components/ReportFilter';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import PageLayout from '@/components/layout/PageLayout';
-import ReportsMenu from '@/features/reports/components/ReportsMenu';
 import PositionValue from '@/features/positions/components/PositionValue';
 import ColumnSelect from '@/features/reports/components/ColumnSelect';
 import ResizeHandle from '@/features/reports/components/ResizeHandle';
@@ -19,6 +17,7 @@ import MapRoutePoints from '@/features/map/MapRoutePoints';
 import MapPositions from '@/features/map/MapPositions';
 import useReportStyles from '@/features/reports/common/useReportStyles';
 import TableShimmer from '@/components/ui/TableShimmer';
+import ReportEmptyState from '@/features/reports/components/ReportEmptyState';
 import MapCamera from '@/features/map/MapCamera';
 import MapGeofence from '@/features/map/MapGeofence';
 import scheduleReport from '@/features/reports/common/scheduleReport';
@@ -118,7 +117,7 @@ const PositionsReportPage = () => {
   });
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportPositions']}>
+    <div className="report-page">
       <div className={classes.container}>
         {selectedItem && (
           <>
@@ -173,64 +172,68 @@ const PositionsReportPage = () => {
               />
             </ReportFilter>
           </div>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.columnAction} />
-                {columns.map((key) => (
-                  <TableCell key={key}>{positionAttributes[key]?.name || key}</TableCell>
-                ))}
-                <TableCell className={classes.columnAction} />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!loading ? (
-                items.slice(0, 4000).map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className={classes.columnAction} padding="none">
-                      {selectedItem === item ? (
-                        <IconButton
-                          size="small"
-                          onClick={() => setSelectedItem(null)}
-                          ref={selectedRef}
-                        >
-                          <GpsFixedIcon fontSize="small" />
-                        </IconButton>
-                      ) : (
-                        <IconButton size="small" onClick={() => setSelectedItem(item)}>
-                          <LocationSearchingIcon fontSize="small" />
-                        </IconButton>
-                      )}
-                    </TableCell>
-                    {columns.map((key) => (
-                      <TableCell key={key}>
-                        <PositionValue
-                          position={item}
-                          property={item.hasOwnProperty(key) ? key : null}
-                          attribute={item.hasOwnProperty(key) ? null : key}
+          {!loading && !items.length ? (
+            <ReportEmptyState />
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.columnAction} />
+                  {columns.map((key) => (
+                    <TableCell key={key}>{positionAttributes[key]?.name || key}</TableCell>
+                  ))}
+                  <TableCell className={classes.columnAction} />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {!loading ? (
+                  items.slice(0, 4000).map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className={classes.columnAction} padding="none">
+                        {selectedItem === item ? (
+                          <IconButton
+                            size="small"
+                            onClick={() => setSelectedItem(null)}
+                            ref={selectedRef}
+                          >
+                            <GpsFixedIcon fontSize="small" />
+                          </IconButton>
+                        ) : (
+                          <IconButton size="small" onClick={() => setSelectedItem(item)}>
+                            <LocationSearchingIcon fontSize="small" />
+                          </IconButton>
+                        )}
+                      </TableCell>
+                      {columns.map((key) => (
+                        <TableCell key={key}>
+                          <PositionValue
+                            position={item}
+                            property={item.hasOwnProperty(key) ? key : null}
+                            attribute={item.hasOwnProperty(key) ? null : key}
+                          />
+                        </TableCell>
+                      ))}
+                      <TableCell className={classes.actionCellPadding}>
+                        <CollectionActions
+                          itemId={item.id}
+                          endpoint="positions"
+                          readonly={readonly}
+                          onReload={() => {
+                            setItems(items.filter((position) => position.id !== item.id));
+                          }}
                         />
                       </TableCell>
-                    ))}
-                    <TableCell className={classes.actionCellPadding}>
-                      <CollectionActions
-                        itemId={item.id}
-                        endpoint="positions"
-                        readonly={readonly}
-                        onReload={() => {
-                          setItems(items.filter((position) => position.id !== item.id));
-                        }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableShimmer columns={columns.length + 1} startAction />
-              )}
-            </TableBody>
-          </Table>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableShimmer columns={columns.length + 1} startAction />
+                )}
+              </TableBody>
+            </Table>
+          )}
         </div>
       </div>
-    </PageLayout>
+    </div>
   );
 };
 

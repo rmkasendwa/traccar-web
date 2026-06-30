@@ -7,13 +7,12 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from '@/components/u
 import { formatNumericHours, formatTime } from '@/lib/formatter';
 import ReportFilter, { updateReportParams } from '@/features/reports/components/ReportFilter';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import PageLayout from '@/components/layout/PageLayout';
-import ReportsMenu from '@/features/reports/components/ReportsMenu';
 import ColumnSelect from '@/features/reports/components/ColumnSelect';
 import usePersistedState from '@/lib/usePersistedState';
 import { useCatch, useCatchCallback } from '@/lib/react';
 import useReportStyles from '@/features/reports/common/useReportStyles';
 import TableShimmer from '@/components/ui/TableShimmer';
+import ReportEmptyState from '@/features/reports/components/ReportEmptyState';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import SelectField from '@/components/ui/SelectField';
 import exportExcel from '@/features/reports/lib/exportExcel';
@@ -97,7 +96,7 @@ const GeofenceReportPage = () => {
   };
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'sharedGeofences']}>
+    <div className="report-page">
       <div className={classes.header}>
         <ReportFilter
           onShow={onShow}
@@ -122,33 +121,37 @@ const GeofenceReportPage = () => {
           <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
         </ReportFilter>
       </div>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('sharedDevice')}</TableCell>
-            {columns.map((key) => (
-              <TableCell key={key}>{t(columnsMap.get(key))}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!loading ? (
-            items.map((item) => (
-              <TableRow
-                key={`${item.deviceId}_${item.geofenceId}_${item.startTime}_${item.endTime}`}
-              >
-                <TableCell>{devices[item.deviceId]?.name || item.deviceId}</TableCell>
-                {columns.map((key) => (
-                  <TableCell key={key}>{formatValue(item, key)}</TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableShimmer columns={columns.length + 1} />
-          )}
-        </TableBody>
-      </Table>
-    </PageLayout>
+      {!loading && !items.length ? (
+        <ReportEmptyState />
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('sharedDevice')}</TableCell>
+              {columns.map((key) => (
+                <TableCell key={key}>{t(columnsMap.get(key))}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {!loading ? (
+              items.map((item) => (
+                <TableRow
+                  key={`${item.deviceId}_${item.geofenceId}_${item.startTime}_${item.endTime}`}
+                >
+                  <TableCell>{devices[item.deviceId]?.name || item.deviceId}</TableCell>
+                  {columns.map((key) => (
+                    <TableCell key={key}>{formatValue(item, key)}</TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableShimmer columns={columns.length + 1} />
+            )}
+          </TableBody>
+        </Table>
+      )}
+    </div>
   );
 };
 

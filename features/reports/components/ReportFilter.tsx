@@ -13,11 +13,11 @@ import {
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import useReportStyles from '@/features/reports/common/useReportStyles';
 import SplitButton from '@/components/ui/SplitButton';
 import SelectField from '@/components/ui/SelectField';
 import { useRestriction } from '@/lib/permissions';
 import { deviceEquality } from '@/features/devices/lib/deviceEquality';
+import { RotateCcw, SlidersHorizontal } from 'lucide-react';
 
 export const updateReportParams = (searchParams, setSearchParams, key, values) => {
   const newParams = new URLSearchParams(searchParams);
@@ -29,7 +29,6 @@ export const updateReportParams = (searchParams, setSearchParams, key, values) =
 };
 
 const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, loading, formats }) => {
-  const { classes } = useReportStyles();
   const t = useTranslation();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -189,136 +188,171 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
     }
   };
 
+  const resetFilters = () => {
+    setPeriod('today');
+    setSelectedOption('json');
+    setDescription(undefined);
+    setCalendarId(undefined);
+    setSearchParams(new URLSearchParams(), { replace: true });
+  };
+
   return (
-    <div className={classes.filter}>
-      {deviceType !== 'none' && (
-        <div className={classes.filterItem}>
-          <SelectField
-            label={t(deviceType === 'multiple' ? 'deviceTitle' : 'reportDevice')}
-            data={
-              deviceType === 'multiple' ? deviceList : deviceList.filter((it) => it.id !== 'all')
-            }
-            value={deviceType === 'multiple' ? deviceIds : deviceIds.find(() => true)}
-            allValue="all"
-            onChange={(e) => {
-              const values =
-                deviceType === 'multiple' ? e.target.value : [e.target.value].filter((id) => id);
-              updateReportParams(searchParams, setSearchParams, 'deviceId', values);
-            }}
-            multiple={deviceType === 'multiple'}
-            singleLine={deviceType === 'multiple'}
-            fullWidth
-          />
+    <section className="border-b border-slate-200 bg-white/95 p-4 print:hidden sm:p-5">
+      <div className="mb-4 flex items-center gap-3">
+        <span className="grid h-9 w-9 place-items-center rounded-xl bg-sky-50 text-sky-700">
+          <SlidersHorizontal size={17} aria-hidden="true" />
+        </span>
+        <div>
+          <h2 className="text-sm font-bold text-slate-950">Report criteria</h2>
+          <p className="text-xs text-slate-500">
+            Choose what to include, then generate your report.
+          </p>
         </div>
-      )}
-      {deviceType === 'multiple' && (
-        <div className={classes.filterItem}>
-          <SelectField
-            label={t('settingsGroups')}
-            data={groupList}
-            value={groupIds}
-            onChange={(e) => {
-              const values = e.target.value;
-              updateReportParams(searchParams, setSearchParams, 'groupId', values);
-            }}
-            multiple
-            singleLine
-            fullWidth
-          />
-        </div>
-      )}
-      {selectedOption !== 'schedule' ? (
-        <>
-          <div className={classes.filterItem}>
-            <FormControl fullWidth>
-              <InputLabel>{t('reportPeriod')}</InputLabel>
-              <Select
-                label={t('reportPeriod')}
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-              >
-                <MenuItem value="today">{t('reportToday')}</MenuItem>
-                <MenuItem value="yesterday">{t('reportYesterday')}</MenuItem>
-                <MenuItem value="thisWeek">{t('reportThisWeek')}</MenuItem>
-                <MenuItem value="previousWeek">{t('reportPreviousWeek')}</MenuItem>
-                <MenuItem value="thisMonth">{t('reportThisMonth')}</MenuItem>
-                <MenuItem value="previousMonth">{t('reportPreviousMonth')}</MenuItem>
-                <MenuItem value="custom">{t('reportCustom')}</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          {period === 'custom' && (
-            <div className={classes.filterItem}>
-              <TextField
-                label={t('reportFrom')}
-                type="datetime-local"
-                value={customFrom}
-                onChange={(e) => setCustomFrom(e.target.value)}
-                fullWidth
-              />
-            </div>
-          )}
-          {period === 'custom' && (
-            <div className={classes.filterItem}>
-              <TextField
-                label={t('reportTo')}
-                type="datetime-local"
-                value={customTo}
-                onChange={(e) => setCustomTo(e.target.value)}
-                fullWidth
-              />
-            </div>
-          )}
-        </>
-      ) : (
-        <>
-          <div className={classes.filterItem}>
-            <TextField
-              value={description || ''}
-              onChange={(event) => setDescription(event.target.value)}
-              label={t('sharedDescription')}
-              fullWidth
-            />
-          </div>
-          <div className={classes.filterItem}>
-            <SelectField
-              value={calendarId}
-              onChange={(event) => setCalendarId(Number(event.target.value))}
-              endpoint="/api/calendars"
-              label={t('sharedCalendar')}
-              fullWidth
-            />
-          </div>
-        </>
-      )}
-      {children}
-      <div className={classes.filterItem}>
-        {Object.keys(options).length === 1 ? (
-          <Button
-            fullWidth
-            variant="outlined"
-            color="secondary"
-            disabled={disabled}
-            onClick={onClick}
-          >
-            <Typography variant="button" noWrap>
-              {t(loading ? 'sharedLoading' : 'reportShow')}
-            </Typography>
-          </Button>
-        ) : (
-          <SplitButton
-            fullWidth
-            variant="outlined"
-            color="secondary"
-            disabled={disabled}
-            onClick={onClick}
-            selected={selectedOption}
-            setSelected={onSelected}
-            options={options}
-          />
-        )}
       </div>
-    </div>
+      <div className="grid items-end gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {deviceType !== 'none' && (
+          <div className="min-w-0">
+            <SelectField
+              label={t(deviceType === 'multiple' ? 'deviceTitle' : 'reportDevice')}
+              data={
+                deviceType === 'multiple' ? deviceList : deviceList.filter((it) => it.id !== 'all')
+              }
+              value={deviceType === 'multiple' ? deviceIds : deviceIds.find(() => true)}
+              allValue="all"
+              onChange={(e) => {
+                const values =
+                  deviceType === 'multiple' ? e.target.value : [e.target.value].filter((id) => id);
+                updateReportParams(searchParams, setSearchParams, 'deviceId', values);
+              }}
+              multiple={deviceType === 'multiple'}
+              singleLine={deviceType === 'multiple'}
+              fullWidth
+            />
+          </div>
+        )}
+        {deviceType === 'multiple' && (
+          <div className="min-w-0">
+            <SelectField
+              label={t('settingsGroups')}
+              data={groupList}
+              value={groupIds}
+              onChange={(e) => {
+                const values = e.target.value;
+                updateReportParams(searchParams, setSearchParams, 'groupId', values);
+              }}
+              multiple
+              singleLine
+              fullWidth
+            />
+          </div>
+        )}
+        {selectedOption !== 'schedule' ? (
+          <>
+            <div className="min-w-0">
+              <FormControl fullWidth>
+                <InputLabel>{t('reportPeriod')}</InputLabel>
+                <Select
+                  label={t('reportPeriod')}
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                >
+                  <MenuItem value="today">{t('reportToday')}</MenuItem>
+                  <MenuItem value="yesterday">{t('reportYesterday')}</MenuItem>
+                  <MenuItem value="thisWeek">{t('reportThisWeek')}</MenuItem>
+                  <MenuItem value="previousWeek">{t('reportPreviousWeek')}</MenuItem>
+                  <MenuItem value="thisMonth">{t('reportThisMonth')}</MenuItem>
+                  <MenuItem value="previousMonth">{t('reportPreviousMonth')}</MenuItem>
+                  <MenuItem value="custom">{t('reportCustom')}</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            {period === 'custom' && (
+              <div className="min-w-0">
+                <TextField
+                  label={t('reportFrom')}
+                  type="datetime-local"
+                  value={customFrom}
+                  onChange={(e) => setCustomFrom(e.target.value)}
+                  fullWidth
+                />
+              </div>
+            )}
+            {period === 'custom' && (
+              <div className="min-w-0">
+                <TextField
+                  label={t('reportTo')}
+                  type="datetime-local"
+                  value={customTo}
+                  onChange={(e) => setCustomTo(e.target.value)}
+                  fullWidth
+                />
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="min-w-0">
+              <TextField
+                value={description || ''}
+                onChange={(event) => setDescription(event.target.value)}
+                label={t('sharedDescription')}
+                fullWidth
+              />
+            </div>
+            <div className="min-w-0">
+              <SelectField
+                value={calendarId}
+                onChange={(event) => setCalendarId(Number(event.target.value))}
+                endpoint="/api/calendars"
+                label={t('sharedCalendar')}
+                fullWidth
+              />
+            </div>
+          </>
+        )}
+        {children}
+        <div className="flex min-w-0 gap-2">
+          <div className="min-w-0 flex-1">
+            {Object.keys(options).length === 1 ? (
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={disabled}
+                onClick={onClick}
+              >
+                <Typography variant="button" noWrap>
+                  {t(loading ? 'sharedLoading' : 'reportShow')}
+                </Typography>
+              </Button>
+            ) : (
+              <SplitButton
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={disabled}
+                onClick={onClick}
+                selected={selectedOption}
+                setSelected={onSelected}
+                options={options}
+              />
+            )}
+          </div>
+          {searchParams.size > 0 && (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={resetFilters}
+              aria-label="Reset report filters"
+              title="Reset filters"
+              className="px-3"
+            >
+              <RotateCcw size={16} />
+            </Button>
+          )}
+        </div>
+      </div>
+    </section>
   );
 };
 

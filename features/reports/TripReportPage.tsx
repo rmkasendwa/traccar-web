@@ -18,8 +18,6 @@ import {
 import ReportFilter from '@/features/reports/components/ReportFilter';
 import { useAttributePreference, usePreference } from '@/lib/preferences';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import PageLayout from '@/components/layout/PageLayout';
-import ReportsMenu from '@/features/reports/components/ReportsMenu';
 import ColumnSelect from '@/features/reports/components/ColumnSelect';
 import ResizeHandle from '@/features/reports/components/ResizeHandle';
 import usePersistedState from '@/lib/usePersistedState';
@@ -29,6 +27,7 @@ import MapView from '@/features/map/core/MapView';
 import MapRoutePath from '@/features/map/MapRoutePath';
 import AddressValue from '@/features/positions/components/AddressValue';
 import TableShimmer from '@/components/ui/TableShimmer';
+import ReportEmptyState from '@/features/reports/components/ReportEmptyState';
 import MapMarkers from '@/features/map/MapMarkers';
 import MapCamera from '@/features/map/MapCamera';
 import MapGeofence from '@/features/map/MapGeofence';
@@ -217,7 +216,7 @@ const TripReportPage = () => {
   };
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportTrips']}>
+    <div className="report-page">
       <div className={classes.container}>
         {selectedItem && (
           <>
@@ -250,50 +249,54 @@ const TripReportPage = () => {
               <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
             </ReportFilter>
           </div>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.columnAction} />
-                <TableCell>{t('sharedDevice')}</TableCell>
-                {columns.map((key) => (
-                  <TableCell key={key}>{t(columnsMap.get(key))}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!loading ? (
-                items.map((item) => (
-                  <TableRow key={item.startPositionId}>
-                    <TableCell className={classes.columnAction} padding="none">
-                      <div className={classes.columnActionContainer}>
-                        {selectedItem === item ? (
-                          <IconButton size="small" onClick={() => setSelectedItem(null)}>
-                            <GpsFixedIcon fontSize="small" />
+          {!loading && !items.length ? (
+            <ReportEmptyState />
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.columnAction} />
+                  <TableCell>{t('sharedDevice')}</TableCell>
+                  {columns.map((key) => (
+                    <TableCell key={key}>{t(columnsMap.get(key))}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {!loading ? (
+                  items.map((item) => (
+                    <TableRow key={item.startPositionId}>
+                      <TableCell className={classes.columnAction} padding="none">
+                        <div className={classes.columnActionContainer}>
+                          {selectedItem === item ? (
+                            <IconButton size="small" onClick={() => setSelectedItem(null)}>
+                              <GpsFixedIcon fontSize="small" />
+                            </IconButton>
+                          ) : (
+                            <IconButton size="small" onClick={() => setSelectedItem(item)}>
+                              <LocationSearchingIcon fontSize="small" />
+                            </IconButton>
+                          )}
+                          <IconButton size="small" onClick={() => navigateToReplay(item)}>
+                            <RouteIcon fontSize="small" />
                           </IconButton>
-                        ) : (
-                          <IconButton size="small" onClick={() => setSelectedItem(item)}>
-                            <LocationSearchingIcon fontSize="small" />
-                          </IconButton>
-                        )}
-                        <IconButton size="small" onClick={() => navigateToReplay(item)}>
-                          <RouteIcon fontSize="small" />
-                        </IconButton>
-                      </div>
-                    </TableCell>
-                    <TableCell>{devices[item.deviceId].name}</TableCell>
-                    {columns.map((key) => (
-                      <TableCell key={key}>{formatValue(item, key)}</TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableShimmer columns={columns.length + 2} startAction />
-              )}
-            </TableBody>
-          </Table>
+                        </div>
+                      </TableCell>
+                      <TableCell>{devices[item.deviceId].name}</TableCell>
+                      {columns.map((key) => (
+                        <TableCell key={key}>{formatValue(item, key)}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableShimmer columns={columns.length + 2} startAction />
+                )}
+              </TableBody>
+            </Table>
+          )}
         </div>
       </div>
-    </PageLayout>
+    </div>
   );
 };
 

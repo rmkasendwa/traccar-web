@@ -18,14 +18,13 @@ import { formatAddress, formatNumber, formatSpeed, formatTime } from '@/lib/form
 import ReportFilter, { updateReportParams } from '@/features/reports/components/ReportFilter';
 import { prefixString, unprefixString } from '@/lib/stringUtils';
 import { useTranslation, useTranslationKeys } from '@/providers/localization/LocalizationProvider';
-import PageLayout from '@/components/layout/PageLayout';
-import ReportsMenu from '@/features/reports/components/ReportsMenu';
 import usePersistedState from '@/lib/usePersistedState';
 import ColumnSelect from '@/features/reports/components/ColumnSelect';
 import ResizeHandle from '@/features/reports/components/ResizeHandle';
 import { useCatch, useCatchCallback, useAsyncTask } from '@/lib/react';
 import useReportStyles from '@/features/reports/common/useReportStyles';
 import TableShimmer from '@/components/ui/TableShimmer';
+import ReportEmptyState from '@/features/reports/components/ReportEmptyState';
 import { useAttributePreference, usePreference } from '@/lib/preferences';
 import MapView from '@/features/map/core/MapView';
 import MapGeofence from '@/features/map/MapGeofence';
@@ -243,7 +242,7 @@ const EventReportPage = () => {
   };
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportEvents']}>
+    <div className="report-page">
       <div className={classes.container}>
         {selectedItem && (
           <>
@@ -304,47 +303,51 @@ const EventReportPage = () => {
               <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
             </ReportFilter>
           </div>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.columnAction} />
-                <TableCell>{t('sharedDevice')}</TableCell>
-                {columns.map((key) => (
-                  <TableCell key={key}>{t(columnsMap.get(key))}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!loading ? (
-                items.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className={classes.columnAction} padding="none">
-                      {(item.positionId &&
-                        (selectedItem === item ? (
-                          <IconButton size="small" onClick={() => setSelectedItem(null)}>
-                            <GpsFixedIcon fontSize="small" />
-                          </IconButton>
-                        ) : (
-                          <IconButton size="small" onClick={() => setSelectedItem(item)}>
-                            <LocationSearchingIcon fontSize="small" />
-                          </IconButton>
-                        ))) ||
-                        ''}
-                    </TableCell>
-                    <TableCell>{devices[item.deviceId].name}</TableCell>
-                    {columns.map((key) => (
-                      <TableCell key={key}>{formatValue(item, key)}</TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableShimmer columns={columns.length + 2} />
-              )}
-            </TableBody>
-          </Table>
+          {!loading && !items.length ? (
+            <ReportEmptyState />
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.columnAction} />
+                  <TableCell>{t('sharedDevice')}</TableCell>
+                  {columns.map((key) => (
+                    <TableCell key={key}>{t(columnsMap.get(key))}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {!loading ? (
+                  items.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className={classes.columnAction} padding="none">
+                        {(item.positionId &&
+                          (selectedItem === item ? (
+                            <IconButton size="small" onClick={() => setSelectedItem(null)}>
+                              <GpsFixedIcon fontSize="small" />
+                            </IconButton>
+                          ) : (
+                            <IconButton size="small" onClick={() => setSelectedItem(item)}>
+                              <LocationSearchingIcon fontSize="small" />
+                            </IconButton>
+                          ))) ||
+                          ''}
+                      </TableCell>
+                      <TableCell>{devices[item.deviceId].name}</TableCell>
+                      {columns.map((key) => (
+                        <TableCell key={key}>{formatValue(item, key)}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableShimmer columns={columns.length + 2} />
+                )}
+              </TableBody>
+            </Table>
+          )}
         </div>
       </div>
-    </PageLayout>
+    </div>
   );
 };
 

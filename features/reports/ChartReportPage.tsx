@@ -15,8 +15,6 @@ import {
 import ReportFilter from '@/features/reports/components/ReportFilter';
 import { formatTime } from '@/lib/formatter';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
-import PageLayout from '@/components/layout/PageLayout';
-import ReportsMenu from '@/features/reports/components/ReportsMenu';
 import usePositionAttributes from '@/features/positions/hooks/usePositionAttributes';
 import { useCatchCallback } from '@/lib/react';
 import { useAttributePreference } from '@/lib/preferences';
@@ -28,6 +26,7 @@ import {
   volumeFromLiters,
 } from '@/lib/converter';
 import useReportStyles from '@/features/reports/common/useReportStyles';
+import ReportEmptyState from '@/features/reports/components/ReportEmptyState';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 
 const ChartReportPage = () => {
@@ -130,7 +129,7 @@ const ChartReportPage = () => {
   ];
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportChart']}>
+    <div className="report-page">
       <ReportFilter onShow={onShow} onExport={() => {}} deviceType="single" formats={[]}>
         <div className={classes.filterItem}>
           <FormControl fullWidth>
@@ -166,6 +165,7 @@ const ChartReportPage = () => {
           </FormControl>
         </div>
       </ReportFilter>
+      {!items.length && <ReportEmptyState />}
       {items.length > 0 && (
         <div className={classes.chart}>
           <ResponsiveContainer>
@@ -222,7 +222,7 @@ const ChartReportPage = () => {
           </ResponsiveContainer>
         </div>
       )}
-    </PageLayout>
+    </div>
   );
 };
 
