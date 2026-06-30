@@ -175,9 +175,9 @@ export default function ReplayDateTimePicker({
                   </span>
                 ))}
               </div>
-              <div className="grid grid-cols-7 gap-1">
+              <div key={`${year}-${month}`} className="grid grid-cols-7 gap-1">
                 {cells.map((day, index) => {
-                  if (!day) return <span key={`empty-${index}`} className="h-8" />;
+                  if (!day) return <span key={`${year}-${month}-empty-${index}`} className="h-8" />;
                   const selected =
                     selectedDate.getUTCFullYear() === year &&
                     selectedDate.getUTCMonth() === month &&
@@ -188,7 +188,7 @@ export default function ReplayDateTimePicker({
                     today.getUTCDate() === day;
                   return (
                     <button
-                      key={day}
+                      key={dateValue(year, month, day)}
                       type="button"
                       onClick={() => chooseDate(day)}
                       className={`grid h-8 place-items-center rounded-lg text-xs font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-sky-500 ${

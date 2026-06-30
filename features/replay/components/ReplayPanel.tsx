@@ -1,8 +1,6 @@
-'use client';
-
 import Link from 'next/link';
-import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { ArrowLeft, ChevronsUpDown } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 type ReplayPanelProps = {
   hasReplay: boolean;
@@ -11,17 +9,20 @@ type ReplayPanelProps = {
 };
 
 export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanelProps) {
-  const [collapsed, setCollapsed] = useState(hasReplay);
-
-  useEffect(() => {
-    if (hasReplay) setCollapsed(true);
-  }, [hasReplay]);
-
   return (
     <aside
       className="absolute inset-x-3 bottom-3 z-30 flex max-h-[calc(100%-1.5rem)] w-auto flex-col overflow-hidden rounded-[1.35rem] border border-white/60 bg-white/94 shadow-2xl shadow-slate-950/25 backdrop-blur-xl md:inset-x-auto md:top-3 md:left-3 md:w-88"
       aria-label="Replay panel"
     >
+      <input
+        key={hasReplay ? 'loaded' : 'setup'}
+        id="replay-panel-expanded"
+        type="checkbox"
+        defaultChecked={!hasReplay}
+        className="peer sr-only"
+        aria-label="Expand or collapse replay panel"
+        aria-controls="replay-panel-content"
+      />
       <header className="relative z-20 shrink-0 border-b border-white/10 bg-slate-950/95 px-4 py-3 text-white backdrop-blur">
         <div className="pointer-events-none absolute -right-10 -top-16 h-36 w-36 rounded-full bg-sky-500/25 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-16 left-12 h-28 w-28 rounded-full bg-violet-500/20 blur-3xl" />
@@ -47,27 +48,20 @@ export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanel
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Loaded
               </span>
             )}
-            <button
-              type="button"
-              onClick={() => setCollapsed((value) => !value)}
-              className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/8 text-slate-300 transition hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 md:hidden"
-              aria-expanded={!collapsed}
-              aria-controls="replay-panel-content"
-              aria-label={collapsed ? 'Expand replay panel' : 'Collapse replay panel'}
+            <label
+              htmlFor="replay-panel-expanded"
+              className="grid h-9 w-9 cursor-pointer place-items-center rounded-xl border border-white/10 bg-white/8 text-slate-300 transition hover:bg-white/15 hover:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-sky-400 md:hidden"
+              title="Expand or collapse replay panel"
             >
-              {collapsed ? (
-                <ChevronUp size={18} aria-hidden="true" />
-              ) : (
-                <ChevronDown size={18} aria-hidden="true" />
-              )}
-            </button>
+              <ChevronsUpDown size={18} aria-hidden="true" />
+            </label>
           </div>
         </div>
       </header>
 
       <div
         id="replay-panel-content"
-        className={`${collapsed ? 'hidden' : 'block'} min-h-0 flex-1 overflow-y-auto md:block`}
+        className="hidden min-h-0 flex-1 overflow-y-auto peer-checked:block md:block"
       >
         <div className="space-y-4 p-4">{children}</div>
       </div>
