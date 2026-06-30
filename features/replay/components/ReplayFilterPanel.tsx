@@ -13,6 +13,7 @@ type Period =
   | 'previousWeek'
   | 'thisMonth'
   | 'previousMonth'
+  | 'specificDay'
   | 'custom';
 
 const periods: { value: Period; label: string }[] = [
@@ -22,6 +23,7 @@ const periods: { value: Period; label: string }[] = [
   { value: 'previousWeek', label: 'Previous week' },
   { value: 'thisMonth', label: 'This month' },
   { value: 'previousMonth', label: 'Previous month' },
+  { value: 'specificDay', label: 'Choose a day' },
   { value: 'custom', label: 'Custom range' },
 ];
 
@@ -67,6 +69,7 @@ type ReplayFilterPanelProps = {
   initialFrom?: string;
   initialTo?: string;
   initialPeriod?: string;
+  initialDay?: string;
   initialCustomFrom: string;
   initialCustomTo: string;
 };
@@ -77,6 +80,7 @@ export default function ReplayFilterPanel({
   initialFrom,
   initialTo,
   initialPeriod,
+  initialDay,
   initialCustomFrom,
   initialCustomTo,
 }: ReplayFilterPanelProps) {
@@ -89,6 +93,7 @@ export default function ReplayFilterPanel({
   });
   const [customFrom, setCustomFrom] = useState(initialCustomFrom);
   const [customTo, setCustomTo] = useState(initialCustomTo);
+  const [selectedDay, setSelectedDay] = useState(initialDay || initialCustomFrom.slice(0, 10));
   const [dirty, setDirty] = useState(!initialFrom || !initialTo);
 
   useEffect(() => {
@@ -102,16 +107,32 @@ export default function ReplayFilterPanel({
     );
     setCustomFrom(initialCustomFrom);
     setCustomTo(initialCustomTo);
+    setSelectedDay(initialDay || initialCustomFrom.slice(0, 10));
     setDirty(!initialFrom || !initialTo);
-  }, [deviceId, initialCustomFrom, initialCustomTo, initialFrom, initialPeriod, initialTo]);
+  }, [
+    deviceId,
+    initialCustomFrom,
+    initialCustomTo,
+    initialDay,
+    initialFrom,
+    initialPeriod,
+    initialTo,
+  ]);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedDevice) return;
-    const [from, to] =
-      period === 'custom'
-        ? [new Date(`${customFrom}Z`), new Date(`${customTo}Z`)]
-        : rangeFor(period);
+    let from;
+    let to;
+    if (period === 'specificDay') {
+      from = new Date(`${selectedDay}T00:00:00`);
+      to = endOfDay(new Date(from));
+    } else if (period === 'custom') {
+      from = new Date(`${customFrom}Z`);
+      to = new Date(`${customTo}Z`);
+    } else {
+      [from, to] = rangeFor(period);
+    }
     if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) return;
 
     const query = new URLSearchParams({
@@ -120,6 +141,7 @@ export default function ReplayFilterPanel({
       to: to.toISOString(),
       period,
     });
+    if (period === 'specificDay') query.set('day', selectedDay);
     startTransition(() => router.push(`/replay?${query}`));
   };
 
@@ -164,7 +186,7 @@ export default function ReplayFilterPanel({
                 period === item.value
                   ? 'border-sky-300 bg-sky-50 text-sky-800 shadow-sm'
                   : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
-              } ${item.value === 'custom' ? 'col-span-2 text-center' : ''}`}
+              } ${item.value === 'custom' || item.value === 'specificDay' ? 'col-span-2 text-center' : ''}`}
               aria-pressed={period === item.value}
             >
               {item.label}
@@ -172,6 +194,18 @@ export default function ReplayFilterPanel({
           ))}
         </div>
       </fieldset>
+
+      {period === 'specificDay' && (
+        <ReplayDateTimePicker
+          label="Replay date"
+          value={`${selectedDay}T00:00`}
+          dateOnly
+          onChange={(value) => {
+            setSelectedDay(value.slice(0, 10));
+            setDirty(true);
+          }}
+        />
+      )}
 
       {period === 'custom' && (
         <div className="grid gap-2">

@@ -20,6 +20,7 @@ type ReplayDateTimePickerProps = {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  dateOnly?: boolean;
 };
 
 const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -36,6 +37,7 @@ export default function ReplayDateTimePicker({
   label,
   value,
   onChange,
+  dateOnly = false,
 }: ReplayDateTimePickerProps) {
   const [date = '', time = '00:00'] = value.split('T');
   const selectedDate = useMemo(() => parseDate(date), [date]);
@@ -87,7 +89,7 @@ export default function ReplayDateTimePicker({
       <legend className="px-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-slate-500">
         {label}
       </legend>
-      <div className="grid grid-cols-[minmax(0,1fr)_6.5rem] gap-2">
+      <div className={dateOnly ? 'block' : 'grid grid-cols-[minmax(0,1fr)_6.5rem] gap-2'}>
         <button
           ref={refs.setReference}
           type="button"
@@ -106,23 +108,27 @@ export default function ReplayDateTimePicker({
             })}
           </span>
         </button>
-        <label className="relative min-w-0">
-          <span className="sr-only">{label} time in UTC</span>
-          <Clock3
-            size={14}
-            className="pointer-events-none absolute top-1/2 left-2 -translate-y-1/2 text-slate-400"
-            aria-hidden="true"
-          />
-          <input
-            type="time"
-            value={time}
-            onChange={(event) => onChange(`${date}T${event.target.value}`)}
-            required
-            className="h-9 w-full min-w-0 rounded-lg bg-slate-50 pr-1 pl-7 text-xs font-semibold text-slate-800 outline-none transition hover:bg-slate-100 focus:bg-sky-50"
-          />
-        </label>
+        {!dateOnly && (
+          <label className="relative min-w-0">
+            <span className="sr-only">{label} time in UTC</span>
+            <Clock3
+              size={14}
+              className="pointer-events-none absolute top-1/2 left-2 -translate-y-1/2 text-slate-400"
+              aria-hidden="true"
+            />
+            <input
+              type="time"
+              value={time}
+              onChange={(event) => onChange(`${date}T${event.target.value}`)}
+              required
+              className="h-9 w-full min-w-0 rounded-lg bg-slate-50 pr-1 pl-7 text-xs font-semibold text-slate-800 outline-none transition hover:bg-slate-100 focus:bg-sky-50"
+            />
+          </label>
+        )}
       </div>
-      <p className="mt-1.5 px-1 text-[0.62rem] font-medium text-slate-400">UTC timezone</p>
+      <p className="mt-1.5 px-1 text-[0.62rem] font-medium text-slate-400">
+        {dateOnly ? 'Full local day' : 'UTC timezone'}
+      </p>
 
       {open && (
         <FloatingPortal>

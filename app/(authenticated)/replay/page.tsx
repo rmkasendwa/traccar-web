@@ -139,6 +139,8 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
   const rawFrom = valueOf(params.from);
   const rawTo = valueOf(params.to);
   const rawPeriod = valueOf(params.period);
+  const rawDay = valueOf(params.day);
+  const replayDay = rawDay && /^\d{4}-\d{2}-\d{2}$/.test(rawDay) ? rawDay : undefined;
   const deviceId = rawDeviceId && /^\d+$/.test(rawDeviceId) ? rawDeviceId : '';
   const fromTime = rawFrom ? parseDate(rawFrom) : Number.NaN;
   const toTime = rawTo ? parseDate(rawTo) : Number.NaN;
@@ -201,6 +203,7 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
             initialFrom={validRange ? normalizedFrom : rawFrom}
             initialTo={validRange ? normalizedTo : rawTo}
             initialPeriod={rawPeriod}
+            initialDay={replayDay}
             initialCustomFrom={initialCustomFrom}
             initialCustomTo={initialCustomTo}
           />
