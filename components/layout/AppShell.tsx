@@ -74,7 +74,7 @@ const App = ({ children, initialUser }: AppProps) => {
       <UpdateController />
       <MotionController />
       <div className="min-h-0 flex-1 overflow-hidden">{children}</div>
-      {location.pathname !== '/' && (
+      {location.pathname !== '/' && location.pathname !== '/replay' && (
         <div className="z-40 shrink-0 md:hidden print:hidden">
           <BottomMenu />
         </div>

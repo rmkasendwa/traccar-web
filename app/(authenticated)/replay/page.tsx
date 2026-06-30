@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   AlertTriangle,
-  ArrowLeft,
   CalendarRange,
   CircleGauge,
   Clock3,
@@ -17,6 +16,7 @@ import {
   WifiOff,
 } from 'lucide-react';
 import ReplayFilterPanel from '@/features/replay/components/ReplayFilterPanel';
+import ReplayPanel from '@/features/replay/components/ReplayPanel';
 import ReplayPlayer, {
   ReplayControls,
   ReplayMapView,
@@ -185,128 +185,100 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
         </div>
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-md bg-linear-to-r from-slate-950/20 to-transparent md:block" />
 
-        <aside className="absolute inset-x-3 top-3 z-30 max-h-[calc(100%-10rem)] flex w-full flex-col overflow-hidden rounded-[1.35rem] border border-white/60 bg-white/94 shadow-2xl shadow-slate-950/25 backdrop-blur-xl md:inset-x-auto md:bottom-3 md:left-3 md:w-88 md:max-h-none">
-          <header className="sticky top-0 z-20 border-b border-white/10 bg-slate-950/95 px-4 pb-4 pt-3 text-white backdrop-blur">
-            <div className="pointer-events-none absolute -right-10 -top-16 h-36 w-36 rounded-full bg-sky-500/25 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-16 left-12 h-28 w-28 rounded-full bg-violet-500/20 blur-3xl" />
-            <div className="relative flex items-center justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-3">
-                <Link
-                  href="/"
-                  aria-label="Back to tracking"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/8 text-slate-300 transition hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-                >
-                  <ArrowLeft size={18} aria-hidden="true" />
-                </Link>
-                <div className="min-w-0">
-                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-sky-300">
-                    History
-                  </p>
-                  <h1 className="truncate text-lg font-bold tracking-tight">Route replay</h1>
-                </div>
-              </div>
-              {hasReplay && (
-                <span className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[0.65rem] font-semibold text-emerald-300">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Loaded
-                </span>
-              )}
-            </div>
-          </header>
-
-          <div className="flex-1 overflow-y-auto space-y-4 p-4">
-            <ReplayFilterPanel
-              devices={devicesResult.devices}
-              deviceId={deviceId}
-              initialFrom={validRange ? normalizedFrom : rawFrom}
-              initialTo={validRange ? normalizedTo : rawTo}
-              initialPeriod={rawPeriod}
-              initialCustomFrom={initialCustomFrom}
-              initialCustomTo={initialCustomTo}
-            />
-
-            {hasReplay && selectedDevice ? (
-              <>
-                <section aria-label="Replay summary" className="grid grid-cols-2 gap-2">
-                  {[
-                    {
-                      label: 'Distance',
-                      value: `${statistics.distanceKm.toFixed(1)} km`,
-                      icon: Route,
-                    },
-                    {
-                      label: 'Duration',
-                      value: formatDuration(statistics.durationMs),
-                      icon: Clock3,
-                    },
-                    {
-                      label: 'Max speed',
-                      value: `${statistics.maxSpeedKph.toFixed(0)} km/h`,
-                      icon: CircleGauge,
-                    },
-                    {
-                      label: 'GPS points',
-                      value: statistics.positionCount.toLocaleString(),
-                      icon: LocateFixed,
-                    },
-                  ].map(({ label, value, icon: Icon }) => (
-                    <article
-                      key={label}
-                      className="rounded-xl border border-slate-200 bg-slate-50 p-3"
-                    >
-                      <div className="flex items-center gap-1.5 text-[0.66rem] font-semibold text-slate-500">
-                        <Icon size={13} className="text-sky-600" aria-hidden="true" /> {label}
-                      </div>
-                      <p className="mt-1 text-base font-bold tracking-tight text-slate-950">
-                        {value}
-                      </p>
-                    </article>
-                  ))}
-                </section>
-
-                <section className="rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm shadow-slate-950/5 backdrop-blur">
-                  <div className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-slate-950/5 px-4 py-3 shadow-inner">
-                    <span className="grid h-10 w-10 place-items-center rounded-2xl bg-sky-500/10 text-sky-700">
-                      <Smartphone size={18} aria-hidden="true" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-slate-950">
-                        {selectedDevice.name}
-                      </p>
-                      <p className="text-[0.68rem] capitalize text-slate-500">
-                        {selectedDevice.status || 'Status unavailable'}
-                        {selectedDevice.model ? ` · ${selectedDevice.model}` : ''}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4 grid gap-3 border-t border-slate-200/75 pt-4 text-xs text-slate-500">
-                    <div className="flex items-center gap-2">
-                      <Navigation size={14} className="text-sky-600" aria-hidden="true" />
-                      <span>
-                        {formatDate(normalizedFrom)} → {formatDate(normalizedTo)}
-                      </span>
-                    </div>
-                    <a
-                      href={`/api/positions/kml?${new URLSearchParams({ deviceId, from: normalizedFrom, to: normalizedTo })}`}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-                    >
-                      <Download size={14} aria-hidden="true" /> Download route as KML
-                    </a>
-                  </div>
-                </section>
-              </>
-            ) : (
-              <StateCard type={state} />
-            )}
-          </div>
-
-          {hasReplay && selectedDevice ? (
-            <div className="border-t border-slate-200/80 bg-white/95 p-4 shadow-inner">
+        <ReplayPanel
+          hasReplay={hasReplay}
+          footer={
+            hasReplay && selectedDevice ? (
               <section aria-label="Replay controls" className="mx-auto max-w-lg">
                 <ReplayControls />
               </section>
-            </div>
-          ) : null}
-        </aside>
+            ) : undefined
+          }
+        >
+          <ReplayFilterPanel
+            devices={devicesResult.devices}
+            deviceId={deviceId}
+            initialFrom={validRange ? normalizedFrom : rawFrom}
+            initialTo={validRange ? normalizedTo : rawTo}
+            initialPeriod={rawPeriod}
+            initialCustomFrom={initialCustomFrom}
+            initialCustomTo={initialCustomTo}
+          />
+
+          {hasReplay && selectedDevice ? (
+            <>
+              <section aria-label="Replay summary" className="grid grid-cols-2 gap-2">
+                {[
+                  {
+                    label: 'Distance',
+                    value: `${statistics.distanceKm.toFixed(1)} km`,
+                    icon: Route,
+                  },
+                  {
+                    label: 'Duration',
+                    value: formatDuration(statistics.durationMs),
+                    icon: Clock3,
+                  },
+                  {
+                    label: 'Max speed',
+                    value: `${statistics.maxSpeedKph.toFixed(0)} km/h`,
+                    icon: CircleGauge,
+                  },
+                  {
+                    label: 'GPS points',
+                    value: statistics.positionCount.toLocaleString(),
+                    icon: LocateFixed,
+                  },
+                ].map(({ label, value, icon: Icon }) => (
+                  <article
+                    key={label}
+                    className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+                  >
+                    <div className="flex items-center gap-1.5 text-[0.66rem] font-semibold text-slate-500">
+                      <Icon size={13} className="text-sky-600" aria-hidden="true" /> {label}
+                    </div>
+                    <p className="mt-1 text-base font-bold tracking-tight text-slate-950">
+                      {value}
+                    </p>
+                  </article>
+                ))}
+              </section>
+
+              <section className="rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm shadow-slate-950/5 backdrop-blur">
+                <div className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-slate-950/5 px-4 py-3 shadow-inner">
+                  <span className="grid h-10 w-10 place-items-center rounded-2xl bg-sky-500/10 text-sky-700">
+                    <Smartphone size={18} aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-slate-950">
+                      {selectedDevice.name}
+                    </p>
+                    <p className="text-[0.68rem] capitalize text-slate-500">
+                      {selectedDevice.status || 'Status unavailable'}
+                      {selectedDevice.model ? ` · ${selectedDevice.model}` : ''}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 grid gap-3 border-t border-slate-200/75 pt-4 text-xs text-slate-500">
+                  <div className="flex items-center gap-2">
+                    <Navigation size={14} className="text-sky-600" aria-hidden="true" />
+                    <span>
+                      {formatDate(normalizedFrom)} → {formatDate(normalizedTo)}
+                    </span>
+                  </div>
+                  <a
+                    href={`/api/positions/kml?${new URLSearchParams({ deviceId, from: normalizedFrom, to: normalizedTo })}`}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+                  >
+                    <Download size={14} aria-hidden="true" /> Download route as KML
+                  </a>
+                </div>
+              </section>
+            </>
+          ) : (
+            <StateCard type={state} />
+          )}
+        </ReplayPanel>
       </ReplayPlayer>
     </main>
   );
