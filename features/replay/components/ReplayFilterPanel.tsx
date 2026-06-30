@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { CalendarDays, Search } from 'lucide-react';
+import ReplayDateTimePicker from '@/features/replay/components/ReplayDateTimePicker';
 import type { ReplayDevice } from '@/features/replay/types';
 
 type Period =
@@ -173,33 +174,23 @@ export default function ReplayFilterPanel({
       </fieldset>
 
       {period === 'custom' && (
-        <div className="grid grid-cols-2 gap-2">
-          <label className="grid min-w-0 gap-1 text-xs font-medium text-slate-500">
-            From (UTC)
-            <input
-              type="datetime-local"
-              value={customFrom}
-              onChange={(event) => {
-                setCustomFrom(event.target.value);
-                setDirty(true);
-              }}
-              required
-              className="h-10 min-w-0 rounded-lg border border-slate-200 px-2 text-xs text-slate-800 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
-            />
-          </label>
-          <label className="grid min-w-0 gap-1 text-xs font-medium text-slate-500">
-            To (UTC)
-            <input
-              type="datetime-local"
-              value={customTo}
-              onChange={(event) => {
-                setCustomTo(event.target.value);
-                setDirty(true);
-              }}
-              required
-              className="h-10 min-w-0 rounded-lg border border-slate-200 px-2 text-xs text-slate-800 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
-            />
-          </label>
+        <div className="grid gap-2">
+          <ReplayDateTimePicker
+            label="From"
+            value={customFrom}
+            onChange={(value) => {
+              setCustomFrom(value);
+              setDirty(true);
+            }}
+          />
+          <ReplayDateTimePicker
+            label="To"
+            value={customTo}
+            onChange={(value) => {
+              setCustomTo(value);
+              setDirty(true);
+            }}
+          />
         </div>
       )}
 

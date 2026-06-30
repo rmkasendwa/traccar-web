@@ -1,6 +1,7 @@
 'use client';
 
 import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
+import ReplayTimeline from '@/features/replay/components/ReplayTimeline';
 import type { ReplayPosition } from '@/features/replay/types';
 import { Gauge, Pause, Play, RotateCcw, RotateCw } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -155,18 +156,12 @@ export function ReplayControls() {
         </span>
       </div>
 
-      <label htmlFor="replay-progress" className="sr-only">
-        Replay timeline
-      </label>
-      <input
-        id="replay-progress"
-        type="range"
-        min={0}
-        max={lastIndex}
+      <ReplayTimeline
         value={index}
-        onChange={(event) => selectPosition(Number(event.target.value))}
-        className="mt-3 h-2 w-full cursor-pointer accent-sky-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-600"
-        aria-valuetext={`Position ${index + 1} of ${positions.length}, ${new Date(currentPosition.fixTime).toLocaleString()}`}
+        max={lastIndex}
+        playing={playing}
+        onChange={selectPosition}
+        valueText={`Position ${index + 1} of ${positions.length}, ${new Date(currentPosition.fixTime).toLocaleString()}`}
       />
 
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
