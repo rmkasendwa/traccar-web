@@ -1,5 +1,8 @@
 'use client';
 
+import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
+import type { ReplayPosition } from '@/features/replay/types';
+import { Gauge, Pause, Play, RotateCcw, RotateCw } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import {
   createContext,
@@ -11,9 +14,6 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { Gauge, Pause, Play, RotateCcw, RotateCw } from 'lucide-react';
-import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
-import type { ReplayPosition } from '@/features/replay/types';
 
 const ReplayMap = dynamic(() => import('@/features/replay/components/ReplayMap'), {
   ssr: false,
@@ -145,7 +145,7 @@ export function ReplayControls() {
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-950/5 sm:p-5">
+    <div>
       <div className="flex items-center justify-between gap-3 text-xs font-medium text-slate-500">
         <time dateTime={currentPosition.fixTime} className="tabular-nums" suppressHydrationWarning>
           {new Date(currentPosition.fixTime).toLocaleString()}
@@ -169,7 +169,7 @@ export function ReplayControls() {
         aria-valuetext={`Position ${index + 1} of ${positions.length}, ${new Date(currentPosition.fixTime).toLocaleString()}`}
       />
 
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:justify-between">
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
         <div className="flex items-center gap-2">
           <button
             type="button"
