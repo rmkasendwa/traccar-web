@@ -1,25 +1,24 @@
 // @ts-nocheck
-import { useCallback, useState } from 'react';
-import { useTheme } from '@/components/ui';
-import { useMediaQuery } from '@/components/ui';
-import { useDispatch, useSelector } from 'react-redux';
+import { useMediaQuery, useTheme } from '@/components/ui';
+import MapGeocoder from '@/features/map/control/MapGeocoder';
+import MapNotification from '@/features/map/control/MapNotification';
+import MapRuler from '@/features/map/control/MapRuler';
 import MapView from '@/features/map/core/MapView';
-import MapSelectedDevice from '@/features/map/main/MapSelectedDevice';
 import MapAccuracy from '@/features/map/main/MapAccuracy';
-import MapGeofence from '@/features/map/MapGeofence';
-import MapCurrentLocation from '@/features/map/MapCurrentLocation';
-import PoiMap from '@/features/map/main/PoiMap';
-import MapPadding from '@/features/map/MapPadding';
-import { devicesActions } from '@/store';
 import MapDefaultCamera from '@/features/map/main/MapDefaultCamera';
 import MapLiveRoutes from '@/features/map/main/MapLiveRoutes';
+import MapSelectedDevice from '@/features/map/main/MapSelectedDevice';
+import PoiMap from '@/features/map/main/PoiMap';
+import MapCurrentLocation from '@/features/map/MapCurrentLocation';
+import MapGeofence from '@/features/map/MapGeofence';
+import MapPadding from '@/features/map/MapPadding';
 import MapPositions from '@/features/map/MapPositions';
-import MapOverlay from '@/features/map/overlay/MapOverlay';
-import MapGeocoder from '@/features/map/control/MapGeocoder';
 import MapScale from '@/features/map/MapScale';
-import MapRuler from '@/features/map/control/MapRuler';
-import MapNotification from '@/features/map/control/MapNotification';
+import MapOverlay from '@/features/map/overlay/MapOverlay';
 import useFeatures from '@/lib/useFeatures';
+import { devicesActions } from '@/store';
+import { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
   const theme = useTheme();

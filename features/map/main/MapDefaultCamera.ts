@@ -1,15 +1,15 @@
 // @ts-nocheck
-import maplibregl from 'maplibre-gl';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { usePreference, useAttributePreference } from '@/lib/preferences';
 import { map } from '@/features/map/core/MapView';
-import { toMapCoordinates } from '@/features/map/core/mapUtil';
 import {
   clampCameraZoom,
   fitBoundsWithCameraMaxZoom,
   jumpToWithCameraMaxZoom,
 } from '@/features/map/core/mapCamera';
+import { toMapCoordinates } from '@/features/map/core/mapUtil';
+import { useAttributePreference, usePreference } from '@/lib/preferences';
+import maplibregl from 'maplibre-gl';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const MapDefaultCamera = ({ filteredPositions }) => {
   const selectedDeviceId = useSelector((state) => state.devices.selectedId);

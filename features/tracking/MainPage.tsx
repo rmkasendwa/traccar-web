@@ -1,15 +1,15 @@
 'use client';
 
-import EventsDrawer from '@/features/tracking/EventsDrawer';
-import DeviceSidebar from '@/features/tracking/components/DeviceSidebar';
-import HomeNavigation from '@/features/tracking/components/HomeNavigation';
-import SelectedDeviceCard from '@/features/tracking/components/SelectedDeviceCard';
 import usePersistedState from '@/lib/usePersistedState';
 import { devicesActions, sessionActions } from '@/store';
 import { Menu, X } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import EventsDrawer from './EventsDrawer';
+import DeviceSidebar from './components/DeviceSidebar';
+import HomeNavigation from './components/HomeNavigation';
+import SelectedDeviceCard from './components/SelectedDeviceCard';
 
 const MainMap = dynamic(() => import('@/features/tracking/MainMap'), {
   ssr: false,
