@@ -82,6 +82,7 @@ export default function ReplayTimeline({
         className="absolute inset-0 z-20 h-full w-full cursor-pointer opacity-0"
         aria-label="Replay timeline"
         aria-valuetext={valueText}
+        suppressHydrationWarning
       />
     </div>
   );
