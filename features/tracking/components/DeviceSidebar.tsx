@@ -241,11 +241,10 @@ export default function DeviceSidebar({
                     <span className="block truncate text-sm font-semibold">{device.name}</span>
                     <span
                       className={`mt-0.5 block truncate text-xs ${selected ? 'text-sky-100' : 'text-slate-400'}`}
+                      suppressHydrationWarning
                     >
                       {statusLabel(device)}
-                      <time className="sr-only" suppressHydrationWarning>
-                        {clock}
-                      </time>
+                      <time className="sr-only">{clock}</time>
                     </span>
                   </span>
                   <span className="flex shrink-0 flex-col items-end gap-1.5">
