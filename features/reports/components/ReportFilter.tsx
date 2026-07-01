@@ -197,14 +197,14 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
   };
 
   return (
-    <section className="border-b border-slate-200 bg-white/95 p-4 print:hidden sm:p-5">
+    <section className="border-b border-(--color-divider) bg-(--color-paper) p-4 print:hidden sm:p-5">
       <div className="mb-4 flex items-center gap-3">
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-sky-50 text-sky-700">
+        <span className="grid h-9 w-9 place-items-center rounded-xl bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">
           <SlidersHorizontal size={17} aria-hidden="true" />
         </span>
         <div>
-          <h2 className="text-sm font-bold text-slate-950">Report criteria</h2>
-          <p className="text-xs text-slate-500">
+          <h2 className="text-sm font-bold text-(--color-text)">Report criteria</h2>
+          <p className="text-xs text-(--color-muted)">
             Choose what to include, then generate your report.
           </p>
         </div>
@@ -249,7 +249,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
         {selectedOption !== 'schedule' ? (
           <>
             <div className="min-w-0">
-              <FormControl fullWidth>
+              <FormControl fullWidth className="report-field">
                 <InputLabel>{t('reportPeriod')}</InputLabel>
                 <Select
                   label={t('reportPeriod')}

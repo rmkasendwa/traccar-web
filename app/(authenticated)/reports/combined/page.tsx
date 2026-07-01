@@ -1,10 +1,4 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const CombinedReportPage = dynamic(() => import('@/features/reports/CombinedReportPage'), {
-  ssr: false,
-});
+import CombinedReportPage from '@/features/reports/CombinedReportPage';
 
 export default function Page() {
   return <CombinedReportPage />;

@@ -164,16 +164,18 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
       title="Reports"
       description="Turn location history into clear operational insights."
       groups={groups}
+      backHref="/"
+      backLabel="Back to map"
     >
       <div className="reports-workspace h-full min-h-0 overflow-auto p-3 sm:p-4 lg:p-6">
         {showGettingStarted && (
-          <div className="mb-4 flex items-start gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sky-950 shadow-sm">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-sky-700 shadow-sm">
+          <div className="mb-4 flex items-start gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sky-950 shadow-sm dark:border-sky-900/80 dark:bg-sky-950/45 dark:text-sky-100">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-sky-700 shadow-sm dark:bg-slate-800 dark:text-sky-300">
               <WandSparkles size={17} aria-hidden="true" />
             </span>
             <div>
               <p className="text-sm font-bold">Build your first report</p>
-              <p className="mt-0.5 text-xs leading-5 text-sky-800">
+              <p className="mt-0.5 text-xs leading-5 text-sky-800 dark:text-sky-300">
                 Select the devices and period below, then choose Generate report. Your results will
                 appear here.
               </p>

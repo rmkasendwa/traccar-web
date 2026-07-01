@@ -16,13 +16,13 @@ export default function ReportEmptyState({ title, description }: ReportEmptyStat
   return (
     <div className="grid min-h-64 place-items-center p-6 text-center">
       <div className="max-w-sm">
-        <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-slate-500">
+        <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
           <Icon size={22} aria-hidden="true" />
         </span>
-        <h2 className="mt-4 text-base font-bold text-slate-900">
+        <h2 className="mt-4 text-base font-bold text-(--color-text)">
           {title || (generated ? 'No matching report data' : 'No report generated yet')}
         </h2>
-        <p className="mt-1.5 text-sm leading-6 text-slate-500">
+        <p className="mt-1.5 text-sm leading-6 text-(--color-muted)">
           {description ||
             (generated
               ? 'Try another period, device, or group to broaden your results.'

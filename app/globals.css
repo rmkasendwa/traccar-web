@@ -112,7 +112,7 @@ textarea {
     position: sticky;
     top: 0;
     z-index: 2;
-    background: #f8fafc;
+    background: color-mix(in srgb, var(--color-paper) 92%, var(--color-text));
   }
 
   .report-page table tbody tr {
@@ -120,7 +120,27 @@ textarea {
   }
 
   .report-page table tbody tr:hover {
-    background: #f8fafc;
+    background: color-mix(in srgb, var(--color-paper) 94%, var(--color-text));
+  }
+
+  .report-page input,
+  .report-page select,
+  .report-page textarea {
+    background-color: var(--color-paper);
+    color: var(--color-text);
+  }
+
+  .report-page input:focus,
+  .report-page select:focus,
+  .report-page textarea:focus {
+    border-color: #0ea5e9;
+    outline: 2px solid rgb(14 165 233 / 0.16);
+    outline-offset: 1px;
+  }
+
+  .report-field select {
+    min-height: 2.75rem;
+    border-radius: 0.75rem;
   }
 
   .replay-control {

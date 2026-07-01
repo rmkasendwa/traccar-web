@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 
@@ -24,6 +24,8 @@ type SectionShellProps = {
   description: string;
   groups: SectionNavigationGroup[];
   children: ReactNode;
+  backHref?: string;
+  backLabel?: string;
 };
 
 function Navigation({
@@ -91,6 +93,8 @@ export default function SectionShell({
   description,
   groups,
   children,
+  backHref,
+  backLabel = 'Back to home',
 }: SectionShellProps) {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -109,6 +113,15 @@ export default function SectionShell({
   const sidebar = (
     <div className="flex h-full min-h-0 flex-col bg-slate-950 text-white">
       <div className="px-5 pb-5 pt-6">
+        {backHref && (
+          <Link
+            href={backHref}
+            className="mb-5 flex w-fit items-center gap-2 rounded-lg text-sm font-medium text-slate-400 transition hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-400"
+          >
+            <ArrowLeft size={17} aria-hidden="true" />
+            {backLabel}
+          </Link>
+        )}
         <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-sky-400">
           {eyebrow}
         </p>
