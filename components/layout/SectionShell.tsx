@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { ArrowLeft, ChevronDown, Menu, X } from 'lucide-react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 
@@ -19,7 +19,6 @@ export type SectionNavigationGroup = {
 };
 
 type SectionShellProps = {
-  eyebrow: string;
   title: string;
   description: string;
   groups: SectionNavigationGroup[];
@@ -88,7 +87,6 @@ function Navigation({
 }
 
 export default function SectionShell({
-  eyebrow,
   title,
   description,
   groups,
@@ -122,9 +120,6 @@ export default function SectionShell({
             {backLabel}
           </Link>
         )}
-        <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-sky-400">
-          {eyebrow}
-        </p>
         <p className="mt-1 text-xl font-bold tracking-tight">{title}</p>
         <p className="mt-2 text-xs leading-5 text-slate-400">{description}</p>
       </div>
@@ -169,9 +164,6 @@ export default function SectionShell({
               <Menu size={19} />
             </button>
             <div className="min-w-0">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-sky-700">
-                {eyebrow}
-              </p>
               <h1 className="truncate text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">
                 {currentItem?.label || title}
               </h1>

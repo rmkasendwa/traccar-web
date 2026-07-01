@@ -1,5 +1,8 @@
 'use client';
 
+import SectionShell, { type SectionNavigationGroup } from '@/components/layout/SectionShell';
+import { useAdministrator, useRestriction } from '@/lib/permissions';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import {
   Activity,
   BarChart3,
@@ -17,9 +20,6 @@ import {
 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
-import SectionShell, { type SectionNavigationGroup } from '@/components/layout/SectionShell';
-import { useAdministrator, useRestriction } from '@/lib/permissions';
-import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 export default function ReportsShell({ children }: { children: ReactNode }) {
   const t = useTranslation();
@@ -152,7 +152,6 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
   ];
   return (
     <SectionShell
-      eyebrow="Reports workspace"
       title="Reports"
       description="Turn location history into clear operational insights."
       groups={groups}
