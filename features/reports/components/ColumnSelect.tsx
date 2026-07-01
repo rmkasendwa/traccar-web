@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { FormControl, InputLabel, MenuItem, Select } from '@/components/ui';
+import SelectField from '@/components/ui/SelectField';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 const ColumnSelect = ({ columns, setColumns, columnsArray, rawValues, disabled }) => {
@@ -7,22 +7,16 @@ const ColumnSelect = ({ columns, setColumns, columnsArray, rawValues, disabled }
 
   return (
     <div className="min-w-0">
-      <FormControl fullWidth>
-        <InputLabel>{t('sharedColumns')}</InputLabel>
-        <Select
-          label={t('sharedColumns')}
-          value={columns}
-          onChange={(e) => setColumns(e.target.value)}
-          multiple
-          disabled={disabled}
-        >
-          {columnsArray.map(([key, string]) => (
-            <MenuItem key={key} value={key}>
-              {rawValues ? string : t(string)}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <SelectField
+        label={t('sharedColumns')}
+        data={columnsArray.map(([id, title]) => ({ id, name: rawValues ? title : t(title) }))}
+        value={columns}
+        onChange={(e) => setColumns(e.target.value)}
+        multiple
+        singleLine
+        disabled={disabled}
+        fullWidth
+      />
     </div>
   );
 };

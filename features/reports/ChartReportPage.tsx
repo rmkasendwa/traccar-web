@@ -1,7 +1,8 @@
 // @ts-nocheck
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { FormControl, InputLabel, Select, MenuItem, useTheme } from '@/components/ui';
+import { useTheme } from '@/components/ui';
+import SelectField from '@/components/ui/SelectField';
 import {
   Brush,
   CartesianGrid,
@@ -132,37 +133,30 @@ const ChartReportPage = () => {
     <div className="report-page">
       <ReportFilter onShow={onShow} onExport={() => {}} deviceType="single" formats={[]}>
         <div className={classes.filterItem}>
-          <FormControl fullWidth>
-            <InputLabel>{t('reportChartType')}</InputLabel>
-            <Select
-              label={t('reportChartType')}
-              value={selectedTypes}
-              onChange={(e) => setSelectedTypes(e.target.value)}
-              multiple
-              disabled={!items.length}
-            >
-              {types.map((key) => (
-                <MenuItem key={key} value={key}>
-                  {positionAttributes[key]?.name || key}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <SelectField
+            label={t('reportChartType')}
+            data={types.map((id) => ({ id, name: positionAttributes[id]?.name || id }))}
+            value={selectedTypes}
+            onChange={(e) => setSelectedTypes(e.target.value)}
+            multiple
+            singleLine
+            disabled={!items.length}
+            fullWidth
+          />
         </div>
         <div className={classes.filterItem}>
-          <FormControl fullWidth>
-            <InputLabel>{t('reportTimeType')}</InputLabel>
-            <Select
-              label={t('reportTimeType')}
-              value={timeType}
-              onChange={(e) => setTimeType(e.target.value)}
-              disabled={!items.length}
-            >
-              <MenuItem value="fixTime">{t('positionFixTime')}</MenuItem>
-              <MenuItem value="deviceTime">{t('positionDeviceTime')}</MenuItem>
-              <MenuItem value="serverTime">{t('positionServerTime')}</MenuItem>
-            </Select>
-          </FormControl>
+          <SelectField
+            label={t('reportTimeType')}
+            data={[
+              { id: 'fixTime', name: t('positionFixTime') },
+              { id: 'deviceTime', name: t('positionDeviceTime') },
+              { id: 'serverTime', name: t('positionServerTime') },
+            ]}
+            value={timeType}
+            onChange={(e) => setTimeType(e.target.value)}
+            disabled={!items.length}
+            fullWidth
+          />
         </div>
       </ReportFilter>
       {!items.length && <ReportEmptyState />}

@@ -2,17 +2,8 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from '@/lib/router';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
-} from '@/components/ui';
+import { Table, TableHead, TableRow, TableBody, TableCell } from '@/components/ui';
+import SelectField from '@/components/ui/SelectField';
 import { useTheme } from '@/components/ui';
 import {
   formatDistance,
@@ -154,21 +145,18 @@ const SummaryReportPage = () => {
           formats={['xlsx']}
         >
           <div className={classes.filterItem}>
-            <FormControl fullWidth>
-              <InputLabel>{t('sharedType')}</InputLabel>
-              <Select
-                label={t('sharedType')}
-                value={daily}
-                onChange={(e) =>
-                  updateReportParams(searchParams, setSearchParams, 'daily', [
-                    String(e.target.value),
-                  ])
-                }
-              >
-                <MenuItem value={false}>{t('reportSummary')}</MenuItem>
-                <MenuItem value>{t('reportDaily')}</MenuItem>
-              </Select>
-            </FormControl>
+            <SelectField
+              label={t('sharedType')}
+              data={[
+                { id: false, name: t('reportSummary') },
+                { id: true, name: t('reportDaily') },
+              ]}
+              value={daily}
+              onChange={(e) =>
+                updateReportParams(searchParams, setSearchParams, 'daily', [String(e.target.value)])
+              }
+              fullWidth
+            />
           </div>
           <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
         </ReportFilter>

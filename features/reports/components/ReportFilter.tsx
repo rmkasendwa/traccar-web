@@ -1,15 +1,7 @@
 // @ts-nocheck
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from '@/lib/router';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-  TextField,
-  Typography,
-} from '@/components/ui';
+import { Button, TextField, Typography } from '@/components/ui';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
@@ -65,6 +57,18 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
 
   const [description, setDescription] = useState();
   const [calendarId, setCalendarId] = useState();
+  const periodOptions = useMemo(
+    () => [
+      { id: 'today', name: t('reportToday') },
+      { id: 'yesterday', name: t('reportYesterday') },
+      { id: 'thisWeek', name: t('reportThisWeek') },
+      { id: 'previousWeek', name: t('reportPreviousWeek') },
+      { id: 'thisMonth', name: t('reportThisMonth') },
+      { id: 'previousMonth', name: t('reportPreviousMonth') },
+      { id: 'custom', name: t('reportCustom') },
+    ],
+    [t],
+  );
 
   const evaluateDisabled = () => {
     if (deviceType === 'single' && !deviceIds.length) {
@@ -249,22 +253,13 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
         {selectedOption !== 'schedule' ? (
           <>
             <div className="min-w-0">
-              <FormControl fullWidth className="report-field">
-                <InputLabel>{t('reportPeriod')}</InputLabel>
-                <Select
-                  label={t('reportPeriod')}
-                  value={period}
-                  onChange={(e) => setPeriod(e.target.value)}
-                >
-                  <MenuItem value="today">{t('reportToday')}</MenuItem>
-                  <MenuItem value="yesterday">{t('reportYesterday')}</MenuItem>
-                  <MenuItem value="thisWeek">{t('reportThisWeek')}</MenuItem>
-                  <MenuItem value="previousWeek">{t('reportPreviousWeek')}</MenuItem>
-                  <MenuItem value="thisMonth">{t('reportThisMonth')}</MenuItem>
-                  <MenuItem value="previousMonth">{t('reportPreviousMonth')}</MenuItem>
-                  <MenuItem value="custom">{t('reportCustom')}</MenuItem>
-                </Select>
-              </FormControl>
+              <SelectField
+                label={t('reportPeriod')}
+                data={periodOptions}
+                value={period}
+                onChange={(e) => setPeriod(e.target.value)}
+                fullWidth
+              />
             </div>
             {period === 'custom' && (
               <div className="min-w-0">
@@ -320,6 +315,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
                 color="primary"
                 disabled={disabled}
                 onClick={onClick}
+                className="rounded-xl bg-sky-600 font-semibold shadow-sm hover:bg-sky-500"
               >
                 <Typography variant="button" noWrap>
                   {t(loading ? 'sharedLoading' : 'reportShow')}
@@ -335,6 +331,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
                 selected={selectedOption}
                 setSelected={onSelected}
                 options={options}
+                className="[&>button]:bg-sky-600 [&>button]:font-semibold [&>button]:shadow-sm [&>button:hover]:bg-sky-500 [&>button:first-child]:rounded-l-xl [&>button:last-child]:rounded-r-xl"
               />
             )}
           </div>
@@ -345,7 +342,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
               onClick={resetFilters}
               aria-label="Reset report filters"
               title="Reset filters"
-              className="px-3"
+              className="rounded-xl border-(--color-divider) px-3 text-(--color-muted) hover:border-sky-500 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-sky-950"
             >
               <RotateCcw size={16} />
             </Button>

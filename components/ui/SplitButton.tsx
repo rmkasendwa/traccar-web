@@ -12,13 +12,20 @@ const SplitButton = ({
   options,
   selected,
   setSelected,
+  className,
 }) => {
   const anchorRef = useRef();
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
   return (
     <>
-      <ButtonGroup fullWidth={fullWidth} variant={variant} color={color} ref={anchorRef}>
+      <ButtonGroup
+        fullWidth={fullWidth}
+        variant={variant}
+        color={color}
+        ref={anchorRef}
+        className={className}
+      >
         <Button disabled={disabled} onClick={() => onClick(selected)}>
           <Typography variant="button" noWrap>
             {options[selected]}

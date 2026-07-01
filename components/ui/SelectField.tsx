@@ -20,6 +20,7 @@ const SelectField = ({
   placeholder,
   singleLine: _singleLine,
   allValue,
+  disabled = false,
 }) => {
   const [items, setItems] = useState(data);
   const [open, setOpen] = useState(false);
@@ -89,10 +90,11 @@ const SelectField = ({
         {label && <span className="mb-1 block text-sm text-(--color-muted)">{label}</span>}
         <button
           type="button"
+          disabled={disabled}
           aria-haspopup="listbox"
           aria-expanded={open}
           onClick={() => setOpen((current) => !current)}
-          className="flex min-h-10 w-full items-center gap-2 rounded-xl border border-(--color-divider) bg-(--color-paper) px-3 text-left text-sm text-(--color-text) transition hover:border-slate-400 focus-visible:border-sky-500 focus-visible:outline-2 focus-visible:outline-sky-500/20"
+          className="flex min-h-10 w-full items-center gap-2 rounded-xl border border-(--color-divider) bg-(--color-paper) px-3 text-left text-sm text-(--color-text) transition hover:border-slate-400 focus-visible:border-sky-500 focus-visible:outline-2 focus-visible:outline-sky-500/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-(--color-divider)"
         >
           <span
             className={`min-w-0 flex-1 truncate ${selectedItems.length ? '' : 'text-(--color-muted)'}`}
