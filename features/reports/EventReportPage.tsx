@@ -340,7 +340,7 @@ const EventReportPage = () => {
                     </TableRow>
                   ))
                 ) : (
-                  <TableShimmer columns={columns.length + 2} />
+                  <TableShimmer columns={columns.length + 2} startAction />
                 )}
               </TableBody>
             </Table>

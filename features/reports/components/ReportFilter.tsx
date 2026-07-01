@@ -213,7 +213,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
           </p>
         </div>
       </div>
-      <div className="grid items-end gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="flex items-end gap-3 overflow-x-auto pb-1 [&>*]:min-w-56 [&>*]:flex-1">
         {deviceType !== 'none' && (
           <div className="min-w-0">
             <SelectField

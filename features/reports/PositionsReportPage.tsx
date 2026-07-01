@@ -226,7 +226,7 @@ const PositionsReportPage = () => {
                     </TableRow>
                   ))
                 ) : (
-                  <TableShimmer columns={columns.length + 1} startAction />
+                  <TableShimmer columns={columns.length + 2} startAction endAction />
                 )}
               </TableBody>
             </Table>
