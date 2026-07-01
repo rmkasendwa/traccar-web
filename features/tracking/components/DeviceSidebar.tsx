@@ -14,10 +14,12 @@ import {
   Plus,
   Search,
   SlidersHorizontal,
+  SunMoon,
 } from 'lucide-react';
 import { useNavigate } from '@/lib/router';
 import { devicesActions } from '@/store';
 import FloatingPanel from '@/features/tracking/components/FloatingPanel';
+import ThemeModeControl from '@/components/ui/ThemeModeControl';
 
 dayjs.extend(relativeTime);
 
@@ -93,6 +95,7 @@ export default function DeviceSidebar({
   const selectedId = useSelector((state: any) => state.devices.selectedId);
   const socket = useSelector((state: any) => state.session.socket);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [themeOpen, setThemeOpen] = useState(false);
   const [clock, setClock] = useState(0);
 
   useEffect(() => {
@@ -118,18 +121,41 @@ export default function DeviceSidebar({
             </p>
             <h1 className="mt-1 text-xl font-semibold tracking-tight">Your devices</h1>
           </div>
-          <span
-            className={`flex items-center gap-2 rounded-full px-2.5 py-1 text-xs ${
-              socket === false
-                ? 'bg-rose-500/15 text-rose-300'
-                : 'bg-emerald-400/10 text-emerald-300'
-            }`}
-          >
+          <div className="flex items-center gap-2">
             <span
-              className={`h-1.5 w-1.5 rounded-full ${socket === false ? 'bg-rose-400' : 'bg-emerald-400'}`}
-            />
-            {socket === false ? 'Reconnecting' : 'Live'}
-          </span>
+              className={`flex items-center gap-2 rounded-full px-2.5 py-1 text-xs ${
+                socket === false
+                  ? 'bg-rose-500/15 text-rose-300'
+                  : 'bg-emerald-400/10 text-emerald-300'
+              }`}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${socket === false ? 'bg-rose-400' : 'bg-emerald-400'}`}
+              />
+              {socket === false ? 'Reconnecting' : 'Live'}
+            </span>
+            <FloatingPanel
+              open={themeOpen}
+              onOpenChange={setThemeOpen}
+              className="w-64"
+              trigger={(props, ref) => (
+                <button
+                  {...props}
+                  ref={ref as any}
+                  type="button"
+                  className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.07] text-slate-300 transition hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  aria-label="Change color theme"
+                >
+                  <SunMoon size={17} aria-hidden="true" />
+                </button>
+              )}
+            >
+              <p className="mb-2 px-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-(--color-muted)">
+                Appearance
+              </p>
+              <ThemeModeControl />
+            </FloatingPanel>
+          </div>
         </div>
 
         <div className="flex gap-2">
