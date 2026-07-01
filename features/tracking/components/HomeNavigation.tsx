@@ -29,21 +29,21 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
   };
 
   const itemClass = mobile
-    ? 'flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[0.65rem] font-medium text-slate-500 transition hover:bg-slate-100'
-    : 'flex flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2.5 text-[0.68rem] font-medium text-slate-400 transition hover:bg-white/[0.07] hover:text-white';
+    ? 'flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[0.65rem] font-medium text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text)'
+    : 'flex flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2.5 text-[0.68rem] font-medium text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text)';
 
   return (
     <nav
       className={
         mobile
-          ? 'flex items-center rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-xl backdrop-blur'
-          : 'flex items-center border-t border-white/10 p-2'
+          ? 'flex items-center rounded-2xl border border-(--color-divider) bg-(--color-paper) p-1.5 shadow-xl backdrop-blur'
+          : 'flex items-center border-t border-(--color-divider) p-2'
       }
       aria-label="Main navigation"
     >
       <button
         type="button"
-        className={`${itemClass} ${mobile ? 'bg-sky-50 text-sky-700' : 'bg-white/[0.07] text-white'}`}
+        className={`${itemClass} bg-(--color-surface-hover) text-sky-600 dark:text-sky-400`}
       >
         <Map size={19} />
         Map
@@ -75,7 +75,7 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
         <button
           type="button"
           onClick={() => navigate(`/settings/user/${user.id}`)}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-slate-100"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-(--color-surface-hover)"
         >
           <UserRound size={17} />
           Profile

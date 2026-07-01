@@ -113,7 +113,9 @@ export default function DeviceSidebar({
 
   return (
     <>
-      <header className={`border-b border-white/10 px-5 pb-4 ${mobile ? 'pt-5 pr-14' : 'pt-5'}`}>
+      <header
+        className={`border-b border-(--color-divider) px-5 pb-4 ${mobile ? 'pt-5 pr-14' : 'pt-5'}`}
+      >
         <div className="mb-5 flex items-center justify-between">
           <div>
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-sky-400">
@@ -143,7 +145,7 @@ export default function DeviceSidebar({
                   {...props}
                   ref={ref as any}
                   type="button"
-                  className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.07] text-slate-300 transition hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  className="grid h-9 w-9 place-items-center rounded-full border border-(--color-divider) bg-(--color-surface-subtle) text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                   aria-label="Change color theme"
                 >
                   <SunMoon size={17} aria-hidden="true" />
@@ -159,12 +161,12 @@ export default function DeviceSidebar({
         </div>
 
         <div className="flex gap-2">
-          <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.07] px-3 text-slate-300 transition focus-within:border-sky-400/60 focus-within:bg-white/10">
+          <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) px-3 text-(--color-muted) transition focus-within:border-sky-400/60 focus-within:bg-(--color-paper)">
             <Search size={17} />
             <input
               value={keyword}
               onChange={(event) => onKeywordChange(event.target.value)}
-              className="h-11 min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
+              className="h-11 min-w-0 flex-1 bg-transparent text-sm text-(--color-text) outline-none placeholder:text-(--color-muted)"
               placeholder="Search devices"
               aria-label="Search devices"
             />
@@ -181,7 +183,7 @@ export default function DeviceSidebar({
                 className={`relative grid h-11 w-11 place-items-center rounded-xl border transition ${
                   statusFilter.length
                     ? 'border-sky-400/50 bg-sky-400/15 text-sky-300'
-                    : 'border-white/10 bg-white/[0.07] text-slate-300 hover:bg-white/10'
+                    : 'border-(--color-divider) bg-(--color-surface-subtle) text-(--color-muted) hover:bg-(--color-surface-hover)'
                 }`}
                 aria-label="Filter devices"
               >
@@ -194,14 +196,14 @@ export default function DeviceSidebar({
           >
             <div className="px-2 pb-2 pt-1">
               <p className="text-sm font-semibold">Device status</p>
-              <p className="mt-0.5 text-xs text-slate-500">Show one or more states</p>
+              <p className="mt-0.5 text-xs text-(--color-muted)">Show one or more states</p>
             </div>
             {['online', 'offline', 'unknown'].map((status) => {
               const count = allDevices.filter((device) => device.status === status).length;
               return (
                 <label
                   key={status}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 text-sm hover:bg-slate-100"
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 text-sm hover:bg-(--color-surface-hover)"
                 >
                   <input
                     type="checkbox"
@@ -211,7 +213,7 @@ export default function DeviceSidebar({
                   />
                   <span className={`h-2 w-2 rounded-full ${statusStyles[status]}`} />
                   <span className="flex-1 capitalize">{status}</span>
-                  <span className="text-xs text-slate-400">{count}</span>
+                  <span className="text-xs text-(--color-muted)">{count}</span>
                 </label>
               );
             })}
@@ -251,12 +253,12 @@ export default function DeviceSidebar({
                   className={`group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${
                     selected
                       ? 'bg-sky-500 text-white shadow-lg shadow-sky-950/20'
-                      : 'text-slate-200 hover:bg-white/[0.07]'
+                      : 'text-(--color-text) hover:bg-(--color-surface-hover)'
                   }`}
                 >
                   <span
                     className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${
-                      selected ? 'bg-white/15' : 'bg-white/[0.07]'
+                      selected ? 'bg-white/15' : 'bg-(--color-surface-subtle)'
                     }`}
                   >
                     <span
@@ -266,7 +268,7 @@ export default function DeviceSidebar({
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-semibold">{device.name}</span>
                     <span
-                      className={`mt-0.5 block truncate text-xs ${selected ? 'text-sky-100' : 'text-slate-400'}`}
+                      className={`mt-0.5 block truncate text-xs ${selected ? 'text-sky-100' : 'text-(--color-muted)'}`}
                       suppressHydrationWarning
                     >
                       {statusLabel(device)}
@@ -275,7 +277,7 @@ export default function DeviceSidebar({
                   </span>
                   <span className="flex shrink-0 flex-col items-end gap-1.5">
                     <span
-                      className={`text-[0.65rem] font-semibold uppercase tracking-wider ${selected ? 'text-white/80' : 'text-slate-500'}`}
+                      className={`text-[0.65rem] font-semibold uppercase tracking-wider ${selected ? 'text-white/80' : 'text-(--color-muted)'}`}
                     >
                       {device.category || 'GPS'}
                     </span>
@@ -287,13 +289,13 @@ export default function DeviceSidebar({
           </div>
         ) : (
           <div className="flex h-full min-h-56 flex-col items-center justify-center px-8 text-center">
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/[0.07] text-slate-400">
+            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-(--color-surface-subtle) text-(--color-muted)">
               <Filter size={22} />
             </span>
-            <p className="mt-4 text-sm font-semibold text-white">
+            <p className="mt-4 text-sm font-semibold text-(--color-text)">
               {allDevices.length ? 'No matching devices' : 'No devices yet'}
             </p>
-            <p className="mt-1 text-xs leading-5 text-slate-400">
+            <p className="mt-1 text-xs leading-5 text-(--color-muted)">
               {allDevices.length
                 ? 'Try another search or clear the active status filters.'
                 : 'Add your first tracker to see it here and on the map.'}
@@ -302,7 +304,7 @@ export default function DeviceSidebar({
         )}
       </div>
 
-      <div className="border-t border-white/10 px-5 py-3 text-xs text-slate-500">
+      <div className="border-t border-(--color-divider) px-5 py-3 text-xs text-(--color-muted)">
         {devices.length} of {allDevices.length} devices
       </div>
     </>

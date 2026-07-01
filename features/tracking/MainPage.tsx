@@ -100,7 +100,7 @@ const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
   const selectedPosition = positions.find((position) => position.deviceId === selectedDeviceId);
 
   return (
-    <main className="relative h-full min-h-0 overflow-hidden bg-slate-100">
+    <main className="relative h-full min-h-0 overflow-hidden bg-(--color-background)">
       <div className="absolute inset-0">
         <MainMap
           filteredPositions={filteredPositions}
@@ -110,7 +110,7 @@ const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
       </div>
 
       <div className="pointer-events-none absolute inset-0 z-10 hidden p-3 md:block">
-        <aside className="pointer-events-auto flex h-full w-88 flex-col overflow-hidden rounded-[1.4rem] border border-white/10 bg-slate-950/95 text-white shadow-2xl shadow-slate-950/25 backdrop-blur">
+        <aside className="pointer-events-auto flex h-full w-88 flex-col overflow-hidden rounded-[1.4rem] border border-(--color-divider) bg-(--color-sidebar) text-(--color-text) shadow-2xl shadow-slate-950/25 backdrop-blur">
           <DeviceSidebar
             devices={filteredDevices}
             allDevices={devices}
@@ -126,7 +126,7 @@ const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
       <button
         type="button"
         onClick={() => setSidebarOpen(true)}
-        className="absolute left-3 top-3 z-20 grid h-11 w-11 place-items-center rounded-xl border border-white/70 bg-white/95 text-slate-800 shadow-lg backdrop-blur md:hidden"
+        className="absolute left-3 top-3 z-20 grid h-11 w-11 place-items-center rounded-xl border border-(--color-divider) bg-(--color-paper) text-(--color-text) shadow-lg backdrop-blur md:hidden"
         aria-label="Open devices"
       >
         <Menu size={21} />
@@ -140,13 +140,13 @@ const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
         aria-hidden="true"
       />
       <aside
-        className={`absolute inset-y-0 left-0 z-40 flex w-[min(90vw,23rem)] flex-col bg-slate-950 text-white shadow-2xl transition-transform duration-300 md:hidden ${
+        className={`absolute inset-y-0 left-0 z-40 flex w-[min(90vw,23rem)] flex-col bg-(--color-sidebar) text-(--color-text) shadow-2xl transition-transform duration-300 md:hidden ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <button
           type="button"
-          className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-lg text-slate-300 hover:bg-white/10 hover:text-white"
+          className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-lg text-(--color-muted) hover:bg-(--color-surface-hover) hover:text-(--color-text)"
           onClick={() => setSidebarOpen(false)}
           aria-label="Close devices"
         >

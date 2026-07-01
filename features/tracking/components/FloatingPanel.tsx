@@ -1,7 +1,5 @@
 'use client';
 
-/* eslint-disable no-unused-vars */
-
 import type { KeyboardEvent, ReactNode } from 'react';
 import {
   autoUpdate,
@@ -90,7 +88,7 @@ export default function FloatingPanel({
             <div
               ref={refs.setFloating}
               style={floatingStyles}
-              className={`z-[100] overflow-auto rounded-xl border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl outline-none ${className}`}
+              className={`z-[100] overflow-auto rounded-xl border border-(--color-divider) bg-(--color-paper) p-2 text-(--color-text) shadow-2xl outline-none ${className}`}
               {...floatingProps}
             >
               {children}
