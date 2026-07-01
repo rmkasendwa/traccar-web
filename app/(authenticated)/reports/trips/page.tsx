@@ -1,10 +1,4 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const TripReportPage = dynamic(() => import('@/features/reports/TripReportPage'), {
-  ssr: false,
-});
+import TripReportPage from '@/features/reports/TripReportPage';
 
 export default function Page() {
   return <TripReportPage />;

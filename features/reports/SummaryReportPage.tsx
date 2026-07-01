@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from '@/lib/router';

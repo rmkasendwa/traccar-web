@@ -9,22 +9,27 @@ export const savePersistedState = (key, value) => {
 
 export default (key, defaultValue) => {
   const defaultRef = useRef(defaultValue);
-
-  const [value, setValue] = useState(() => {
-    if (typeof window === 'undefined') {
-      return defaultRef.current;
-    }
-    const stickyValue = window.localStorage.getItem(key);
-    return stickyValue ? JSON.parse(stickyValue) : defaultRef.current;
-  });
+  const [value, setValue] = useState(defaultRef.current);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
+    const stickyValue = window.localStorage.getItem(key);
+    if (stickyValue) {
+      setValue(JSON.parse(stickyValue));
+    }
+    setInitialized(true);
+  }, [key]);
+
+  useEffect(() => {
+    if (!initialized) {
+      return;
+    }
     if (value !== defaultRef.current) {
       savePersistedState(key, value);
     } else {
       window.localStorage.removeItem(key);
     }
-  }, [key, value]);
+  }, [initialized, key, value]);
 
   return [value, setValue];
 };

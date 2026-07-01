@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useEffect } from 'react';
 import { useNavigate } from '@/lib/router';
 import { useDispatch, useSelector } from 'react-redux';

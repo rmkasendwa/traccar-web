@@ -1,10 +1,4 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const SummaryReportPage = dynamic(() => import('@/features/reports/SummaryReportPage'), {
-  ssr: false,
-});
+import SummaryReportPage from '@/features/reports/SummaryReportPage';
 
 export default function Page() {
   return <SummaryReportPage />;

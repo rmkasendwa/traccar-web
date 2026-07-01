@@ -1,10 +1,4 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const GeofenceReportPage = dynamic(() => import('@/features/reports/GeofenceReportPage'), {
-  ssr: false,
-});
+import GeofenceReportPage from '@/features/reports/GeofenceReportPage';
 
 export default function Page() {
   return <GeofenceReportPage />;

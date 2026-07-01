@@ -1,10 +1,4 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const StopReportPage = dynamic(() => import('@/features/reports/StopReportPage'), {
-  ssr: false,
-});
+import StopReportPage from '@/features/reports/StopReportPage';
 
 export default function Page() {
   return <StopReportPage />;

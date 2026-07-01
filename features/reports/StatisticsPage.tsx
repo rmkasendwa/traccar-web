@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useState } from 'react';
 import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { formatTime } from '@/lib/formatter';

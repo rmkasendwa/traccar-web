@@ -1,10 +1,4 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const StatisticsPage = dynamic(() => import('@/features/reports/StatisticsPage'), {
-  ssr: false,
-});
+import StatisticsPage from '@/features/reports/StatisticsPage';
 
 export default function Page() {
   return <StatisticsPage />;

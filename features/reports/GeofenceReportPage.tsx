@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useMemo, useState } from 'react';
 import { useSearchParams } from '@/lib/router';
 import { useSelector } from 'react-redux';

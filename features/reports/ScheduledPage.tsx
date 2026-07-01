@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useReducer, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Table, TableRow, TableCell, TableHead, TableBody, IconButton } from '@/components/ui';

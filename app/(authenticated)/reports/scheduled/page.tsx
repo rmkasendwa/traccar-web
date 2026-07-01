@@ -1,10 +1,4 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const ScheduledPage = dynamic(() => import('@/features/reports/ScheduledPage'), {
-  ssr: false,
-});
+import ScheduledPage from '@/features/reports/ScheduledPage';
 
 export default function Page() {
   return <ScheduledPage />;

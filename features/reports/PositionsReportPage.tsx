@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from '@/lib/router';
 import { IconButton, Table, TableBody, TableCell, TableHead, TableRow } from '@/components/ui';

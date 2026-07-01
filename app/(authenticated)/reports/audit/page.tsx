@@ -1,10 +1,4 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const AuditPage = dynamic(() => import('@/features/reports/AuditPage'), {
-  ssr: false,
-});
+import AuditPage from '@/features/reports/AuditPage';
 
 export default function Page() {
   return <AuditPage />;
