@@ -58,7 +58,7 @@ const SelectField = ({
   );
 
   if (items) {
-    const selectedKeys = multiple ? value || [] : value == null ? [] : [value];
+    const selectedKeys = value == null ? [] : multiple && Array.isArray(value) ? value : [value];
     const selectedItems = selectedKeys.map(findOption).filter(Boolean);
     const summary = selectedItems.length
       ? multiple && selectedItems.length > 1
