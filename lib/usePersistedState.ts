@@ -15,7 +15,14 @@ export default (key, defaultValue) => {
   useEffect(() => {
     const stickyValue = window.localStorage.getItem(key);
     if (stickyValue) {
-      setValue(JSON.parse(stickyValue));
+      const persistedValue = JSON.parse(stickyValue);
+      setValue(
+        Array.isArray(defaultRef.current) && !Array.isArray(persistedValue)
+          ? persistedValue == null
+            ? defaultRef.current
+            : [persistedValue]
+          : persistedValue,
+      );
     }
     setInitialized(true);
   }, [key]);
