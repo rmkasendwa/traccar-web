@@ -28,14 +28,14 @@ const buildTheme = (server, darkMode, direction) => {
       primary: { main: primary, contrastText: '#fff' },
       secondary: { main: secondary, contrastText: '#fff' },
       background: {
-        default: darkMode ? '#111827' : '#fafafa',
-        paper: darkMode ? '#1f2937' : '#fff',
+        default: darkMode ? '#0f172a' : '#fafafa',
+        paper: darkMode ? '#172033' : '#fff',
       },
       text: {
-        primary: darkMode ? '#f3f4f6' : '#1f2937',
-        secondary: darkMode ? '#9ca3af' : '#6b7280',
+        primary: darkMode ? '#f1f5f9' : '#1f2937',
+        secondary: darkMode ? '#a8b3c5' : '#6b7280',
       },
-      divider: darkMode ? '#374151' : '#e5e7eb',
+      divider: darkMode ? '#2d3a52' : '#e5e7eb',
       action: {
         selected: darkMode ? '#374151' : '#eef2ff',
         disabledBackground: darkMode ? '#374151' : '#e5e7eb',

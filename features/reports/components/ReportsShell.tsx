@@ -158,7 +158,7 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
       backHref="/"
       backLabel="Back to map"
     >
-      <div className="reports-workspace h-full min-h-0 overflow-auto p-3 sm:p-4 lg:p-6">
+      <div className="reports-workspace h-full min-h-0 overflow-auto bg-(--color-background) p-3 sm:p-4 lg:p-6">
         {children}
       </div>
     </SectionShell>
