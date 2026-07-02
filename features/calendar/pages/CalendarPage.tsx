@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';

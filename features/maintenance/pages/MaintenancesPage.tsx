@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useCallback, useReducer, useState } from 'react';
 import dayjs from 'dayjs';
 import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';

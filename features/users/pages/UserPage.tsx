@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from '@/lib/router';
 import {

@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useState } from 'react';
 import { TextField } from '@/components/ui';
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@/components/ui';

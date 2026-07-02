@@ -1,10 +1,6 @@
-'use client';
-
 import dynamic from 'next/dynamic';
 
-const PreferencesPage = dynamic(() => import('@/features/settings/pages/PreferencesPage'), {
-  ssr: false,
-});
+const PreferencesPage = dynamic(() => import('@/features/settings/pages/PreferencesPage'));
 
 export default function Page() {
   return <PreferencesPage />;

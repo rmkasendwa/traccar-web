@@ -151,6 +151,34 @@ textarea {
     border-radius: 0.75rem;
   }
 
+  .settings-page {
+    border: 1px solid var(--color-divider);
+    border-radius: 1rem;
+    background: var(--color-paper);
+    color: var(--color-text);
+    box-shadow: 0 8px 30px rgb(15 23 42 / 0.06);
+  }
+
+  .settings-page input,
+  .settings-page select,
+  .settings-page textarea {
+    background-color: var(--color-paper);
+    color: var(--color-text);
+  }
+
+  .settings-page select {
+    min-height: 2.625rem;
+    border-radius: 0.75rem;
+  }
+
+  .settings-page input:focus,
+  .settings-page select:focus,
+  .settings-page textarea:focus {
+    border-color: #0ea5e9;
+    outline: 2px solid rgb(14 165 233 / 0.16);
+    outline-offset: 1px;
+  }
+
   .replay-control {
     display: grid;
     width: 2.5rem;

@@ -1,10 +1,6 @@
-'use client';
-
 import dynamic from 'next/dynamic';
 
-const MaintenancesPage = dynamic(() => import('@/features/maintenance/pages/MaintenancesPage'), {
-  ssr: false,
-});
+const MaintenancesPage = dynamic(() => import('@/features/maintenance/pages/MaintenancesPage'));
 
 export default function Page() {
   return <MaintenancesPage />;

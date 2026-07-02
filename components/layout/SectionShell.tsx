@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 import ThemeModeControl from '@/components/ui/ThemeModeControl';
+import { SectionShellProvider } from '@/components/layout/SectionShellContext';
 
 export type SectionNavigationItem = {
   label: string;
@@ -165,7 +166,7 @@ export default function SectionShell({
               type="button"
               onClick={() => setDrawerOpen(true)}
               className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-(--color-divider) text-(--color-muted) transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 lg:hidden"
-              aria-label="Open reports navigation"
+              aria-label={`Open ${title.toLocaleLowerCase()} navigation`}
             >
               <Menu size={19} />
             </button>
@@ -179,7 +180,9 @@ export default function SectionShell({
             </div>
           </div>
         </header>
-        <div className="min-h-0 flex-1 overflow-hidden">{children}</div>
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <SectionShellProvider value>{children}</SectionShellProvider>
+        </div>
       </main>
     </div>
   );

@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useParams } from '@/lib/router';
 import {
   Accordion,

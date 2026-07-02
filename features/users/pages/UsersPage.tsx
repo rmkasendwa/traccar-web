@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useCallback, useReducer, useState } from 'react';
 import { useNavigate } from '@/lib/router';
 import {

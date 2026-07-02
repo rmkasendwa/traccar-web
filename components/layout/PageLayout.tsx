@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import { useState } from 'react';
 import {
   AppBar,
@@ -18,6 +19,7 @@ import { MenuIcon } from '@/components/ui/icons';
 import { useNavigate, useSearchParams } from '@/lib/router';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import BackIcon from '@/components/ui/BackIcon';
+import { useSectionShell } from '@/components/layout/SectionShellContext';
 
 const useStyles = makeStyles()((theme, { miniVariant }) => ({
   root: {
@@ -95,6 +97,7 @@ const PageTitle = ({ breadcrumbs }) => {
 };
 
 const PageLayout = ({ menu, breadcrumbs, children }) => {
+  const inSectionShell = useSectionShell();
   const [miniVariant, setMiniVariant] = useState(false);
   const { classes } = useStyles({ miniVariant });
   const theme = useTheme();
@@ -107,6 +110,10 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
   const [openDrawer, setOpenDrawer] = useState(!desktop && searchParams.has('menu'));
 
   const toggleDrawer = () => setMiniVariant(!miniVariant);
+
+  if (inSectionShell) {
+    return <div className="settings-page h-full min-h-0 overflow-auto">{children}</div>;
+  }
 
   return (
     <div className={classes.root}>
