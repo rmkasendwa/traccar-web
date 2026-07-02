@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowLeft, ChevronsUpDown } from 'lucide-react';
 import type { ReactNode } from 'react';
+import ThemeModeControl from '@/components/ui/ThemeModeControl';
 
 type ReplayPanelProps = {
   hasReplay: boolean;
@@ -44,10 +45,15 @@ export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanel
           </div>
           <div className="flex shrink-0 items-center gap-2">
             {hasReplay && (
-              <span className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[0.65rem] font-semibold text-emerald-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Loaded
+              <span
+                className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgb(52_211_153/0.12)]"
+                title="Replay loaded"
+                aria-label="Replay loaded"
+              >
+                <span className="sr-only">Replay loaded</span>
               </span>
             )}
+            <ThemeModeControl compact onDark />
             <label
               htmlFor="replay-panel-expanded"
               className="grid h-9 w-9 cursor-pointer place-items-center rounded-xl border border-white/10 bg-white/8 text-slate-300 transition hover:bg-white/15 hover:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-sky-400 md:hidden"
