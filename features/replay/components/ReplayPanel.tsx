@@ -32,16 +32,11 @@ export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanel
             <Link
               href="/"
               aria-label="Back to tracking"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/8 text-slate-300 transition hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
             >
               <ArrowLeft size={18} aria-hidden="true" />
             </Link>
-            <div className="min-w-0">
-              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-sky-300">
-                History
-              </p>
-              <h1 className="truncate text-lg font-bold tracking-tight">Route replay</h1>
-            </div>
+            <h1 className="truncate text-lg font-bold tracking-tight">Route replay</h1>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             {hasReplay && (

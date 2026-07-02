@@ -13,15 +13,10 @@ export default function ReplayLoading() {
         <header className="relative overflow-hidden rounded-t-[1.3rem] bg-slate-950 px-4 pb-4 pt-3 text-white">
           <div className="pointer-events-none absolute -right-10 -top-16 h-36 w-36 rounded-full bg-sky-500/25 blur-3xl" />
           <div className="relative flex items-center gap-3">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/8 text-slate-300">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400">
               <ArrowLeft size={18} aria-hidden="true" />
             </span>
-            <div>
-              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-sky-300">
-                History
-              </p>
-              <h1 className="text-lg font-bold tracking-tight">Route replay</h1>
-            </div>
+            <h1 className="text-lg font-bold tracking-tight">Route replay</h1>
           </div>
         </header>
 
