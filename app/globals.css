@@ -261,6 +261,73 @@ textarea {
     padding: 0.75rem 0.25rem 1.5rem;
   }
 
+  .settings-form-layout {
+    padding: 0.75rem 0.25rem 1.5rem;
+  }
+
+  .settings-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .settings-form-grid > div {
+    align-self: start;
+    overflow: hidden;
+    border: 1px solid var(--color-divider);
+    border-radius: 1rem;
+    background: var(--color-paper);
+    box-shadow: 0 8px 28px rgb(15 23 42 / 0.06);
+  }
+
+  .settings-form-grid > div > button {
+    min-height: 4rem;
+    padding-inline: 1.25rem;
+    background: var(--color-surface-subtle);
+  }
+
+  .settings-form-grid > div > div {
+    padding: 1.25rem;
+  }
+
+  .settings-form-actions {
+    position: sticky;
+    top: 0.75rem;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--color-divider);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--color-paper) 90%, transparent);
+    box-shadow: 0 12px 36px rgb(15 23 42 / 0.14);
+    backdrop-filter: blur(14px);
+  }
+
+  .settings-form-status {
+    margin-right: auto;
+    color: var(--color-muted);
+    font-size: 0.875rem;
+  }
+
+  .settings-saved-message {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #16a34a;
+    font-weight: 600;
+  }
+
+  .settings-save-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgb(255 255 255 / 0.45);
+    border-top-color: white;
+    border-radius: 9999px;
+    animation: spin 0.7s linear infinite;
+  }
+
   .preferences-card {
     align-self: start;
     overflow: hidden;
@@ -372,6 +439,18 @@ textarea {
     }
 
     .preferences-actions > button {
+      flex: 1;
+    }
+
+    .settings-form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .settings-form-status {
+      display: none;
+    }
+
+    .settings-form-actions > button {
       flex: 1;
     }
   }

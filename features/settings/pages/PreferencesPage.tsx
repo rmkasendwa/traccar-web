@@ -35,6 +35,7 @@ import { sessionActions } from '@/store';
 import { useAdministrator, useRestriction } from '@/lib/permissions';
 import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import SettingsFormActions from '@/features/settings/components/SettingsFormActions';
 
 const deviceFields = [
   { id: 'name', name: 'sharedName' },
@@ -58,6 +59,8 @@ const PreferencesPage = () => {
 
   const user = useSelector((state) => state.session.user);
   const [attributes, setAttributes] = useState(user.attributes);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const versionApp = process.env.NEXT_PUBLIC_APP_VERSION;
   const versionServer = useSelector((state) => state.session.server.version);
@@ -101,13 +104,19 @@ const PreferencesPage = () => {
   }));
 
   const handleSave = useCatch(async () => {
-    const response = await fetchOrThrow(`/api/users/${user.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...user, attributes }),
-    });
-    dispatch(sessionActions.updateUser(await response.json()));
-    navigate(-1);
+    setSaving(true);
+    setSaved(false);
+    try {
+      const response = await fetchOrThrow(`/api/users/${user.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...user, attributes }),
+      });
+      dispatch(sessionActions.updateUser(await response.json()));
+      setSaved(true);
+    } finally {
+      setSaving(false);
+    }
   });
 
   const handleReboot = useCatch(async () => {
@@ -119,17 +128,14 @@ const PreferencesPage = () => {
     <PageLayout bare menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedPreferences']}>
       <div className="preferences-layout mx-auto w-full max-w-5xl">
         {!readonly && (
-          <div className="preferences-actions">
-            <p className="mr-auto hidden text-sm text-(--color-muted) sm:block">
-              Personalize how tracking information appears across the application.
-            </p>
-            <Button type="button" color="primary" variant="outlined" onClick={() => navigate(-1)}>
-              {t('sharedCancel')}
-            </Button>
-            <Button type="button" color="primary" variant="contained" onClick={handleSave}>
-              {t('sharedSave')}
-            </Button>
-          </div>
+          <SettingsFormActions
+            description="Personalize how tracking information appears across the application."
+            dirty={JSON.stringify(attributes) !== JSON.stringify(user.attributes)}
+            saving={saving}
+            saved={saved}
+            onCancel={() => navigate(-1)}
+            onSave={handleSave}
+          />
         )}
         {!readonly && (
           <>

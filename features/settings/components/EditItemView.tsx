@@ -1,8 +1,7 @@
 // @ts-nocheck
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from '@/lib/router';
 import {
-  Container,
-  Button,
   Accordion,
   AccordionDetails,
   AccordionSummary,
@@ -11,10 +10,9 @@ import {
   TextField,
 } from '@/components/ui';
 import { useCatch, useAsyncTask } from '@/lib/react';
-import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import PageLayout from '@/components/layout/PageLayout';
-import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import SettingsFormActions from '@/features/settings/components/SettingsFormActions';
 
 const EditItemView = ({
   children,
@@ -28,10 +26,25 @@ const EditItemView = ({
   breadcrumbs,
 }) => {
   const navigate = useNavigate();
-  const { classes } = useSettingsStyles();
-  const t = useTranslation();
 
   const { id } = useParams();
+  const initialItem = useRef(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  if (item && initialItem.current === null) {
+    initialItem.current = JSON.stringify(item);
+  }
+
+  const dirty = !id || (item && JSON.stringify(item) !== initialItem.current);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (dirty && !saving) event.preventDefault();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [dirty, saving]);
 
   useAsyncTask(
     async ({ signal }) => {
@@ -48,58 +61,59 @@ const EditItemView = ({
   );
 
   const handleSave = useCatch(async () => {
-    let url = `/api/${endpoint}`;
-    if (id) {
-      url += `/${id}`;
-    }
+    setSaving(true);
+    setSaved(false);
+    try {
+      let url = `/api/${endpoint}`;
+      if (id) url += `/${id}`;
 
-    const response = await fetchOrThrow(url, {
-      method: !id ? 'POST' : 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(item),
-    });
+      const response = await fetchOrThrow(url, {
+        method: !id ? 'POST' : 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item),
+      });
 
-    if (onItemSaved) {
-      onItemSaved(await response.json());
+      if (onItemSaved) await onItemSaved(await response.json());
+      setSaved(true);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate(-1);
+    } finally {
+      setSaving(false);
     }
-    navigate(-1);
   });
 
   return (
-    <PageLayout menu={menu} breadcrumbs={breadcrumbs}>
-      <Container maxWidth="xs" className={classes.container}>
-        {item ? (
-          children
-        ) : (
-          <Accordion defaultExpanded>
-            <AccordionSummary>
-              <Typography variant="subtitle1">
-                <Skeleton width="10em" />
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              {[...Array(3)].map((_, i) => (
-                <Skeleton key={-i} width="100%">
-                  <TextField />
-                </Skeleton>
-              ))}
-            </AccordionDetails>
-          </Accordion>
-        )}
-        <div className={classes.buttons}>
-          <Button color="primary" variant="outlined" onClick={() => navigate(-1)} disabled={!item}>
-            {t('sharedCancel')}
-          </Button>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={handleSave}
-            disabled={!item || !validate()}
-          >
-            {t('sharedSave')}
-          </Button>
+    <PageLayout bare menu={menu} breadcrumbs={breadcrumbs}>
+      <div className="settings-form-layout mx-auto w-full max-w-5xl">
+        <SettingsFormActions
+          dirty={dirty}
+          saving={saving}
+          saved={saved}
+          valid={Boolean(item && (validate?.() ?? true))}
+          onCancel={() => navigate(-1)}
+          onSave={handleSave}
+        />
+        <div className="settings-form-grid">
+          {item ? (
+            children
+          ) : (
+            <Accordion defaultExpanded>
+              <AccordionSummary>
+                <Typography variant="subtitle1">
+                  <Skeleton width="10em" />
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={-i} width="100%">
+                    <TextField />
+                  </Skeleton>
+                ))}
+              </AccordionDetails>
+            </Accordion>
+          )}
         </div>
-      </Container>
+      </div>
     </PageLayout>
   );
 };
