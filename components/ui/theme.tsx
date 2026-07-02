@@ -8,7 +8,7 @@ const screens = { sm: 600, md: 900, lg: 1200, xl: 1536 };
 const spacing = (value) => `${value * 8}px`;
 
 const buildTheme = (server, darkMode, direction) => {
-  const primary = server?.attributes?.colorPrimary || (darkMode ? '#9fa8da' : '#1a237e');
+  const primary = server?.attributes?.colorPrimary || (darkMode ? '#38bdf8' : '#0284c7');
   const secondary = server?.attributes?.colorSecondary || (darkMode ? '#a5d6a7' : '#2e7d32');
   return {
     direction,

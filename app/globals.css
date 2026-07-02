@@ -3,7 +3,7 @@
 
 :root {
   color-scheme: light;
-  --color-primary: #1a237e;
+  --color-primary: #0284c7;
   --color-secondary: #2e7d32;
   --color-background: #fafafa;
   --color-paper: #ffffff;
@@ -18,7 +18,7 @@
 
 :root.dark {
   color-scheme: dark;
-  --color-primary: #9fa8da;
+  --color-primary: #38bdf8;
   --color-secondary: #a5d6a7;
   --color-background: #0f172a;
   --color-paper: #172033;
@@ -103,6 +103,81 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+.ui-checkbox {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  appearance: none;
+  place-content: center;
+  border: 1.5px solid color-mix(in srgb, var(--color-muted) 70%, transparent);
+  border-radius: 0.3rem;
+  background: var(--color-paper);
+  transition: 150ms ease;
+}
+
+.ui-checkbox::after {
+  width: 0.55rem;
+  height: 0.3rem;
+  content: '';
+  transform: translateY(-0.05rem) rotate(-45deg) scale(0);
+  border-bottom: 2px solid white;
+  border-left: 2px solid white;
+  transition: transform 120ms ease;
+}
+
+.ui-checkbox:checked {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.ui-checkbox:checked::after {
+  transform: translateY(-0.05rem) rotate(-45deg) scale(1);
+}
+
+.ui-checkbox:focus-visible,
+.ui-switch:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+  outline-offset: 2px;
+}
+
+.ui-checkbox:disabled,
+.ui-switch:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ui-switch {
+  position: relative;
+  flex: none;
+  appearance: none;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-muted) 28%, var(--color-paper));
+  transition: 180ms ease;
+}
+
+.ui-switch::after {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 999px;
+  background: white;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 0.28);
+  content: '';
+  transition: transform 180ms ease;
+}
+
+.ui-switch:checked {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.ui-switch:checked::after {
+  transform: translateX(1.2rem);
 }
 
 @layer components {

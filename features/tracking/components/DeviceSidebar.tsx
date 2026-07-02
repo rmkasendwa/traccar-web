@@ -187,7 +187,7 @@ export default function DeviceSidebar({
                     type="checkbox"
                     checked={statusFilter.includes(status)}
                     onChange={() => toggleStatus(status)}
-                    className="h-4 w-4 accent-sky-600"
+                    className="ui-checkbox h-4 w-4 cursor-pointer"
                   />
                   <span className={`h-2 w-2 rounded-full ${statusStyles[status]}`} />
                   <span className="flex-1 capitalize">{status}</span>

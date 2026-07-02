@@ -129,9 +129,11 @@ export const Button = forwardRef(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center gap-2 rounded-md font-medium transition disabled:cursor-not-allowed disabled:opacity-50',
-          size === 'small' ? 'min-h-8 px-2 text-sm' : 'min-h-10 px-4',
+          'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50',
+          size === 'small' ? 'min-h-8 px-3 text-sm' : 'min-h-10 px-4',
           outlined && 'border',
+          contained && color === 'primary' && 'shadow-sm shadow-sky-950/15 hover:brightness-110',
+          outlined && color === 'primary' && 'hover:bg-sky-500/10',
           colors,
           fullWidth && 'w-full',
           className,
@@ -167,7 +169,7 @@ IconButton.displayName = 'IconButton';
 export const Fab = ({ className, size, ...props }) => (
   <IconButton
     className={cn(
-      'bg-(--color-primary) text-white shadow-lg hover:bg-(--color-primary)/90',
+      'bg-(--color-primary) text-white shadow-lg shadow-sky-950/20 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)',
       size === 'medium' && 'h-12 w-12',
       className,
     )}
@@ -380,7 +382,7 @@ export const Checkbox = forwardRef(({ className, ...props }, ref) => (
   <input
     ref={ref}
     type="checkbox"
-    className={cn('h-4 w-4 accent-(--color-primary)', className)}
+    className={cn('ui-checkbox h-4 w-4 cursor-pointer', className)}
     {...props}
   />
 ));
@@ -390,7 +392,7 @@ export const Switch = forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     type="checkbox"
     role="switch"
-    className={cn('h-5 w-10 accent-(--color-primary)', className)}
+    className={cn('ui-switch h-5 w-10 cursor-pointer', className)}
     {...props}
   />
 ));

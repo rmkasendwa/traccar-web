@@ -4,7 +4,7 @@ const Loader = () => (
     role="status"
     aria-label="Loading"
   >
-    <div className="size-10 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-700" />
+    <div className="size-10 animate-spin rounded-full border-4 border-slate-200 border-t-sky-600" />
   </div>
 );
 
