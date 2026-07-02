@@ -18,6 +18,25 @@ import { Check, ChevronDown, Search } from 'lucide-react';
 import { useAsyncTask } from '@/lib/react';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 
+type SelectFieldProps = {
+  label?: string;
+  fullWidth?: boolean;
+  multiple?: boolean;
+  value?: unknown;
+  emptyValue?: unknown;
+  emptyTitle?: string;
+  onChange: (event: { target: { value: any } }) => void;
+  endpoint?: string;
+  data?: any[];
+  keyGetter?: (item: any) => any;
+  titleGetter?: (item: any) => string;
+  helperText?: string;
+  placeholder?: string;
+  singleLine?: boolean;
+  allValue?: unknown;
+  disabled?: boolean;
+};
+
 const SelectField = ({
   label,
   fullWidth,
@@ -35,7 +54,7 @@ const SelectField = ({
   singleLine: _singleLine,
   allValue,
   disabled = false,
-}) => {
+}: SelectFieldProps) => {
   const [items, setItems] = useState(data);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');

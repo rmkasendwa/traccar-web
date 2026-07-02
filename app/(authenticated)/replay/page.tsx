@@ -115,12 +115,12 @@ function StateCard({ type }: { type: PageState }) {
   const content = stateContent[type];
   const Icon = content.icon;
   return (
-    <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/90 p-5 text-center">
-      <span className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-white text-slate-500 shadow-sm">
+    <div className="rounded-2xl border border-dashed border-(--color-divider) bg-(--color-surface-subtle) p-5 text-center">
+      <span className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-(--color-paper) text-(--color-muted) shadow-sm">
         <Icon size={20} aria-hidden="true" />
       </span>
-      <h2 className="mt-3 text-sm font-semibold text-slate-900">{content.title}</h2>
-      <p className="mt-1.5 text-xs leading-5 text-slate-500">{content.description}</p>
+      <h2 className="mt-3 text-sm font-semibold text-(--color-text)">{content.title}</h2>
+      <p className="mt-1.5 text-xs leading-5 text-(--color-muted)">{content.description}</p>
       {(type === 'offline' || type === 'request') && (
         <Link
           href="/replay"
@@ -235,34 +235,34 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                 ].map(({ label, value, icon: Icon }) => (
                   <article
                     key={label}
-                    className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+                    className="rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) p-3"
                   >
-                    <div className="flex items-center gap-1.5 text-[0.66rem] font-semibold text-slate-500">
+                    <div className="flex items-center gap-1.5 text-[0.66rem] font-semibold text-(--color-muted)">
                       <Icon size={13} className="text-sky-600" aria-hidden="true" /> {label}
                     </div>
-                    <p className="mt-1 text-base font-bold tracking-tight text-slate-950">
+                    <p className="mt-1 text-base font-bold tracking-tight text-(--color-text)">
                       {value}
                     </p>
                   </article>
                 ))}
               </section>
 
-              <section className="rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm shadow-slate-950/5 backdrop-blur">
-                <div className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-slate-950/5 px-4 py-3 shadow-inner">
+              <section className="rounded-3xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-sm shadow-slate-950/5">
+                <div className="flex items-center gap-3 rounded-3xl border border-(--color-divider) bg-(--color-surface-subtle) px-4 py-3 shadow-inner">
                   <span className="grid h-10 w-10 place-items-center rounded-2xl bg-sky-500/10 text-sky-700">
                     <Smartphone size={18} aria-hidden="true" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-slate-950">
+                    <p className="truncate text-sm font-semibold text-(--color-text)">
                       {selectedDevice.name}
                     </p>
-                    <p className="text-[0.68rem] capitalize text-slate-500">
+                    <p className="text-[0.68rem] capitalize text-(--color-muted)">
                       {selectedDevice.status || 'Status unavailable'}
                       {selectedDevice.model ? ` · ${selectedDevice.model}` : ''}
                     </p>
                   </div>
                 </div>
-                <div className="mt-4 grid gap-3 border-t border-slate-200/75 pt-4 text-xs text-slate-500">
+                <div className="mt-4 grid gap-3 border-t border-(--color-divider) pt-4 text-xs text-(--color-muted)">
                   <div className="flex items-center gap-2">
                     <Navigation size={14} className="text-sky-600" aria-hidden="true" />
                     <span>
@@ -271,7 +271,7 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                   </div>
                   <a
                     href={`/api/positions/kml?${new URLSearchParams({ deviceId, from: normalizedFrom, to: normalizedTo })}`}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-(--color-divider) bg-(--color-paper) px-3 py-2 text-xs font-semibold text-(--color-text) transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
                   >
                     <Download size={14} aria-hidden="true" /> Download route as KML
                   </a>

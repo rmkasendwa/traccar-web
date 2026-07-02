@@ -11,7 +11,7 @@ type ReplayPanelProps = {
 export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanelProps) {
   return (
     <aside
-      className="absolute inset-x-3 bottom-3 z-30 flex max-h-[calc(100%-1.5rem)] w-auto flex-col overflow-hidden rounded-[1.35rem] border border-white/60 bg-white/94 shadow-2xl shadow-slate-950/25 backdrop-blur-xl md:inset-x-auto md:top-3 md:left-3 md:w-88"
+      className="absolute inset-x-3 bottom-3 z-30 flex max-h-[calc(100%-1.5rem)] w-auto flex-col overflow-hidden rounded-[1.35rem] border border-(--color-divider) bg-(--color-paper) text-(--color-text) shadow-2xl shadow-slate-950/25 md:inset-x-auto md:top-3 md:left-3 md:w-88"
       aria-label="Replay panel"
     >
       <input
@@ -67,7 +67,7 @@ export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanel
       </div>
 
       {footer && (
-        <div className="shrink-0 border-t border-slate-200/80 bg-white/95 p-4 shadow-inner">
+        <div className="shrink-0 border-t border-(--color-divider) bg-(--color-paper) p-4 shadow-inner">
           {footer}
         </div>
       )}

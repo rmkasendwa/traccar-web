@@ -85,15 +85,15 @@ export default function ReplayDateTimePicker({
   };
 
   return (
-    <fieldset className="relative rounded-xl border border-slate-200 bg-white p-2.5 shadow-sm transition focus-within:border-sky-400 focus-within:ring-2 focus-within:ring-sky-100">
-      <legend className="px-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-slate-500">
+    <fieldset className="relative rounded-xl border border-(--color-divider) bg-(--color-paper) p-2.5 shadow-sm transition focus-within:border-sky-400 focus-within:ring-2 focus-within:ring-sky-500/15">
+      <legend className="px-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-(--color-muted)">
         {label}
       </legend>
       <div className={dateOnly ? 'block' : 'grid grid-cols-[minmax(0,1fr)_6.5rem] gap-2'}>
         <button
           ref={refs.setReference}
           type="button"
-          className="flex h-9 min-w-0 items-center gap-2 rounded-lg bg-slate-50 px-2.5 text-left text-xs font-semibold text-slate-800 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+          className="flex h-9 min-w-0 items-center gap-2 rounded-lg bg-(--color-surface-subtle) px-2.5 text-left text-xs font-semibold text-(--color-text) transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
           aria-haspopup="dialog"
           aria-expanded={open}
           {...getReferenceProps()}
@@ -121,12 +121,12 @@ export default function ReplayDateTimePicker({
               value={time}
               onChange={(event) => onChange(`${date}T${event.target.value}`)}
               required
-              className="h-9 w-full min-w-0 rounded-lg bg-slate-50 pr-1 pl-7 text-xs font-semibold text-slate-800 outline-none transition hover:bg-slate-100 focus:bg-sky-50"
+              className="h-9 w-full min-w-0 rounded-lg bg-(--color-surface-subtle) pr-1 pl-7 text-xs font-semibold text-(--color-text) outline-none transition hover:bg-(--color-surface-hover) focus:bg-sky-500/10"
             />
           </label>
         )}
       </div>
-      <p className="mt-1.5 px-1 text-[0.62rem] font-medium text-slate-400">
+      <p className="mt-1.5 px-1 text-[0.62rem] font-medium text-(--color-muted)">
         {dateOnly ? 'Full local day' : 'UTC timezone'}
       </p>
 
@@ -137,19 +137,19 @@ export default function ReplayDateTimePicker({
               ref={refs.setFloating}
               style={floatingStyles}
               aria-label={`${label} calendar`}
-              className="z-100 w-72 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl shadow-slate-950/20 outline-none"
+              className="z-100 w-72 rounded-2xl border border-(--color-divider) bg-(--color-paper) p-3 text-(--color-text) shadow-2xl shadow-slate-950/20 outline-none"
               {...getFloatingProps()}
             >
               <div className="flex items-center justify-between">
                 <button
                   type="button"
                   onClick={() => moveMonth(-1)}
-                  className="grid h-8 w-8 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-sky-500"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-sky-500"
                   aria-label="Previous month"
                 >
                   <ChevronLeft size={17} aria-hidden="true" />
                 </button>
-                <p className="text-sm font-bold text-slate-900">
+                <p className="text-sm font-bold text-(--color-text)">
                   {visibleMonth.toLocaleDateString('en', {
                     month: 'long',
                     year: 'numeric',
@@ -159,7 +159,7 @@ export default function ReplayDateTimePicker({
                 <button
                   type="button"
                   onClick={() => moveMonth(1)}
-                  className="grid h-8 w-8 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-sky-500"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-sky-500"
                   aria-label="Next month"
                 >
                   <ChevronRight size={17} aria-hidden="true" />
@@ -194,7 +194,7 @@ export default function ReplayDateTimePicker({
                       className={`grid h-8 place-items-center rounded-lg text-xs font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-sky-500 ${
                         selected
                           ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20'
-                          : 'text-slate-600 hover:bg-sky-50 hover:text-sky-800'
+                          : 'text-(--color-muted) hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-300'
                       } ${isToday && !selected ? 'ring-1 ring-sky-300' : ''}`}
                       aria-label={new Date(Date.UTC(year, month, day)).toLocaleDateString('en', {
                         dateStyle: 'full',

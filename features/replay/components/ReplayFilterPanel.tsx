@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { CalendarDays, Search } from 'lucide-react';
+import SelectField from '@/components/ui/SelectField';
 import ReplayDateTimePicker from '@/features/replay/components/ReplayDateTimePicker';
 import type { ReplayDevice } from '@/features/replay/types';
 
@@ -147,30 +148,26 @@ export default function ReplayFilterPanel({
 
   return (
     <form onSubmit={submit} className="space-y-4">
-      <label className="grid gap-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-slate-500">
-        Device
-        <select
+      <div className="grid gap-1.5">
+        <span className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-(--color-muted)">
+          Device
+        </span>
+        <SelectField
+          fullWidth
+          data={devices}
           value={selectedDevice}
-          onChange={(event) => {
+          keyGetter={(device: ReplayDevice) => String(device.id)}
+          titleGetter={(device: ReplayDevice) => device.name}
+          placeholder="Select a device"
+          onChange={(event: { target: { value: string } }) => {
             setSelectedDevice(event.target.value);
             setDirty(true);
           }}
-          required
-          className="h-11 min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium normal-case tracking-normal text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
-        >
-          <option value="" disabled>
-            Select a device
-          </option>
-          {devices.map((device) => (
-            <option key={device.id} value={device.id}>
-              {device.name}
-            </option>
-          ))}
-        </select>
-      </label>
+        />
+      </div>
 
       <fieldset>
-        <legend className="flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <legend className="flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-(--color-muted)">
           <CalendarDays size={14} aria-hidden="true" /> Replay period
         </legend>
         <div className="mt-2 grid grid-cols-2 gap-1.5">
@@ -184,8 +181,8 @@ export default function ReplayFilterPanel({
               }}
               className={`rounded-lg border px-2.5 py-2 text-left text-xs font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
                 period === item.value
-                  ? 'border-sky-300 bg-sky-50 text-sky-800 shadow-sm'
-                  : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'border-sky-300 bg-sky-50 text-sky-800 shadow-sm dark:border-sky-700 dark:bg-sky-950 dark:text-sky-200'
+                  : 'border-(--color-divider) bg-(--color-paper) text-(--color-muted) hover:bg-(--color-surface-hover) hover:text-(--color-text)'
               } ${item.value === 'custom' || item.value === 'specificDay' ? 'col-span-2 text-center' : ''}`}
               aria-pressed={period === item.value}
             >
@@ -234,7 +231,7 @@ export default function ReplayFilterPanel({
         className={`inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold shadow-lg transition disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
           dirty
             ? 'bg-amber-400 text-amber-950 shadow-amber-500/20 hover:bg-amber-300'
-            : 'bg-slate-950 text-white shadow-slate-950/15 hover:bg-sky-700'
+            : 'bg-(--color-text) text-(--color-paper) shadow-slate-950/15 hover:bg-sky-700'
         }`}
       >
         <Search size={16} aria-hidden="true" />
