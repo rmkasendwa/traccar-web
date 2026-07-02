@@ -293,26 +293,34 @@ export const InputLabel = ({ className, ...props }) => (
   <label className={cn('text-sm text-(--color-muted)', className)} {...props} />
 );
 export const OutlinedInput = forwardRef(
-  ({ className, startAdornment, endAdornment, fullWidth, size, ...props }, ref) => (
-    <div
-      className={cn(
-        'flex items-center rounded-md border border-(--color-divider)',
-        fullWidth && 'w-full',
-      )}
-    >
-      {startAdornment}
-      <input
-        ref={ref}
+  (
+    { className, startAdornment, endAdornment, fullWidth, size, multiline, rows, ...props },
+    ref,
+  ) => {
+    const Component = multiline ? 'textarea' : 'input';
+    return (
+      <div
         className={cn(
-          'min-w-0 flex-1 bg-transparent px-3 outline-none',
-          size === 'small' ? 'min-h-9' : 'min-h-10',
-          className,
+          'flex rounded-xl border border-(--color-divider) focus-within:border-(--color-primary) focus-within:ring-1 focus-within:ring-(--color-primary)',
+          multiline ? 'items-start' : 'items-center',
+          fullWidth && 'w-full',
         )}
-        {...props}
-      />
-      {endAdornment}
-    </div>
-  ),
+      >
+        {startAdornment}
+        <Component
+          ref={ref}
+          rows={multiline ? rows : undefined}
+          className={cn(
+            'min-w-0 flex-1 bg-transparent px-3 outline-none',
+            multiline ? 'resize-y py-2.5' : size === 'small' ? 'min-h-9' : 'min-h-10',
+            className,
+          )}
+          {...props}
+        />
+        {endAdornment}
+      </div>
+    );
+  },
 );
 OutlinedInput.displayName = 'OutlinedInput';
 export const InputAdornment = ({ position, className, ...props }) => (
