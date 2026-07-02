@@ -14,7 +14,7 @@ import SelectedDeviceCard from './components/SelectedDeviceCard';
 const MainMap = dynamic(() => import('@/features/tracking/MainMap'), {
   ssr: false,
   loading: () => (
-    <div className="h-full w-full animate-pulse bg-[linear-gradient(135deg,#dbe5df_0%,#eef3ef_45%,#d7e1dc_100%)]" />
+    <div className="h-full w-full animate-pulse bg-[linear-gradient(135deg,var(--color-background)_0%,var(--color-surface-subtle)_45%,var(--color-divider)_100%)]" />
   ),
 });
 
