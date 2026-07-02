@@ -9,20 +9,14 @@ import {
   AccordionSummary,
   AccordionDetails,
   Typography,
-  Container,
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Checkbox,
   FormControlLabel,
   FormGroup,
   InputAdornment,
   IconButton,
   OutlinedInput,
-  Autocomplete,
   TextField,
-  createFilterOptions,
   Button,
 } from '@/components/ui';
 import { ExpandMoreIcon } from '@/components/ui/icons';
@@ -79,7 +73,18 @@ const PreferencesPage = () => {
 
   const positionAttributes = usePositionAttributes(t);
 
-  const filter = createFilterOptions();
+  const popupItems = Array.from(
+    new Set([
+      ...Object.keys(positionAttributes),
+      ...(attributes.positionItems?.split(',').filter(Boolean) || []),
+    ]),
+  ).map((id) => ({ id, name: positionAttributes[id]?.name || id }));
+  const visibilityOptions = [
+    { id: 'none', name: t('sharedDisabled') },
+    { id: 'selected', name: t('deviceSelected') },
+    { id: 'all', name: t('notificationAlways') },
+  ];
+  const overlayOptions = [{ id: '', title: 'None', available: true }, ...mapOverlays];
 
   const generateToken = useCatch(async () => {
     const expiration = dayjs(tokenExpiration, 'YYYY-MM-DD').toISOString();
@@ -112,80 +117,68 @@ const PreferencesPage = () => {
 
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedPreferences']}>
-      <Container maxWidth="xs" className={classes.container}>
+      <div className="preferences-layout mx-auto w-full max-w-5xl pb-24">
         {!readonly && (
           <>
-            <Accordion defaultExpanded>
+            <Accordion defaultExpanded className="preferences-card preferences-card-wide">
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1">{t('mapTitle')}</Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.details}>
-                <FormControl>
-                  <InputLabel>{t('mapActive')}</InputLabel>
-                  <Select
-                    label={t('mapActive')}
-                    value={attributes.activeMapStyles?.split(',') || ['openFreeMap', 'osm']}
-                    onChange={(e, child) => {
-                      const clicked = mapStyles.find((s) => s.id === child.props.value);
-                      if (clicked.available) {
-                        setAttributes({ ...attributes, activeMapStyles: e.target.value.join(',') });
-                      } else if (clicked.id !== 'custom') {
-                        const query = new URLSearchParams({ attribute: clicked.attribute });
-                        navigate(`/settings/user/${user.id}?${query.toString()}`);
-                      }
-                    }}
-                    multiple
-                  >
-                    {mapStyles.map((style) => (
-                      <MenuItem key={style.id} value={style.id}>
-                        <Typography
-                          component="span"
-                          color={style.available ? 'textPrimary' : 'error'}
-                        >
-                          {style.title}
-                        </Typography>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl>
-                  <InputLabel>{t('mapOverlay')}</InputLabel>
-                  <Select
-                    label={t('mapOverlay')}
-                    value={attributes.selectedMapOverlay || ''}
-                    onChange={(e) => {
-                      const clicked = mapOverlays.find((o) => o.id === e.target.value);
-                      if (!clicked || clicked.available) {
-                        setAttributes({ ...attributes, selectedMapOverlay: e.target.value });
-                      } else if (clicked.id !== 'custom') {
-                        const query = new URLSearchParams({ attribute: clicked.attribute });
-                        navigate(`/settings/user/${user.id}?${query.toString()}`);
-                      }
-                    }}
-                  >
-                    <MenuItem value="">{'\u00a0'}</MenuItem>
-                    {mapOverlays.map((overlay) => (
-                      <MenuItem key={overlay.id} value={overlay.id}>
-                        <Typography
-                          component="span"
-                          color={overlay.available ? 'textPrimary' : 'error'}
-                        >
-                          {overlay.title}
-                        </Typography>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <Autocomplete
+                <SelectField
                   multiple
-                  freeSolo
-                  options={Object.keys(positionAttributes)}
-                  getOptionLabel={(option) => {
-                    if (typeof option === 'object' && option.inputValue) {
-                      return option.inputValue;
+                  fullWidth
+                  label={t('mapActive')}
+                  value={attributes.activeMapStyles?.split(',') || ['openFreeMap', 'osm']}
+                  data={mapStyles}
+                  titleGetter={(style) =>
+                    style.available ? style.title : `${style.title} · Configure`
+                  }
+                  onChange={(event) => {
+                    const previous = attributes.activeMapStyles?.split(',') || [
+                      'openFreeMap',
+                      'osm',
+                    ];
+                    const added = event.target.value.find((id) => !previous.includes(id));
+                    const clicked = mapStyles.find((style) => style.id === added);
+                    if (clicked && !clicked.available && clicked.id !== 'custom') {
+                      const query = new URLSearchParams({ attribute: clicked.attribute });
+                      navigate(`/settings/user/${user.id}?${query.toString()}`);
+                    } else {
+                      setAttributes({
+                        ...attributes,
+                        activeMapStyles: event.target.value.join(','),
+                      });
                     }
-                    return positionAttributes[option]?.name || option;
                   }}
+                />
+                <SelectField
+                  fullWidth
+                  label={t('mapOverlay')}
+                  value={attributes.selectedMapOverlay || ''}
+                  data={overlayOptions}
+                  titleGetter={(overlay) =>
+                    overlay.available ? overlay.title : `${overlay.title} · Configure`
+                  }
+                  onChange={(event) => {
+                    const clicked = mapOverlays.find(
+                      (overlay) => overlay.id === event.target.value,
+                    );
+                    if (!clicked || clicked.available) {
+                      setAttributes({
+                        ...attributes,
+                        selectedMapOverlay: event.target.value,
+                      });
+                    } else if (clicked.id !== 'custom') {
+                      const query = new URLSearchParams({ attribute: clicked.attribute });
+                      navigate(`/settings/user/${user.id}?${query.toString()}`);
+                    }
+                  }}
+                />
+                <SelectField
+                  multiple
+                  fullWidth
+                  data={popupItems}
                   value={
                     attributes.positionItems?.split(',') || [
                       'fixTime',
@@ -194,59 +187,32 @@ const PreferencesPage = () => {
                       'totalDistance',
                     ]
                   }
-                  onChange={(_, newValue) => {
+                  onChange={(event) => {
                     setAttributes({
                       ...attributes,
-                      positionItems: newValue
-                        .map((x) => (typeof x === 'string' ? x : x.inputValue))
-                        .join(','),
+                      positionItems: event.target.value.join(','),
                     });
                   }}
-                  filterOptions={(options, params) => {
-                    const filtered = filter(options, params);
-                    if (params.inputValue && !options.includes(params.inputValue)) {
-                      filtered.push({
-                        inputValue: params.inputValue,
-                        name: `${t('sharedAdd')} "${params.inputValue}"`,
-                      });
-                    }
-                    return filtered;
-                  }}
-                  renderOption={(props, option) => (
-                    <li {...props}>
-                      {option.name ? option.name : positionAttributes[option]?.name || option}
-                    </li>
-                  )}
-                  renderInput={(params) => (
-                    <TextField {...params} label={t('attributePopupInfo')} />
-                  )}
+                  label={t('attributePopupInfo')}
                 />
-                <FormControl>
-                  <InputLabel>{t('mapLiveRoutes')}</InputLabel>
-                  <Select
-                    label={t('mapLiveRoutes')}
-                    value={attributes.mapLiveRoutes || 'none'}
-                    onChange={(e) =>
-                      setAttributes({ ...attributes, mapLiveRoutes: e.target.value })
-                    }
-                  >
-                    <MenuItem value="none">{t('sharedDisabled')}</MenuItem>
-                    <MenuItem value="selected">{t('deviceSelected')}</MenuItem>
-                    <MenuItem value="all">{t('notificationAlways')}</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl>
-                  <InputLabel>{t('mapDirection')}</InputLabel>
-                  <Select
-                    label={t('mapDirection')}
-                    value={attributes.mapDirection || 'selected'}
-                    onChange={(e) => setAttributes({ ...attributes, mapDirection: e.target.value })}
-                  >
-                    <MenuItem value="none">{t('sharedDisabled')}</MenuItem>
-                    <MenuItem value="selected">{t('deviceSelected')}</MenuItem>
-                    <MenuItem value="all">{t('notificationAlways')}</MenuItem>
-                  </Select>
-                </FormControl>
+                <SelectField
+                  fullWidth
+                  label={t('mapLiveRoutes')}
+                  value={attributes.mapLiveRoutes || 'none'}
+                  data={visibilityOptions}
+                  onChange={(event) =>
+                    setAttributes({ ...attributes, mapLiveRoutes: event.target.value })
+                  }
+                />
+                <SelectField
+                  fullWidth
+                  label={t('mapDirection')}
+                  value={attributes.mapDirection || 'selected'}
+                  data={visibilityOptions}
+                  onChange={(event) =>
+                    setAttributes({ ...attributes, mapDirection: event.target.value })
+                  }
+                />
                 <FormGroup>
                   <FormControlLabel
                     control={
@@ -303,7 +269,7 @@ const PreferencesPage = () => {
                 </FormGroup>
               </AccordionDetails>
             </Accordion>
-            <Accordion>
+            <Accordion className="preferences-card">
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1">{t('deviceTitle')}</Typography>
               </AccordionSummary>
@@ -326,7 +292,7 @@ const PreferencesPage = () => {
                 />
               </AccordionDetails>
             </Accordion>
-            <Accordion>
+            <Accordion className="preferences-card">
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1">{t('sharedSound')}</Typography>
               </AccordionSummary>
@@ -356,7 +322,7 @@ const PreferencesPage = () => {
             </Accordion>
           </>
         )}
-        <Accordion>
+        <Accordion className="preferences-card">
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="subtitle1">{t('userToken')}</Typography>
           </AccordionSummary>
@@ -405,7 +371,7 @@ const PreferencesPage = () => {
         </Accordion>
         {!readonly && (
           <>
-            <Accordion>
+            <Accordion className="preferences-card">
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1">{t('sharedInfoTitle')}</Typography>
               </AccordionSummary>
@@ -431,7 +397,7 @@ const PreferencesPage = () => {
                 )}
               </AccordionDetails>
             </Accordion>
-            <div className={classes.buttons}>
+            <div className="preferences-actions">
               <Button type="button" color="primary" variant="outlined" onClick={() => navigate(-1)}>
                 {t('sharedCancel')}
               </Button>
@@ -441,7 +407,7 @@ const PreferencesPage = () => {
             </div>
           </>
         )}
-      </Container>
+      </div>
     </PageLayout>
   );
 };

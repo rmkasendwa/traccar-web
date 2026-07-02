@@ -179,6 +179,103 @@ textarea {
     outline-offset: 1px;
   }
 
+  .preferences-layout {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding: 0.25rem;
+  }
+
+  .preferences-card {
+    align-self: start;
+    overflow: hidden;
+    border: 1px solid var(--color-divider);
+    border-radius: 1rem;
+    background: var(--color-paper);
+    box-shadow: 0 6px 22px rgb(15 23 42 / 0.05);
+  }
+
+  .preferences-card-wide {
+    grid-column: 1 / -1;
+  }
+
+  .preferences-card > button {
+    min-height: 4rem;
+    padding-inline: 1.25rem;
+    background: var(--color-surface-subtle);
+  }
+
+  .preferences-card > button:hover {
+    background: var(--color-surface-hover);
+  }
+
+  .preferences-card > button svg {
+    color: var(--color-muted);
+  }
+
+  .preferences-card > div {
+    padding: 1.25rem;
+  }
+
+  .preferences-card-wide > div {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem !important;
+  }
+
+  .preferences-card-wide > div > :nth-last-child(-n + 1) {
+    grid-column: 1 / -1;
+  }
+
+  .preferences-card label:has(input[type='checkbox']) {
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-divider);
+    border-radius: 0.75rem;
+    background: var(--color-surface-subtle);
+  }
+
+  .preferences-card input[type='checkbox'] {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .preferences-actions {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 20;
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.65rem;
+    border: 1px solid var(--color-divider);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--color-paper) 90%, transparent);
+    box-shadow: 0 14px 40px rgb(15 23 42 / 0.18);
+    backdrop-filter: blur(14px);
+  }
+
+  @media (max-width: 767px) {
+    .preferences-layout,
+    .preferences-card-wide > div {
+      grid-template-columns: 1fr;
+    }
+
+    .preferences-card-wide > div > * {
+      grid-column: auto;
+    }
+
+    .preferences-actions {
+      right: 1rem;
+      bottom: 1rem;
+      left: 1rem;
+    }
+
+    .preferences-actions > button {
+      flex: 1;
+    }
+  }
+
   .replay-control {
     display: grid;
     width: 2.5rem;
