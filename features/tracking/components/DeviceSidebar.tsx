@@ -14,7 +14,6 @@ import {
   Plus,
   Search,
   SlidersHorizontal,
-  SunMoon,
 } from 'lucide-react';
 import { useNavigate } from '@/lib/router';
 import { devicesActions } from '@/store';
@@ -95,7 +94,6 @@ export default function DeviceSidebar({
   const selectedId = useSelector((state: any) => state.devices.selectedId);
   const socket = useSelector((state: any) => state.session.socket);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [themeOpen, setThemeOpen] = useState(false);
   const [clock, setClock] = useState(0);
 
   useEffect(() => {
@@ -136,27 +134,7 @@ export default function DeviceSidebar({
               />
               {socket === false ? 'Reconnecting' : 'Live'}
             </span>
-            <FloatingPanel
-              open={themeOpen}
-              onOpenChange={setThemeOpen}
-              className="w-64"
-              trigger={(props, ref) => (
-                <button
-                  {...props}
-                  ref={ref as any}
-                  type="button"
-                  className="grid h-9 w-9 place-items-center rounded-full border border-(--color-divider) bg-(--color-surface-subtle) text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-                  aria-label="Change color theme"
-                >
-                  <SunMoon size={17} aria-hidden="true" />
-                </button>
-              )}
-            >
-              <p className="mb-2 px-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-(--color-muted)">
-                Appearance
-              </p>
-              <ThemeModeControl />
-            </FloatingPanel>
+            <ThemeModeControl compact />
           </div>
         </div>
 
