@@ -1,12 +1,13 @@
 // @ts-nocheck
 'use client';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTheme } from '@/components/ui';
 import SelectField from '@/components/ui/SelectField';
 import {
   Brush,
   CartesianGrid,
+  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -47,75 +48,110 @@ const ChartReportPage = () => {
   const [types, setTypes] = useState(['speed']);
   const [selectedTypes, setSelectedTypes] = useState(['speed']);
   const [timeType, setTimeType] = useState('fixTime');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const values = items.map((it) =>
-    selectedTypes.map((type) => it[type]).filter((value) => value != null),
+  const chartItems = useMemo(
+    () =>
+      items
+        .filter((item) => Number.isFinite(item[timeType]))
+        .sort((a, b) => a[timeType] - b[timeType]),
+    [items, timeType],
   );
-  const minValue = values.length ? Math.min(...values) : 0;
-  const maxValue = values.length ? Math.max(...values) : 100;
-  const valueRange = maxValue - minValue;
+
+  const yDomain = useMemo(() => {
+    let min = Infinity;
+    let max = -Infinity;
+    chartItems.forEach((item) => {
+      selectedTypes.forEach((type) => {
+        const value = item[type];
+        if (Number.isFinite(value)) {
+          min = Math.min(min, value);
+          max = Math.max(max, value);
+        }
+      });
+    });
+    if (!Number.isFinite(min) || !Number.isFinite(max)) return [0, 100];
+    const padding = min === max ? Math.max(Math.abs(min) * 0.1, 1) : (max - min) * 0.1;
+    return [min - padding, max + padding];
+  }, [chartItems, selectedTypes]);
 
   const onShow = useCatchCallback(
     async ({ deviceIds, from, to }) => {
       const query = new URLSearchParams({ from, to });
       deviceIds.forEach((deviceId) => query.append('deviceId', deviceId));
-      const response = await fetchOrThrow(`/api/reports/route?${query.toString()}`, {
-        headers: { Accept: 'application/json' },
-      });
-      const positions = await response.json();
-      const keySet = new Set();
-      const keyList = [];
-      const formattedPositions = positions.map((position) => {
-        const data = { ...position, ...position.attributes };
-        const formatted = {};
-        formatted.fixTime = dayjs(position.fixTime).valueOf();
-        formatted.deviceTime = dayjs(position.deviceTime).valueOf();
-        formatted.serverTime = dayjs(position.serverTime).valueOf();
-        Object.keys(data)
-          .filter((key) => !['id', 'deviceId'].includes(key))
-          .forEach((key) => {
-            const value = data[key];
-            if (typeof value === 'number') {
-              keySet.add(key);
-              const definition = positionAttributes[key] || {};
-              switch (definition.dataType) {
-                case 'speed':
-                  if (key == 'obdSpeed') {
-                    formatted[key] = speedFromKnots(speedToKnots(value, 'kmh'), speedUnit).toFixed(
-                      2,
-                    );
-                  } else {
-                    formatted[key] = speedFromKnots(value, speedUnit).toFixed(2);
-                  }
-                  break;
-                case 'altitude':
-                  formatted[key] = altitudeFromMeters(value, altitudeUnit).toFixed(2);
-                  break;
-                case 'distance':
-                  formatted[key] = distanceFromMeters(value, distanceUnit).toFixed(2);
-                  break;
-                case 'volume':
-                  formatted[key] = volumeFromLiters(value, volumeUnit).toFixed(2);
-                  break;
-                case 'hours':
-                  formatted[key] = (value / 1000).toFixed(2);
-                  break;
-                default:
-                  formatted[key] = value;
-                  break;
+      setLoading(true);
+      setError('');
+      try {
+        const response = await fetchOrThrow(`/api/reports/route?${query.toString()}`, {
+          headers: { Accept: 'application/json' },
+        });
+        const positions = await response.json();
+        const keySet = new Set();
+        const keyList = [];
+        const formattedPositions = positions.map((position) => {
+          const data = { ...position, ...position.attributes };
+          const formatted = {};
+          formatted.fixTime = dayjs(position.fixTime).valueOf();
+          formatted.deviceTime = dayjs(position.deviceTime).valueOf();
+          formatted.serverTime = dayjs(position.serverTime).valueOf();
+          Object.keys(data)
+            .filter((key) => !['id', 'deviceId'].includes(key))
+            .forEach((key) => {
+              const value = data[key];
+              if (typeof value === 'number') {
+                keySet.add(key);
+                const definition = positionAttributes[key] || {};
+                switch (definition.dataType) {
+                  case 'speed':
+                    if (key == 'obdSpeed') {
+                      formatted[key] = Number(
+                        speedFromKnots(speedToKnots(value, 'kmh'), speedUnit).toFixed(2),
+                      );
+                    } else {
+                      formatted[key] = Number(speedFromKnots(value, speedUnit).toFixed(2));
+                    }
+                    break;
+                  case 'altitude':
+                    formatted[key] = Number(altitudeFromMeters(value, altitudeUnit).toFixed(2));
+                    break;
+                  case 'distance':
+                    formatted[key] = Number(distanceFromMeters(value, distanceUnit).toFixed(2));
+                    break;
+                  case 'volume':
+                    formatted[key] = Number(volumeFromLiters(value, volumeUnit).toFixed(2));
+                    break;
+                  case 'hours':
+                    formatted[key] = Number((value / 1000).toFixed(2));
+                    break;
+                  default:
+                    formatted[key] = value;
+                    break;
+                }
               }
-            }
-          });
-        return formatted;
-      });
-      Object.keys(positionAttributes).forEach((key) => {
-        if (keySet.has(key)) {
-          keyList.push(key);
-          keySet.delete(key);
-        }
-      });
-      setTypes([...keyList, ...keySet]);
-      setItems(formattedPositions);
+            });
+          return formatted;
+        });
+        Object.keys(positionAttributes).forEach((key) => {
+          if (keySet.has(key)) {
+            keyList.push(key);
+            keySet.delete(key);
+          }
+        });
+        const nextTypes = [...keyList, ...keySet];
+        setTypes(nextTypes);
+        setSelectedTypes((current) => {
+          const available = current.filter((type) => nextTypes.includes(type));
+          return available.length ? available : nextTypes.slice(0, 1);
+        });
+        setItems(formattedPositions);
+      } catch (reportError) {
+        setItems([]);
+        setError(reportError instanceof Error ? reportError.message : t('sharedError'));
+        throw reportError;
+      } finally {
+        setLoading(false);
+      }
     },
     [positionAttributes, speedUnit, altitudeUnit, distanceUnit, volumeUnit],
   );
@@ -131,8 +167,14 @@ const ChartReportPage = () => {
   ];
 
   return (
-    <div className="report-page">
-      <ReportFilter onShow={onShow} onExport={() => {}} deviceType="single" formats={[]}>
+    <div className="report-page flex flex-col">
+      <ReportFilter
+        onShow={onShow}
+        onExport={() => {}}
+        deviceType="single"
+        formats={[]}
+        loading={loading}
+      >
         <div className={classes.filterItem}>
           <SelectField
             label={t('reportChartType')}
@@ -160,12 +202,27 @@ const ChartReportPage = () => {
           />
         </div>
       </ReportFilter>
-      {!items.length && <ReportEmptyState />}
-      {items.length > 0 && (
+      {loading && (
+        <div
+          className="grid min-h-64 place-items-center text-sm text-(--color-muted)"
+          role="status"
+        >
+          {t('sharedLoading')}
+        </div>
+      )}
+      {!loading && error && <ReportEmptyState title={t('sharedError')} description={error} />}
+      {!loading && !error && !items.length && <ReportEmptyState />}
+      {!loading && !error && items.length > 0 && !chartItems.length && (
+        <ReportEmptyState
+          title="No valid timeline data"
+          description="The selected timestamp is missing or invalid for this report."
+        />
+      )}
+      {!loading && !error && chartItems.length > 0 && (
         <div className={classes.chart}>
-          <ResponsiveContainer>
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} debounce={100}>
             <LineChart
-              data={items}
+              data={chartItems}
               margin={{
                 top: 10,
                 right: 40,
@@ -185,12 +242,19 @@ const ChartReportPage = () => {
                 stroke={theme.palette.text.primary}
                 type="number"
                 tickFormatter={(value) => parseFloat(value.toFixed(2))}
-                domain={[minValue - valueRange / 5, maxValue + valueRange / 5]}
+                domain={yDomain}
+                allowDataOverflow={false}
               />
               <CartesianGrid stroke={theme.palette.divider} strokeDasharray="3 3" />
+              <Legend
+                formatter={(value) => positionAttributes[value]?.name || value}
+                wrapperStyle={{ color: theme.palette.text.primary }}
+              />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: theme.palette.background.default,
+                  backgroundColor: theme.palette.background.paper,
+                  borderColor: theme.palette.divider,
+                  borderRadius: 8,
                   color: theme.palette.text.primary,
                 }}
                 formatter={(value, key) => [value, positionAttributes[key]?.name || key]}
@@ -211,6 +275,7 @@ const ChartReportPage = () => {
                   dot={false}
                   activeDot={{ r: 6 }}
                   connectNulls
+                  isAnimationActive={chartItems.length < 1000}
                 />
               ))}
             </LineChart>

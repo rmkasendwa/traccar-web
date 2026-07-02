@@ -53,8 +53,17 @@ export default makeStyles()((theme) => ({
     flexGrow: 1,
   },
   chart: {
-    flexGrow: 1,
+    width: '100%',
+    height: 'clamp(22rem, 62dvh, 44rem)',
+    minHeight: '22rem',
+    flexShrink: 0,
     overflow: 'hidden',
+    padding: theme.spacing(2, 1, 1),
+    '@media (max-width: 600px)': {
+      height: '26rem',
+      minHeight: '26rem',
+      padding: theme.spacing(1),
+    },
   },
   actionCellPadding: {
     '&.MuiTableCell-body': {
