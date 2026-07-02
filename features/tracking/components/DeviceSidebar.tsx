@@ -63,10 +63,10 @@ const BatteryState = ({ deviceId, selected }: { deviceId: number; selected: bool
   const color = selected
     ? 'text-white/90'
     : batteryLevel <= 20
-      ? 'text-rose-400'
+      ? 'text-rose-600 dark:text-rose-400'
       : batteryLevel <= 50
-        ? 'text-amber-400'
-        : 'text-emerald-400';
+        ? 'text-amber-600 dark:text-amber-400'
+        : 'text-emerald-600 dark:text-emerald-400';
 
   return (
     <span
@@ -112,7 +112,7 @@ export default function DeviceSidebar({
   return (
     <>
       <header
-        className={`border-b border-(--color-divider) px-5 pb-4 ${mobile ? 'pt-5 pr-14' : 'pt-5'}`}
+        className={`border-b border-(--color-divider) bg-linear-to-b from-white to-sky-50/35 px-5 pb-4 dark:from-transparent dark:to-transparent ${mobile ? 'pt-5 pr-14' : 'pt-5'}`}
       >
         <div className="mb-5 flex items-center justify-between">
           <div>
@@ -123,10 +123,10 @@ export default function DeviceSidebar({
           </div>
           <div className="flex items-center gap-2">
             <span
-              className={`flex items-center gap-2 rounded-full px-2.5 py-1 text-xs ${
+              className={`flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs font-medium ${
                 socket === false
-                  ? 'bg-rose-500/15 text-rose-300'
-                  : 'bg-emerald-400/10 text-emerald-300'
+                  ? 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-400/15 dark:bg-rose-500/15 dark:text-rose-300'
+                  : 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-400/15 dark:bg-emerald-400/10 dark:text-emerald-300'
               }`}
             >
               <span
@@ -139,7 +139,7 @@ export default function DeviceSidebar({
         </div>
 
         <div className="flex gap-2">
-          <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) px-3 text-(--color-muted) transition focus-within:border-sky-400/60 focus-within:bg-(--color-paper)">
+          <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-(--color-divider) bg-white px-3 text-(--color-muted) shadow-sm transition focus-within:border-sky-400/60 focus-within:ring-2 focus-within:ring-sky-500/10 dark:bg-(--color-surface-subtle) dark:shadow-none">
             <Search size={17} />
             <input
               value={keyword}
@@ -160,8 +160,8 @@ export default function DeviceSidebar({
                 type="button"
                 className={`relative grid h-11 w-11 place-items-center rounded-xl border transition ${
                   statusFilter.length
-                    ? 'border-sky-400/50 bg-sky-400/15 text-sky-300'
-                    : 'border-(--color-divider) bg-(--color-surface-subtle) text-(--color-muted) hover:bg-(--color-surface-hover)'
+                    ? 'border-sky-300 bg-sky-50 text-sky-700 dark:border-sky-400/50 dark:bg-sky-400/15 dark:text-sky-300'
+                    : 'border-(--color-divider) bg-white text-(--color-muted) shadow-sm hover:bg-(--color-surface-hover) dark:bg-(--color-surface-subtle) dark:shadow-none'
                 }`}
                 aria-label="Filter devices"
               >
@@ -199,7 +199,7 @@ export default function DeviceSidebar({
               <button
                 type="button"
                 onClick={() => onStatusFilterChange([])}
-                className="mt-1 w-full rounded-lg px-2 py-2 text-sm font-medium text-sky-700 hover:bg-sky-50"
+                className="mt-1 w-full rounded-lg px-2 py-2 text-sm font-medium text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-950"
               >
                 Clear filters
               </button>
@@ -216,7 +216,7 @@ export default function DeviceSidebar({
         </div>
       </header>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-2 py-3 [scrollbar-color:#334155_transparent]">
+      <div className="min-h-0 flex-1 overflow-y-auto bg-slate-50/60 px-2 py-3 [scrollbar-color:#cbd5e1_transparent] dark:bg-transparent dark:[scrollbar-color:#334155_transparent]">
         {devices.length > 0 ? (
           <div role="listbox" aria-label="Devices" className="space-y-1">
             {devices.map((device) => {
@@ -230,13 +230,15 @@ export default function DeviceSidebar({
                   onClick={() => dispatch(devicesActions.selectId(device.id))}
                   className={`group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${
                     selected
-                      ? 'bg-sky-500 text-white shadow-lg shadow-sky-950/20'
-                      : 'text-(--color-text) hover:bg-(--color-surface-hover)'
+                      ? 'border border-sky-400 bg-sky-500 text-white shadow-lg shadow-sky-950/20'
+                      : 'border border-slate-200/80 bg-white text-(--color-text) shadow-sm shadow-slate-900/3 hover:border-sky-200 hover:bg-sky-50/50 dark:border-transparent dark:bg-transparent dark:shadow-none dark:hover:border-(--color-divider) dark:hover:bg-(--color-surface-hover)'
                   }`}
                 >
                   <span
                     className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${
-                      selected ? 'bg-white/15' : 'bg-(--color-surface-subtle)'
+                      selected
+                        ? 'bg-white/15'
+                        : 'bg-slate-100 ring-1 ring-slate-200/70 dark:bg-(--color-surface-subtle) dark:ring-transparent'
                     }`}
                   >
                     <span
@@ -282,7 +284,7 @@ export default function DeviceSidebar({
         )}
       </div>
 
-      <div className="border-t border-(--color-divider) px-5 py-3 text-xs text-(--color-muted)">
+      <div className="border-t border-(--color-divider) bg-white/70 px-5 py-3 text-xs font-medium text-(--color-muted) dark:bg-transparent">
         {devices.length} of {allDevices.length} devices
       </div>
     </>
