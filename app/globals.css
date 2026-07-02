@@ -257,8 +257,8 @@ textarea {
   .preferences-layout {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    padding: 0.25rem;
+    gap: 1.25rem;
+    padding: 0.75rem 0.25rem 1.5rem;
   }
 
   .preferences-card {
@@ -267,7 +267,7 @@ textarea {
     border: 1px solid var(--color-divider);
     border-radius: 1rem;
     background: var(--color-paper);
-    box-shadow: 0 6px 22px rgb(15 23 42 / 0.05);
+    box-shadow: 0 8px 28px rgb(15 23 42 / 0.06);
   }
 
   .preferences-card-wide {
@@ -295,19 +295,34 @@ textarea {
   .preferences-card-wide > div {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem !important;
+    gap: 1.5rem !important;
   }
 
   .preferences-card-wide > div > :nth-last-child(-n + 1) {
     grid-column: 1 / -1;
   }
 
-  .preferences-card label:has(input[type='checkbox']) {
-    min-height: 2.5rem;
-    padding: 0.5rem 0.75rem;
+  .preferences-toggle-grid {
+    display: grid !important;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem !important;
+    padding-top: 0.25rem;
+  }
+
+  .preferences-card .preferences-toggle-grid label {
+    min-height: 3rem;
+    padding: 0.65rem 0.85rem;
     border: 1px solid var(--color-divider);
     border-radius: 0.75rem;
-    background: var(--color-surface-subtle);
+    background: color-mix(in srgb, var(--color-surface-subtle) 72%, var(--color-paper));
+    cursor: pointer;
+    transition: 150ms ease;
+  }
+
+  .preferences-card .preferences-toggle-grid label:hover {
+    border-color: color-mix(in srgb, var(--color-primary) 52%, var(--color-divider));
+    background: color-mix(in srgb, var(--color-primary) 7%, var(--color-paper));
   }
 
   .preferences-card input[type='checkbox'] {
@@ -316,17 +331,20 @@ textarea {
   }
 
   .preferences-actions {
-    position: fixed;
-    right: 1.5rem;
-    bottom: 1.5rem;
+    position: sticky;
+    top: 0.75rem;
     z-index: 20;
     display: flex;
+    grid-column: 1 / -1;
+    justify-content: flex-end;
     gap: 0.75rem;
-    padding: 0.65rem;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    padding: 0.75rem;
     border: 1px solid var(--color-divider);
     border-radius: 1rem;
     background: color-mix(in srgb, var(--color-paper) 90%, transparent);
-    box-shadow: 0 14px 40px rgb(15 23 42 / 0.18);
+    box-shadow: 0 12px 36px rgb(15 23 42 / 0.14);
     backdrop-filter: blur(14px);
   }
 
@@ -336,14 +354,21 @@ textarea {
       grid-template-columns: 1fr;
     }
 
+    .preferences-layout {
+      gap: 1rem;
+      padding-top: 0.5rem;
+    }
+
+    .preferences-toggle-grid {
+      grid-template-columns: 1fr;
+    }
+
     .preferences-card-wide > div > * {
       grid-column: auto;
     }
 
     .preferences-actions {
-      right: 1rem;
-      bottom: 1rem;
-      left: 1rem;
+      top: 0.5rem;
     }
 
     .preferences-actions > button {

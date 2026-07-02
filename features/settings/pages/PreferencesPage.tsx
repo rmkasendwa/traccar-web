@@ -116,8 +116,21 @@ const PreferencesPage = () => {
   });
 
   return (
-    <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedPreferences']}>
-      <div className="preferences-layout mx-auto w-full max-w-5xl pb-24">
+    <PageLayout bare menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedPreferences']}>
+      <div className="preferences-layout mx-auto w-full max-w-5xl">
+        {!readonly && (
+          <div className="preferences-actions">
+            <p className="mr-auto hidden text-sm text-(--color-muted) sm:block">
+              Personalize how tracking information appears across the application.
+            </p>
+            <Button type="button" color="primary" variant="outlined" onClick={() => navigate(-1)}>
+              {t('sharedCancel')}
+            </Button>
+            <Button type="button" color="primary" variant="contained" onClick={handleSave}>
+              {t('sharedSave')}
+            </Button>
+          </div>
+        )}
         {!readonly && (
           <>
             <Accordion defaultExpanded className="preferences-card preferences-card-wide">
@@ -213,7 +226,7 @@ const PreferencesPage = () => {
                     setAttributes({ ...attributes, mapDirection: event.target.value })
                   }
                 />
-                <FormGroup>
+                <FormGroup className="preferences-toggle-grid">
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -397,14 +410,6 @@ const PreferencesPage = () => {
                 )}
               </AccordionDetails>
             </Accordion>
-            <div className="preferences-actions">
-              <Button type="button" color="primary" variant="outlined" onClick={() => navigate(-1)}>
-                {t('sharedCancel')}
-              </Button>
-              <Button type="button" color="primary" variant="contained" onClick={handleSave}>
-                {t('sharedSave')}
-              </Button>
-            </div>
           </>
         )}
       </div>

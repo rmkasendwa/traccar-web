@@ -96,7 +96,7 @@ const PageTitle = ({ breadcrumbs }) => {
   );
 };
 
-const PageLayout = ({ menu, breadcrumbs, children }) => {
+const PageLayout = ({ menu, breadcrumbs, children, bare = false }) => {
   const inSectionShell = useSectionShell();
   const [miniVariant, setMiniVariant] = useState(false);
   const { classes } = useStyles({ miniVariant });
@@ -112,7 +112,15 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
   const toggleDrawer = () => setMiniVariant(!miniVariant);
 
   if (inSectionShell) {
-    return <div className="settings-page h-full min-h-0 overflow-auto">{children}</div>;
+    return (
+      <div
+        className={
+          bare ? 'h-full min-h-0 overflow-auto' : 'settings-page h-full min-h-0 overflow-auto'
+        }
+      >
+        {children}
+      </div>
+    );
   }
 
   return (
