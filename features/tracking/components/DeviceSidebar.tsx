@@ -112,30 +112,25 @@ export default function DeviceSidebar({
   return (
     <>
       <header
-        className={`border-b border-(--color-divider) bg-linear-to-b from-white to-sky-50/35 px-5 pb-4 dark:from-transparent dark:to-transparent ${mobile ? 'pt-5 pr-14' : 'pt-5'}`}
+        className={`border-b border-(--color-divider) bg-linear-to-b from-white to-sky-50/35 px-4 pb-3 dark:from-transparent dark:to-transparent ${mobile ? 'pt-4 pr-14' : 'pt-4'}`}
       >
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-sky-400">
-              Live tracking
-            </p>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight">Your devices</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <span
-              className={`flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs font-medium ${
-                socket === false
-                  ? 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-400/15 dark:bg-rose-500/15 dark:text-rose-300'
-                  : 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-400/15 dark:bg-emerald-400/10 dark:text-emerald-300'
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <h1 className="text-lg font-semibold tracking-tight">Devices</h1>
+            <p
+              className={`flex items-center gap-1.5 whitespace-nowrap text-xs font-medium ${
+                socket === false ? 'text-rose-600 dark:text-rose-300' : 'text-(--color-muted)'
               }`}
             >
               <span
-                className={`h-1.5 w-1.5 rounded-full ${socket === false ? 'bg-rose-400' : 'bg-emerald-400'}`}
+                className={`h-1.5 w-1.5 rounded-full ${
+                  socket === false ? 'bg-rose-400' : 'bg-emerald-400'
+                }`}
               />
-              {socket === false ? 'Reconnecting' : 'Live'}
-            </span>
-            <ThemeModeControl compact />
+              {socket === false ? 'Reconnecting' : 'Live tracking'}
+            </p>
           </div>
+          <ThemeModeControl compact />
         </div>
 
         <div className="flex gap-2">
@@ -144,7 +139,7 @@ export default function DeviceSidebar({
             <input
               value={keyword}
               onChange={(event) => onKeywordChange(event.target.value)}
-              className="h-11 min-w-0 flex-1 bg-transparent text-sm text-(--color-text) outline-none placeholder:text-(--color-muted)"
+              className="h-10 min-w-0 flex-1 bg-transparent text-sm text-(--color-text) outline-none placeholder:text-(--color-muted)"
               placeholder="Search devices"
               aria-label="Search devices"
             />
@@ -158,7 +153,7 @@ export default function DeviceSidebar({
                 {...props}
                 ref={ref as any}
                 type="button"
-                className={`relative grid h-11 w-11 place-items-center rounded-xl border transition ${
+                className={`relative grid h-10 w-10 place-items-center rounded-xl border transition ${
                   statusFilter.length
                     ? 'border-sky-300 bg-sky-50 text-sky-700 dark:border-sky-400/50 dark:bg-sky-400/15 dark:text-sky-300'
                     : 'border-(--color-divider) bg-white text-(--color-muted) shadow-sm hover:bg-(--color-surface-hover) dark:bg-(--color-surface-subtle) dark:shadow-none'
@@ -208,7 +203,7 @@ export default function DeviceSidebar({
           <button
             type="button"
             onClick={() => navigate('/settings/device')}
-            className="grid h-11 w-11 place-items-center rounded-xl bg-sky-500 text-white shadow-lg shadow-sky-500/20 transition hover:bg-sky-400"
+            className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500 text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-400"
             aria-label="Add device"
           >
             <Plus size={19} />
