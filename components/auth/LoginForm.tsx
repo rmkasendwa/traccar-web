@@ -17,7 +17,7 @@ type LoginFormProps = {
 };
 
 const inputClass =
-  'min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800 aria-invalid:border-red-500';
+  'min-h-11 w-full rounded-md border border-(--color-divider) bg-(--color-paper) px-3 py-2 text-(--color-text) outline-none focus:border-(--color-primary) focus:ring-1 focus:ring-(--color-primary) aria-invalid:border-red-500';
 
 const loginValidators = {
   email: (formData: FormData) =>
@@ -77,8 +77,8 @@ export default function LoginForm({
             <p
               className={`rounded-md border p-3 text-sm ${
                 state.status === 'success'
-                  ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
-                  : 'border-red-200 bg-red-50 text-red-900'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200'
+                  : 'border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200'
               }`}
             >
               {state.message}
@@ -111,7 +111,7 @@ export default function LoginForm({
             error={errors.password}
             labelEnd={
               <Link
-                className="text-xs font-semibold text-blue-900 hover:underline"
+                className="text-xs font-semibold text-(--color-primary) hover:underline"
                 href="/reset-password"
               >
                 Forgot your password?
@@ -160,7 +160,7 @@ export default function LoginForm({
 
       {openIdEnabled && (
         <a
-          className="inline-flex min-h-11 items-center justify-center rounded-md bg-emerald-700 px-4 font-medium text-white hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+          className="inline-flex min-h-11 items-center justify-center rounded-md bg-emerald-700 px-4 font-medium text-white hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 focus:ring-offset-(--color-paper)"
           href="/api/session/openid/auth"
         >
           Sign in with OpenID
@@ -168,9 +168,9 @@ export default function LoginForm({
       )}
 
       {!openIdForced && (
-        <p className="text-center text-sm text-slate-600">
+        <p className="text-center text-sm text-(--color-muted)">
           Don&apos;t have an account?{' '}
-          <Link className="font-semibold text-blue-900 hover:underline" href="/register">
+          <Link className="font-semibold text-(--color-primary) hover:underline" href="/register">
             Register
           </Link>
         </p>

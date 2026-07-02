@@ -6,7 +6,7 @@ const getPasswordStrength = (password: string) => {
   if (/[^A-Za-z0-9]/.test(password) || password.length >= 12) score += 1;
 
   return [
-    { label: 'Not started', hint: 'Use at least 8 characters.', color: 'bg-slate-200' },
+    { label: 'Not started', hint: 'Use at least 8 characters.', color: 'bg-(--color-divider)' },
     { label: 'Weak', hint: 'Add more characters or variety.', color: 'bg-red-500' },
     { label: 'Fair', hint: 'Add uppercase, numbers, or symbols.', color: 'bg-amber-500' },
     { label: 'Good', hint: 'This password is almost there.', color: 'bg-sky-600' },
@@ -26,11 +26,11 @@ export default function PasswordStrengthMeter({ password }: { password: string }
         {[1, 2, 3, 4].map((segment) => (
           <span
             key={segment}
-            className={`h-1.5 rounded-full ${segment <= activeSegments ? strength.color : 'bg-slate-200'}`}
+            className={`h-1.5 rounded-full ${segment <= activeSegments ? strength.color : 'bg-(--color-divider)'}`}
           />
         ))}
       </div>
-      <div className="flex justify-between gap-3 text-xs text-slate-500">
+      <div className="flex justify-between gap-3 text-xs text-(--color-muted)">
         <span>Password strength: {strength.label}</span>
         <span>{strength.hint}</span>
       </div>

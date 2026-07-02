@@ -17,7 +17,7 @@ type ResetPasswordFormProps = {
 };
 
 const inputClass =
-  'min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800 aria-invalid:border-red-500';
+  'min-h-11 w-full rounded-md border border-(--color-divider) bg-(--color-paper) px-3 py-2 text-(--color-text) outline-none focus:border-(--color-primary) focus:ring-1 focus:ring-(--color-primary) aria-invalid:border-red-500';
 
 const resetValidators = {
   email: (formData: FormData) => {
@@ -93,8 +93,8 @@ export default function ResetPasswordForm({
         <p
           className={`rounded-md border p-3 text-sm ${
             state.errors && Object.keys(state.errors).length
-              ? 'border-red-200 bg-red-50 text-red-900'
-              : 'border-emerald-200 bg-emerald-50 text-emerald-900'
+              ? 'border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200'
+              : 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200'
           }`}
         >
           {state.message}
@@ -183,7 +183,7 @@ export default function ResetPasswordForm({
       </SubmitButton>
 
       <p className="text-center text-sm">
-        <Link className="font-semibold text-blue-900 hover:underline" href="/login">
+        <Link className="font-semibold text-(--color-primary) hover:underline" href="/login">
           Return to Login
         </Link>
       </p>

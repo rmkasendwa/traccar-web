@@ -16,7 +16,7 @@ type RegisterFormProps = {
 };
 
 const inputClass =
-  'min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800 aria-invalid:border-red-500';
+  'min-h-11 w-full rounded-md border border-(--color-divider) bg-(--color-paper) px-3 py-2 text-(--color-text) outline-none focus:border-(--color-primary) focus:ring-1 focus:ring-(--color-primary) aria-invalid:border-red-500';
 
 const registerValidators = {
   name: (formData: FormData) =>
@@ -91,7 +91,7 @@ export default function RegisterForm({
   return (
     <form action={formAction} className="flex flex-col gap-4" noValidate>
       {state.message && (
-        <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+        <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200">
           {state.message}
         </p>
       )}
@@ -182,9 +182,9 @@ export default function RegisterForm({
 
       <SubmitButton pendingText="Creating account...">Register</SubmitButton>
 
-      <p className="text-center text-sm text-slate-600">
+      <p className="text-center text-sm text-(--color-muted)">
         Already have an account?{' '}
-        <Link className="font-semibold text-blue-900 hover:underline" href="/login">
+        <Link className="font-semibold text-(--color-primary) hover:underline" href="/login">
           Sign in
         </Link>
       </p>

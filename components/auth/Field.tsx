@@ -22,7 +22,7 @@ export default function Field({
   const helperId = `${name}-helper`;
 
   return (
-    <label className="flex flex-col gap-1 text-sm text-slate-600">
+    <label className="flex flex-col gap-1 text-sm text-(--color-muted)">
       <span className="flex items-center justify-between gap-3">
         <span>
           {label}
@@ -32,7 +32,10 @@ export default function Field({
       </span>
       {children}
       {(error || helper) && (
-        <span id={helperId} className={`text-xs ${error ? 'text-red-700' : 'text-slate-500'}`}>
+        <span
+          id={helperId}
+          className={`text-xs ${error ? 'text-red-700 dark:text-red-400' : 'text-(--color-muted)'}`}
+        >
           {error || helper}
         </span>
       )}

@@ -39,17 +39,17 @@ export default async function Page({ searchParams }: ChangeServerPageProps) {
     <AuthShell title="Change server" subtitle="Connect this client to a different Traccar server.">
       <form action={changeServer} className="flex flex-col gap-4" noValidate>
         {error && (
-          <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+          <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200">
             Enter a full server URL starting with http:// or https://.
           </p>
         )}
 
-        <label className="flex flex-col gap-1 text-sm text-slate-600">
+        <label className="flex flex-col gap-1 text-sm text-(--color-muted)">
           <span>
             Server <span className="font-bold text-red-600">*</span>
           </span>
           <input
-            className="min-h-11 rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800"
+            className="min-h-11 rounded-md border border-(--color-divider) bg-(--color-paper) px-3 py-2 text-(--color-text) outline-none focus:border-(--color-primary) focus:ring-1 focus:ring-(--color-primary)"
             name="server"
             defaultValue={currentServer}
             list="servers"
@@ -60,10 +60,10 @@ export default async function Page({ searchParams }: ChangeServerPageProps) {
               <option key={server} value={server} />
             ))}
           </datalist>
-          <span className="text-xs text-slate-500">Example: https://server.example.com</span>
+          <span className="text-xs text-(--color-muted)">Example: https://server.example.com</span>
         </label>
 
-        <button className="min-h-11 rounded-md bg-blue-900 px-4 font-medium text-white hover:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-offset-2">
+        <button className="min-h-11 rounded-md bg-blue-900 px-4 font-medium text-white hover:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-(--color-paper)">
           Save server
         </button>
       </form>
