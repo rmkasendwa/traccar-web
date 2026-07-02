@@ -231,10 +231,12 @@ export default function SelectedDeviceCard({
           <button
             type="button"
             onClick={() => navigate(`/position/${position.id}`)}
-            className="mt-2.5 flex w-full items-center justify-between rounded-xl bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 transition hover:bg-sky-100 dark:bg-sky-950 dark:text-sky-300 dark:hover:bg-sky-900"
+            className="group mt-2.5 flex w-full items-center justify-between rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) px-3 py-2 text-xs font-semibold text-(--color-primary) shadow-sm transition hover:border-(--color-primary) hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)"
           >
             View position details
-            <ArrowUpRight size={15} />
+            <span className="grid h-6 w-6 place-items-center rounded-lg bg-(--color-primary) text-white shadow-sm transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+              <ArrowUpRight size={14} />
+            </span>
           </button>
         )}
       </div>
