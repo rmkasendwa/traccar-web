@@ -1,14 +1,14 @@
 // @ts-nocheck
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useLocation, useNavigate } from '@/lib/router';
 import { useDispatch, useSelector } from 'react-redux';
 import BottomMenu from '@/components/layout/BottomMenu';
 import SocketController from '@/controllers/SocketController';
 import CachingController from '@/controllers/CachingController';
 import { useCatch, useAsyncTask } from '@/lib/react';
-import store, { sessionActions } from '@/store';
+import { sessionActions } from '@/store';
 import UpdateController from '@/controllers/UpdateController';
 import MotionController from '@/controllers/MotionController';
 import TermsDialog from '@/components/ui/TermsDialog';
@@ -21,10 +21,6 @@ type AppProps = {
 };
 
 const App = ({ children, initialUser }: AppProps) => {
-  if (initialUser && !store.getState().session.user) {
-    store.dispatch(sessionActions.updateUser(initialUser));
-  }
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,6 +28,12 @@ const App = ({ children, initialUser }: AppProps) => {
   const newServer = useSelector((state) => state.session.server.newServer);
   const termsUrl = useSelector((state) => state.session.server.attributes.termsUrl);
   const user = useSelector((state) => state.session.user);
+
+  useEffect(() => {
+    if (initialUser && !user) {
+      dispatch(sessionActions.updateUser(initialUser));
+    }
+  }, [dispatch, initialUser, user]);
 
   const acceptTerms = useCatch(async () => {
     const response = await fetchOrThrow(`/api/users/${user.id}`, {
@@ -44,7 +46,7 @@ const App = ({ children, initialUser }: AppProps) => {
 
   useAsyncTask(
     async ({ signal }) => {
-      if (!user) {
+      if (!user && !initialUser) {
         const response = await fetch('/api/session', { signal });
         if (response.ok) {
           dispatch(sessionActions.updateUser(await response.json()));
@@ -58,7 +60,7 @@ const App = ({ children, initialUser }: AppProps) => {
       }
       return null;
     },
-    [user, dispatch, navigate, newServer],
+    [user, initialUser, dispatch, navigate, newServer],
   );
 
   if (user == null) {
