@@ -265,6 +265,10 @@ textarea {
     padding: 0.75rem 0.25rem 1.5rem;
   }
 
+  .settings-form-layout > .settings-form-actions {
+    margin-bottom: 1.25rem;
+  }
+
   .settings-form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
