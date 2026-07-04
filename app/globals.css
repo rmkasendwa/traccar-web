@@ -254,6 +254,11 @@ textarea {
     outline-offset: 1px;
   }
 
+  .settings-search-header + div > table th:first-child,
+  .settings-search-header + div > table td:first-child {
+    padding-inline-start: 1.5rem !important;
+  }
+
   .preferences-layout {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

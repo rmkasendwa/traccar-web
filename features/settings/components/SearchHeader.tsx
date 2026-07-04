@@ -28,7 +28,7 @@ const SearchHeader = ({ keyword, setKeyword }) => {
   }, [input, setKeyword]);
 
   return (
-    <div className={classes.header}>
+    <div className={`${classes.header} settings-search-header`}>
       <TextField
         variant="outlined"
         placeholder={t('sharedSearch')}
