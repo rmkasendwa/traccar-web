@@ -601,9 +601,12 @@ export const Dialog = ({ open, onClose, fullWidth, maxWidth, children, className
 export const DialogContent = ({ className, ...props }) => (
   <div className={cn('p-5', className)} {...props} />
 );
-export const DialogContentText = ({ className, ...props }) => (
-  <p className={cn('text-(--color-muted)', className)} {...props} />
+export const DialogContentText = forwardRef(
+  ({ component: Component = 'p', className, ...props }, ref) => (
+    <Component ref={ref} className={cn('text-(--color-muted)', className)} {...props} />
+  ),
 );
+DialogContentText.displayName = 'DialogContentText';
 export const DialogActions = ({ className, ...props }) => (
   <div
     className={cn('flex justify-end gap-2 border-t border-(--color-divider) p-4', className)}
