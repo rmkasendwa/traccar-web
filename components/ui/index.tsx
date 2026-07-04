@@ -129,7 +129,7 @@ export const Button = forwardRef(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50',
+          'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary) disabled:cursor-not-allowed disabled:opacity-50',
           size === 'small' ? 'min-h-8 px-3 text-sm' : 'min-h-10 px-4',
           outlined && 'border',
           contained && color === 'primary' && 'shadow-sm shadow-sky-950/15 hover:brightness-110',
@@ -150,7 +150,7 @@ export const Button = forwardRef(
 );
 Button.displayName = 'Button';
 
-export const IconButton = forwardRef(({ color, size, edge, className, sx, ...props }, ref) => (
+export const IconButton = forwardRef(({ color, size, className, sx, ...props }, ref) => (
   <button
     ref={ref}
     type={props.type || 'button'}
@@ -323,7 +323,7 @@ export const OutlinedInput = forwardRef(
   },
 );
 OutlinedInput.displayName = 'OutlinedInput';
-export const InputAdornment = ({ position, className, ...props }) => (
+export const InputAdornment = ({ className, ...props }) => (
   <span className={cn('inline-flex px-2 text-(--color-muted)', className)} {...props} />
 );
 
@@ -356,34 +356,32 @@ const optionText = (children) =>
     })
     .join('');
 
-export const Select = forwardRef(
-  ({ children, label, fullWidth, className, onChange, ...props }, ref) => (
-    <select
-      ref={ref}
-      className={cn(
-        'min-h-10 rounded-md border border-(--color-divider) bg-(--color-paper) px-3',
-        fullWidth && 'w-full',
-        className,
-      )}
-      onChange={onChange}
-      {...props}
-    >
-      {Children.map(children, (child) =>
-        isValidElement(child) ? (
-          <option
-            key={child.key ?? child.props.value}
-            value={child.props.value}
-            disabled={child.props.disabled}
-          >
-            {optionText(child.props.children)}
-          </option>
-        ) : (
-          child
-        ),
-      )}
-    </select>
-  ),
-);
+export const Select = forwardRef(({ children, fullWidth, className, onChange, ...props }, ref) => (
+  <select
+    ref={ref}
+    className={cn(
+      'min-h-10 rounded-md border border-(--color-divider) bg-(--color-paper) px-3',
+      fullWidth && 'w-full',
+      className,
+    )}
+    onChange={onChange}
+    {...props}
+  >
+    {Children.map(children, (child) =>
+      isValidElement(child) ? (
+        <option
+          key={child.key ?? child.props.value}
+          value={child.props.value}
+          disabled={child.props.disabled}
+        >
+          {optionText(child.props.children)}
+        </option>
+      ) : (
+        child
+      ),
+    )}
+  </select>
+));
 Select.displayName = 'Select';
 
 export const Checkbox = forwardRef(({ className, ...props }, ref) => (
@@ -422,7 +420,7 @@ export const FormGroup = ({ className, ...props }) => (
   <div className={cn('flex flex-col gap-2', className)} {...props} />
 );
 
-export const Link = ({ className, underline, color, ...props }) => (
+export const Link = ({ className, color, ...props }) => (
   <a
     className={cn(
       'cursor-pointer text-(--color-primary) hover:underline',
@@ -478,7 +476,7 @@ export const Badge = ({ badgeContent, variant, invisible, children, className })
   </span>
 );
 
-export const AppBar = ({ className, color, position = 'fixed', ...props }) => (
+export const AppBar = ({ className, position = 'fixed', ...props }) => (
   <header
     className={cn(
       'z-30 w-full border-b border-(--color-divider) bg-(--color-paper) shadow-sm',
@@ -635,7 +633,7 @@ export const Menu = ({ open, anchorEl, onClose, children, className }) => (
     <div onClick={onClose}>{children}</div>
   </Floating>
 );
-export const Popover = ({ open, anchorEl, onClose, children, className }) => (
+export const Popover = ({ open, anchorEl, children, className }) => (
   <Floating open={open} anchorEl={anchorEl} className={className}>
     <div>{children}</div>
   </Floating>
@@ -927,13 +925,11 @@ Slider.displayName = 'Slider';
 export const Autocomplete = ({
   options = [],
   value,
-  onChange,
   inputValue,
   onInputChange,
   getOptionLabel = (option) => option?.label ?? String(option ?? ''),
   renderInput,
   multiple,
-  freeSolo,
   disabled,
   className,
 }) => {
