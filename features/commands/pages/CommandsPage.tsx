@@ -15,6 +15,7 @@ import SearchHeader from '@/features/settings/components/SearchHeader';
 import { useRestriction } from '@/lib/permissions';
 import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import CollectionEmptyState from '@/features/settings/components/CollectionEmptyState';
 
 const CommandsPage = () => {
   const { classes } = useSettingsStyles();
@@ -53,7 +54,13 @@ const CommandsPage = () => {
 
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedSavedCommands']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
+      <SearchHeader
+        keyword={searchKeyword}
+        setKeyword={setSearchKeyword}
+        editPath="/settings/command"
+        addLabel="Add command"
+        disabled={limitCommands}
+      />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -64,6 +71,15 @@ const CommandsPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {!hasMore && items.length === 0 && (
+            <CollectionEmptyState
+              colSpan={limitCommands ? 3 : 4}
+              editPath="/settings/command"
+              itemName="saved commands"
+              searchKeyword={searchKeyword}
+              disabled={limitCommands}
+            />
+          )}
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.description}</TableCell>

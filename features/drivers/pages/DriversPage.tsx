@@ -12,6 +12,7 @@ import TableShimmer from '@/components/ui/TableShimmer';
 import SearchHeader from '@/features/settings/components/SearchHeader';
 import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import CollectionEmptyState from '@/features/settings/components/CollectionEmptyState';
 
 const DriversPage = () => {
   const { classes } = useSettingsStyles();
@@ -49,7 +50,12 @@ const DriversPage = () => {
 
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedDrivers']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
+      <SearchHeader
+        keyword={searchKeyword}
+        setKeyword={setSearchKeyword}
+        editPath="/settings/driver"
+        addLabel="Add driver"
+      />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -59,6 +65,14 @@ const DriversPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {!hasMore && items.length === 0 && (
+            <CollectionEmptyState
+              colSpan={3}
+              editPath="/settings/driver"
+              itemName="drivers"
+              searchKeyword={searchKeyword}
+            />
+          )}
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.name}</TableCell>

@@ -1,8 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const ComputedAttributePage = dynamic(
-  () => import('@/features/attributes/pages/ComputedAttributePage'),
-);
+import ComputedAttributePage from '@/features/attributes/pages/ComputedAttributePage';
 
 export default function Page() {
   return <ComputedAttributePage />;

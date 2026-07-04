@@ -33,6 +33,7 @@ import usePersistedState from '@/lib/usePersistedState';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import AddressValue from '@/features/positions/components/AddressValue';
 import exportExcel from '@/features/reports/lib/exportExcel';
+import CollectionEmptyState from '@/features/settings/components/CollectionEmptyState';
 
 const DevicesPage = () => {
   const { classes } = useSettingsStyles();
@@ -108,7 +109,12 @@ const DevicesPage = () => {
 
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'deviceTitle']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
+      <SearchHeader
+        keyword={searchKeyword}
+        setKeyword={setSearchKeyword}
+        editPath="/settings/device"
+        addLabel="Add device"
+      />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -125,6 +131,15 @@ const DevicesPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {!hasMore && items.length === 0 && (
+            <CollectionEmptyState
+              colSpan={manager ? 10 : 9}
+              editPath="/settings/device"
+              itemName="devices"
+              searchKeyword={searchKeyword}
+              disabled={deviceReadonly}
+            />
+          )}
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.name}</TableCell>

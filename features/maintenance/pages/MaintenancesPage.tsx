@@ -16,6 +16,7 @@ import TableShimmer from '@/components/ui/TableShimmer';
 import SearchHeader from '@/features/settings/components/SearchHeader';
 import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import CollectionEmptyState from '@/features/settings/components/CollectionEmptyState';
 
 const MaintenacesPage = () => {
   const { classes } = useSettingsStyles();
@@ -81,7 +82,12 @@ const MaintenacesPage = () => {
 
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedMaintenance']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
+      <SearchHeader
+        keyword={searchKeyword}
+        setKeyword={setSearchKeyword}
+        editPath="/settings/maintenance"
+        addLabel="Add maintenance"
+      />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -93,6 +99,14 @@ const MaintenacesPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {!hasMore && items.length === 0 && (
+            <CollectionEmptyState
+              colSpan={5}
+              editPath="/settings/maintenance"
+              itemName="maintenance tasks"
+              searchKeyword={searchKeyword}
+            />
+          )}
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.name}</TableCell>

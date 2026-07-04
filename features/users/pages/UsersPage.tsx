@@ -27,6 +27,7 @@ import SearchHeader from '@/features/settings/components/SearchHeader';
 import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import UserDevicesValue from '@/features/users/components/UserDevicesValue';
+import CollectionEmptyState from '@/features/settings/components/CollectionEmptyState';
 
 const UsersPage = () => {
   const { classes } = useSettingsStyles();
@@ -87,7 +88,12 @@ const UsersPage = () => {
 
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'settingsUsers']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
+      <SearchHeader
+        keyword={searchKeyword}
+        setKeyword={setSearchKeyword}
+        editPath="/settings/user"
+        addLabel="Add user"
+      />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -101,6 +107,14 @@ const UsersPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {!hasMore && items.filter((u) => temporary || !u.temporary).length === 0 && (
+            <CollectionEmptyState
+              colSpan={7}
+              editPath="/settings/user"
+              itemName="users"
+              searchKeyword={searchKeyword}
+            />
+          )}
           {items
             .filter((u) => temporary || !u.temporary)
             .map((item) => (

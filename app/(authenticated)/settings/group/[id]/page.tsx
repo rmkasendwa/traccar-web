@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const GroupPage = dynamic(() => import('@/features/groups/pages/GroupPage'));
+import GroupPage from '@/features/groups/pages/GroupPage';
 
 export default function Page() {
   return <GroupPage />;

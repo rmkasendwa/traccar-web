@@ -18,6 +18,7 @@ import SearchHeader from '@/features/settings/components/SearchHeader';
 import { useRestriction } from '@/lib/permissions';
 import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import CollectionEmptyState from '@/features/settings/components/CollectionEmptyState';
 
 const GroupsPage = () => {
   const { classes } = useSettingsStyles();
@@ -81,7 +82,12 @@ const GroupsPage = () => {
 
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'settingsGroups']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
+      <SearchHeader
+        keyword={searchKeyword}
+        setKeyword={setSearchKeyword}
+        editPath="/settings/group"
+        addLabel="Add group"
+      />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -90,6 +96,14 @@ const GroupsPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {!hasMore && items.length === 0 && (
+            <CollectionEmptyState
+              colSpan={2}
+              editPath="/settings/group"
+              itemName="groups"
+              searchKeyword={searchKeyword}
+            />
+          )}
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.name}</TableCell>

@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const CommandsPage = dynamic(() => import('@/features/commands/pages/CommandsPage'));
+import CommandsPage from '@/features/commands/pages/CommandsPage';
 
 export default function Page() {
   return <CommandsPage />;

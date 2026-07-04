@@ -13,6 +13,7 @@ import TableShimmer from '@/components/ui/TableShimmer';
 import SearchHeader from '@/features/settings/components/SearchHeader';
 import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import CollectionEmptyState from '@/features/settings/components/CollectionEmptyState';
 
 const ComputedAttributesPage = () => {
   const { classes } = useSettingsStyles();
@@ -53,7 +54,13 @@ const ComputedAttributesPage = () => {
 
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedComputedAttributes']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
+      <SearchHeader
+        keyword={searchKeyword}
+        setKeyword={setSearchKeyword}
+        editPath="/settings/attribute"
+        addLabel="Add attribute"
+        disabled={!administrator}
+      />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -65,6 +72,15 @@ const ComputedAttributesPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {!hasMore && items.length === 0 && (
+            <CollectionEmptyState
+              colSpan={administrator ? 5 : 4}
+              editPath="/settings/attribute"
+              itemName="computed attributes"
+              searchKeyword={searchKeyword}
+              disabled={!administrator}
+            />
+          )}
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.description}</TableCell>

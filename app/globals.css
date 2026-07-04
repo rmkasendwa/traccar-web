@@ -234,6 +234,23 @@ textarea {
     box-shadow: 0 8px 30px rgb(15 23 42 / 0.06);
   }
 
+  .settings-page:has(.collection-empty-state) {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .settings-page:has(.collection-empty-state) > .settings-search-header + div {
+    min-height: 0;
+    flex: 1;
+  }
+
+  .settings-page:has(.collection-empty-state) > .settings-search-header + div > table {
+    height: 100%;
+    margin-bottom: 0;
+  }
+
   .settings-page input,
   .settings-page select,
   .settings-page textarea {

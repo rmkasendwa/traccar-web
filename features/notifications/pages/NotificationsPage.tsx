@@ -14,6 +14,7 @@ import TableShimmer from '@/components/ui/TableShimmer';
 import SearchHeader from '@/features/settings/components/SearchHeader';
 import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import CollectionEmptyState from '@/features/settings/components/CollectionEmptyState';
 
 const NotificationsPage = () => {
   const { classes } = useSettingsStyles();
@@ -60,9 +61,16 @@ const NotificationsPage = () => {
     return '';
   };
 
+  const empty = !hasMore && items.length === 0;
+
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedNotifications']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
+      <SearchHeader
+        keyword={searchKeyword}
+        setKeyword={setSearchKeyword}
+        editPath="/settings/notification"
+        addLabel="Add notification"
+      />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -75,6 +83,14 @@ const NotificationsPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {empty && (
+            <CollectionEmptyState
+              colSpan={6}
+              editPath="/settings/notification"
+              itemName="notifications"
+              searchKeyword={searchKeyword}
+            />
+          )}
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.description}</TableCell>
@@ -97,7 +113,7 @@ const NotificationsPage = () => {
           )}
         </TableBody>
       </Table>
-      <CollectionFab editPath="/settings/notification" />
+      <CollectionFab editPath="/settings/notification" label="Add notification" />
     </PageLayout>
   );
 };

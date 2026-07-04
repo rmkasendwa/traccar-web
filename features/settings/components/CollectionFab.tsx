@@ -13,19 +13,29 @@ const useStyles = makeStyles()((theme) => ({
     [theme.breakpoints.down('md')]: {
       bottom: `calc(${theme.dimensions.bottomBarHeight}px + ${theme.spacing(2)})`,
     },
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
   },
 }));
 
-const CollectionFab = ({ editPath, disabled }) => {
+const CollectionFab = ({ editPath, disabled, label }) => {
   const { classes } = useStyles();
   const navigate = useNavigate();
+  const itemName = editPath.split('/').filter(Boolean).pop() || 'item';
+  const actionLabel = label || `Add ${itemName}`;
 
   const readonly = useRestriction('readonly');
 
   if (!readonly && !disabled) {
     return (
       <div className={classes.fab}>
-        <Fab size="medium" color="primary" onClick={() => navigate(editPath)}>
+        <Fab
+          size="medium"
+          color="primary"
+          aria-label={actionLabel}
+          onClick={() => navigate(editPath)}
+        >
           <AddIcon />
         </Fab>
       </div>
