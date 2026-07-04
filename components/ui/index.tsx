@@ -405,10 +405,17 @@ export const Switch = forwardRef(({ className, ...props }, ref) => (
   />
 ));
 Switch.displayName = 'Switch';
-export const FormControlLabel = ({ control, label, className, ...props }) => (
+export const FormControlLabel = ({
+  control,
+  label,
+  labelPlacement = 'end',
+  className,
+  ...props
+}) => (
   <label className={cn('flex items-center gap-2 text-sm', className)} {...props}>
+    {labelPlacement === 'start' && <span>{label}</span>}
     {control}
-    <span>{label}</span>
+    {labelPlacement !== 'start' && <span>{label}</span>}
   </label>
 );
 export const FormGroup = ({ className, ...props }) => (
