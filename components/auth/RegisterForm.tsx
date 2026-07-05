@@ -9,6 +9,7 @@ import SubmitButton from '@/components/auth/SubmitButton';
 import type { AuthFormState } from '@/components/auth/formState';
 import { emptyAuthFormState } from '@/components/auth/formState';
 import useLiveFormErrors from '@/components/auth/useLiveFormErrors';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type RegisterFormProps = {
   action: (state: AuthFormState, formData: FormData) => Promise<AuthFormState>;
@@ -71,6 +72,7 @@ export default function RegisterForm({
   action,
   initialState = emptyAuthFormState,
 }: RegisterFormProps) {
+  const t = useTranslation();
   const [state, formAction] = useActionState(
     async (previousState: AuthFormState, formData: FormData) => {
       const validation = validateRegister(formData);
@@ -96,7 +98,7 @@ export default function RegisterForm({
         </p>
       )}
 
-      <Field label="Name" name="name" required error={errors.name}>
+      <Field label={t('sharedName')} name="name" required error={errors.name}>
         <input
           className={inputClass}
           name="name"
@@ -110,7 +112,7 @@ export default function RegisterForm({
       </Field>
 
       <Field
-        label="Email"
+        label={t('userEmail')}
         name="email"
         required
         error={errors.email}
@@ -130,7 +132,7 @@ export default function RegisterForm({
       </Field>
 
       <Field
-        label="Password"
+        label={t('userPassword')}
         name="password"
         required
         error={errors.password}
@@ -140,7 +142,7 @@ export default function RegisterForm({
           className={inputClass}
           name="password"
           autoComplete="new-password"
-          placeholder="Create a strong password"
+          placeholder={t('userPassword')}
           invalid={Boolean(errors.password)}
           describedBy="password-helper"
           value={password}
@@ -157,7 +159,7 @@ export default function RegisterForm({
       <PasswordStrengthMeter password={password} />
 
       <Field
-        label="Confirm password"
+        label={t('userPassword')}
         name="confirmPassword"
         required
         error={errors.confirmPassword}
@@ -166,7 +168,7 @@ export default function RegisterForm({
           className={inputClass}
           name="confirmPassword"
           autoComplete="new-password"
-          placeholder="Confirm your password"
+          placeholder={t('userPassword')}
           invalid={Boolean(errors.confirmPassword)}
           describedBy="confirmPassword-helper"
           value={confirmPassword}
@@ -180,12 +182,11 @@ export default function RegisterForm({
         />
       </Field>
 
-      <SubmitButton pendingText="Creating account...">Register</SubmitButton>
+      <SubmitButton pendingText={t('sharedLoading')}>{t('loginRegister')}</SubmitButton>
 
       <p className="text-center text-sm text-(--color-muted)">
-        Already have an account?{' '}
         <Link className="font-semibold text-(--color-primary) hover:underline" href="/login">
-          Sign in
+          {t('loginLogin')}
         </Link>
       </p>
     </form>

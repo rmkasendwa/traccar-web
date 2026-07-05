@@ -2,6 +2,7 @@
 
 import { useState, type InputHTMLAttributes } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'className'> & {
   name: string;
@@ -25,6 +26,7 @@ export default function PasswordInput({
   onVisibleChange,
   ...props
 }: PasswordInputProps) {
+  const t = useTranslation();
   const [uncontrolledVisible, setUncontrolledVisible] = useState(false);
   const visible = controlledVisible ?? uncontrolledVisible;
   const setVisible = onVisibleChange ?? setUncontrolledVisible;
@@ -45,7 +47,7 @@ export default function PasswordInput({
       <button
         type="button"
         className="absolute right-1 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
-        aria-label={visible ? 'Hide password' : 'Show password'}
+        aria-label={`${visible ? t('sharedHide') : t('reportShow')} ${t('userPassword')}`}
         onClick={() => setVisible(!visible)}
       >
         {visible ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}

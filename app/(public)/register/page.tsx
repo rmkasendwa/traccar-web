@@ -49,10 +49,7 @@ const register = async (_state: AuthFormState, formData: FormData): Promise<Auth
 
 export default function Page() {
   return (
-    <AuthShell
-      title="Register"
-      subtitle="Create your account with a name, email address, and secure password."
-    >
+    <AuthShell titleKey="loginRegister">
       <RegisterForm action={register} />
     </AuthShell>
   );

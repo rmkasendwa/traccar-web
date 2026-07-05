@@ -1,9 +1,8 @@
 // @ts-nocheck
-import { createContext, use, useEffect, useMemo, Suspense } from 'react';
+import { createContext, use, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import usePersistedState from '@/lib/usePersistedState';
-import Loader from '@/components/ui/Loader';
 
 import en from '@/providers/localization/messages/en.json';
 import 'dayjs/locale/en';
@@ -175,9 +174,7 @@ const LocalizationContext = createContext({
   direction: 'ltr',
 });
 
-const ResolvedLocalizationProvider = ({ language, setLocalLanguage, children }) => {
-  const { data, dayjsName } = use(loadLocale(language));
-
+const ResolvedLocalizationProvider = ({ language, data, setLocalLanguage, children }) => {
   const direction = /^(ar|he|fa)$/.test(language) ? 'rtl' : 'ltr';
 
   const value = useMemo(
@@ -191,32 +188,52 @@ const ResolvedLocalizationProvider = ({ language, setLocalLanguage, children }) 
   );
 
   useEffect(() => {
-    dayjs.locale(dayjsName);
     document.dir = direction;
     document.documentElement.lang = language.replace('_', '-');
-  }, [dayjsName, direction, language]);
+  }, [direction, language]);
 
   return <LocalizationContext value={value}>{children}</LocalizationContext>;
 };
 
 export const LocalizationProvider = ({ children }) => {
-  const remoteLanguage = useSelector((state) => {
+  const { userLanguage, serverLanguage } = useSelector((state) => {
     const serverLanguage = state.session.server?.attributes?.language;
     const userLanguage = state.session.user?.attributes?.language;
-    const targetLanguage = userLanguage || serverLanguage;
-    return targetLanguage && targetLanguage in languages ? targetLanguage : null;
+    return {
+      userLanguage: userLanguage && userLanguage in languages ? userLanguage : null,
+      serverLanguage: serverLanguage && serverLanguage in languages ? serverLanguage : null,
+    };
   });
 
-  const [localLanguage, setLocalLanguage] = usePersistedState('language', getDefaultLanguage());
+  const [localLanguage, setLocalLanguage] = usePersistedState(
+    'language',
+    serverLanguage || getDefaultLanguage(),
+  );
 
-  const language = remoteLanguage || localLanguage;
+  const language = userLanguage || localLanguage;
+  const [resolvedLocale, setResolvedLocale] = useState({ language: 'en', data: en });
+
+  useEffect(() => {
+    let active = true;
+    loadLocale(language).then(({ data, dayjsName }) => {
+      if (active) {
+        dayjs.locale(dayjsName);
+        setResolvedLocale({ language, data });
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [language]);
 
   return (
-    <Suspense fallback={<Loader />}>
-      <ResolvedLocalizationProvider language={language} setLocalLanguage={setLocalLanguage}>
-        {children}
-      </ResolvedLocalizationProvider>
-    </Suspense>
+    <ResolvedLocalizationProvider
+      language={resolvedLocale.language}
+      data={resolvedLocale.data}
+      setLocalLanguage={setLocalLanguage}
+    >
+      {children}
+    </ResolvedLocalizationProvider>
   );
 };
 

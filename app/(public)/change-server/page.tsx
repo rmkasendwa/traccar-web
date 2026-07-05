@@ -36,7 +36,10 @@ export default async function Page({ searchParams }: ChangeServerPageProps) {
   ].filter((value, index, self) => self.indexOf(value) === index);
 
   return (
-    <AuthShell title="Change server" subtitle="Connect this client to a different Traccar server.">
+    <AuthShell
+      titleKey="settingsServer"
+      subtitle="Connect this client to a different Traccar server."
+    >
       <form action={changeServer} className="flex flex-col gap-4" noValidate>
         {error && (
           <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200">

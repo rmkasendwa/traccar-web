@@ -77,7 +77,7 @@ export default async function Page({ searchParams }: LoginPageProps) {
   };
 
   return (
-    <AuthShell title="Welcome back" subtitle="Sign in with your account credentials to continue.">
+    <AuthShell titleKey="loginTitle">
       <LoginForm
         action={login}
         initialState={initialState}

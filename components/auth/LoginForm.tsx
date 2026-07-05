@@ -8,6 +8,7 @@ import { emptyAuthFormState } from '@/components/auth/formState';
 import useLiveFormErrors from '@/components/auth/useLiveFormErrors';
 import Link from 'next/link';
 import { useActionState, useState, type ChangeEvent } from 'react';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type LoginFormProps = {
   action: (state: AuthFormState, formData: FormData) => Promise<AuthFormState>;
@@ -55,6 +56,7 @@ export default function LoginForm({
   openIdEnabled,
   openIdForced,
 }: LoginFormProps) {
+  const t = useTranslation();
   const [state, formAction] = useActionState(
     async (previousState: AuthFormState, formData: FormData) => {
       const validation = validateLogin(formData, previousState.totp);
@@ -86,7 +88,7 @@ export default function LoginForm({
           )}
 
           <Field
-            label="Email or username"
+            label={t('userEmail')}
             name="email"
             required
             error={errors.email}
@@ -105,7 +107,7 @@ export default function LoginForm({
           </Field>
 
           <Field
-            label="Password"
+            label={t('userPassword')}
             name="password"
             required
             error={errors.password}
@@ -114,7 +116,7 @@ export default function LoginForm({
                 className="text-xs font-semibold text-(--color-primary) hover:underline"
                 href="/reset-password"
               >
-                Forgot your password?
+                {t('loginReset')}
               </Link>
             }
           >
@@ -122,7 +124,7 @@ export default function LoginForm({
               className={inputClass}
               name="password"
               autoComplete="current-password"
-              placeholder="Enter your password"
+              placeholder={t('userPassword')}
               invalid={Boolean(errors.password)}
               describedBy="password-helper"
               value={password}
@@ -136,7 +138,7 @@ export default function LoginForm({
 
           {state.totp && (
             <Field
-              label="Verification code"
+              label={t('loginTotpCode')}
               name="code"
               required
               error={errors.code}
@@ -154,7 +156,7 @@ export default function LoginForm({
             </Field>
           )}
 
-          <SubmitButton pendingText="Signing in...">Sign in</SubmitButton>
+          <SubmitButton pendingText={t('sharedLoading')}>{t('loginLogin')}</SubmitButton>
         </form>
       )}
 
@@ -163,15 +165,14 @@ export default function LoginForm({
           className="inline-flex min-h-11 items-center justify-center rounded-md bg-emerald-700 px-4 font-medium text-white hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 focus:ring-offset-(--color-paper)"
           href="/api/session/openid/auth"
         >
-          Sign in with OpenID
+          {t('loginOpenId')}
         </a>
       )}
 
       {!openIdForced && (
         <p className="text-center text-sm text-(--color-muted)">
-          Don&apos;t have an account?{' '}
           <Link className="font-semibold text-(--color-primary) hover:underline" href="/register">
-            Register
+            {t('loginRegister')}
           </Link>
         </p>
       )}

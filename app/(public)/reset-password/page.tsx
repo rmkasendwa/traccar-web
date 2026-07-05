@@ -61,14 +61,7 @@ export default async function Page({ searchParams }: ResetPasswordPageProps) {
   const hasToken = Boolean(token);
 
   return (
-    <AuthShell
-      title={hasToken ? 'Create a new password' : 'Reset password'}
-      subtitle={
-        hasToken
-          ? 'Choose a new password for your account.'
-          : 'Enter your email address and we will send you instructions to reset your password.'
-      }
-    >
+    <AuthShell titleKey={hasToken ? 'userPassword' : 'loginReset'}>
       <ResetPasswordForm action={resetPassword} token={token} />
     </AuthShell>
   );

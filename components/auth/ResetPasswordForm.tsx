@@ -9,6 +9,7 @@ import useLiveFormErrors from '@/components/auth/useLiveFormErrors';
 import Link from 'next/link';
 import { useActionState, useState, type ChangeEvent } from 'react';
 import PasswordStrengthMeter from './PasswordStrengthMeter';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type ResetPasswordFormProps = {
   action: (state: AuthFormState, formData: FormData) => Promise<AuthFormState>;
@@ -69,6 +70,7 @@ export default function ResetPasswordForm({
   token,
   initialState = emptyAuthFormState,
 }: ResetPasswordFormProps) {
+  const t = useTranslation();
   const hasToken = Boolean(token);
   const [state, formAction] = useActionState(
     async (previousState: AuthFormState, formData: FormData) => {
@@ -105,7 +107,7 @@ export default function ResetPasswordForm({
 
       {!hasToken ? (
         <Field
-          label="Email"
+          label={t('userEmail')}
           name="email"
           required
           error={errors.email}
@@ -126,7 +128,7 @@ export default function ResetPasswordForm({
       ) : (
         <>
           <Field
-            label="New password"
+            label={t('userPassword')}
             name="password"
             required
             error={errors.password}
@@ -135,7 +137,7 @@ export default function ResetPasswordForm({
             <PasswordInput
               className={inputClass}
               name="password"
-              placeholder="Create a new password"
+              placeholder={t('userPassword')}
               autoComplete="new-password"
               invalid={Boolean(errors.password)}
               describedBy="password-helper"
@@ -153,7 +155,7 @@ export default function ResetPasswordForm({
           <PasswordStrengthMeter password={password} />
 
           <Field
-            label="Confirm password"
+            label={t('userPassword')}
             name="confirmPassword"
             required
             error={errors.confirmPassword}
@@ -161,7 +163,7 @@ export default function ResetPasswordForm({
             <PasswordInput
               className={inputClass}
               name="confirmPassword"
-              placeholder="Confirm your new password"
+              placeholder={t('userPassword')}
               autoComplete="new-password"
               invalid={Boolean(errors.confirmPassword)}
               describedBy="confirmPassword-helper"
@@ -178,13 +180,11 @@ export default function ResetPasswordForm({
         </>
       )}
 
-      <SubmitButton pendingText={hasToken ? 'Updating password...' : 'Sending instructions...'}>
-        Reset password
-      </SubmitButton>
+      <SubmitButton pendingText={t('sharedLoading')}>{t('loginReset')}</SubmitButton>
 
       <p className="text-center text-sm">
         <Link className="font-semibold text-(--color-primary) hover:underline" href="/login">
-          Return to Login
+          {t('loginLogin')}
         </Link>
       </p>
     </form>
