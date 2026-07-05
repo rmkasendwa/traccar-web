@@ -679,5 +679,8 @@
     "authEmailInvalid": "Enter a valid email address.",
     "authPasswordRequired": "Password is required.",
     "authConfirmPasswordRequired": "Confirm your password.",
-    "authPasswordsMismatch": "Passwords must match."
+    "authPasswordsMismatch": "Passwords must match.",
+    "authShellEyebrow": "Fleet visibility starts here",
+    "authShellTitle": "Secure access to your workspace.",
+    "authShellDescription": "Sign in, create an account, or recover access with a focused experience that works on every screen."
 }

@@ -27,11 +27,9 @@ export default function AuthShell({ titleKey, subtitle, children }: AuthShellPro
             <ThemeModeControl compact onDark popover />
           </div>
           <div className="hidden max-w-md md:block">
-            <p className="text-xs font-bold uppercase text-white/70">{t('loginTitle')}</p>
-            <h1 className="mt-3 text-4xl font-bold leading-tight">
-              {t('loginLogin')} · {t('loginRegister')} · {t('loginReset')}
-            </h1>
-            <p className="mt-4 leading-7 text-white/75">{t('loginLanguage')}</p>
+            <p className="text-xs font-bold uppercase text-white/70">{t('authShellEyebrow')}</p>
+            <h1 className="mt-3 text-4xl font-bold leading-tight">{t('authShellTitle')}</h1>
+            <p className="mt-4 leading-7 text-white/75">{t('authShellDescription')}</p>
           </div>
         </aside>
         <section className="min-h-0 flex-1 overflow-y-auto">
