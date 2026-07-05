@@ -41,14 +41,14 @@ export default function ThemeModeControl({
             aria-haspopup="menu"
             aria-expanded={open}
             title="Color theme"
-            className={`flex h-8 w-8 items-center justify-center rounded-lg border transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
+            className={`flex h-7 w-7 items-center justify-center rounded-md border transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
               onDark
                 ? 'border-white/10 bg-white/8 text-white hover:border-white/20 hover:bg-white/12'
                 : 'border-(--color-divider) bg-(--color-paper) text-(--color-text) hover:bg-(--color-surface-hover)'
             }`}
             {...props}
           >
-            <ActiveIcon size={16} aria-hidden="true" />
+            <ActiveIcon size={14} aria-hidden="true" />
           </button>
         )}
       >

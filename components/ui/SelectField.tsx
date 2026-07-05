@@ -147,7 +147,7 @@ const SelectField = ({
           disabled={disabled}
           aria-haspopup="listbox"
           aria-expanded={open}
-          className={`flex w-full items-center gap-2 border text-left text-sm transition focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50 ${compact ? 'min-h-8 rounded-lg px-2.5' : 'min-h-10 rounded-xl px-3'} ${
+          className={`flex w-full items-center border text-left text-sm transition focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50 ${compact ? 'h-7 gap-1.5 rounded-md px-2' : 'min-h-10 gap-2 rounded-xl px-3'} ${
             appearance === 'onDark'
               ? 'border-white/10 bg-white/8 text-white hover:border-white/20 hover:bg-white/12 focus-visible:border-sky-400 focus-visible:outline-sky-400/25'
               : 'border-(--color-divider) bg-(--color-paper) text-(--color-text) hover:border-slate-400 focus-visible:border-sky-500 focus-visible:outline-sky-500/20 disabled:hover:border-(--color-divider)'
@@ -160,7 +160,7 @@ const SelectField = ({
             {summary}
           </span>
           <ChevronDown
-            size={16}
+            size={compact ? 14 : 16}
             className={`shrink-0 transition ${appearance === 'onDark' ? 'text-white/60' : 'text-(--color-muted)'} ${open ? 'rotate-180' : ''}`}
           />
         </button>
