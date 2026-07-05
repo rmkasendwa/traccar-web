@@ -27,6 +27,9 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from '@/lib/router';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import { useDeviceReadonly, useRestriction } from '@/lib/permissions';
+import { speedFromKnots, speedUnitString } from '@/lib/converter';
+import { useAttributePreference } from '@/lib/preferences';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import FloatingPanel from '@/features/tracking/components/FloatingPanel';
 
 dayjs.extend(relativeTime);
@@ -117,6 +120,8 @@ export default function SelectedDeviceCard({
   onClose,
 }: SelectedDeviceCardProps) {
   const navigate = useNavigate();
+  const t = useTranslation();
+  const speedUnit = useAttributePreference('speedUnit', 'kn');
   const device = useSelector((state: any) => state.devices.items[deviceId]);
   const user = useSelector((state: any) => state.session.user);
   const shareDisabled = useSelector((state: any) => state.session.server.attributes.disableShare);
@@ -209,7 +214,11 @@ export default function SelectedDeviceCard({
           <Metric
             icon={<Gauge size={12} />}
             label="Speed"
-            value={position?.speed != null ? `${Math.round(position.speed)} kn` : '—'}
+            value={
+              position?.speed != null
+                ? `${Math.round(speedFromKnots(position.speed, speedUnit))} ${speedUnitString(speedUnit, t)}`
+                : '—'
+            }
           />
           <Metric
             icon={<BatteryIcon size={12} />}
