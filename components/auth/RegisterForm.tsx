@@ -19,44 +19,52 @@ type RegisterFormProps = {
 const inputClass =
   'min-h-11 w-full rounded-md border border-(--color-divider) bg-(--color-paper) px-3 py-2 text-(--color-text) outline-none focus:border-(--color-primary) focus:ring-1 focus:ring-(--color-primary) aria-invalid:border-red-500';
 
-const registerValidators = {
+type Translate = (key: string) => string;
+
+const getRegisterValidators = (t: Translate) => ({
   name: (formData: FormData) =>
-    String(formData.get('name') || '').trim() ? '' : 'Name is required.',
+    String(formData.get('name') || '').trim() ? '' : t('authNameRequired'),
   email: (formData: FormData) => {
     const email = String(formData.get('email') || '').trim();
-    if (!email) return 'Email is required.';
-    if (!/(.+)@(.+)\.(.{2,})/.test(email)) return 'Enter a valid email address.';
+    if (!email) return t('authEmailRequired');
+    if (!/(.+)@(.+)\.(.{2,})/.test(email)) return t('authEmailInvalid');
     return '';
   },
   password: (formData: FormData) => {
     const password = String(formData.get('password') || '');
-    if (!password) return 'Password is required.';
-    if (password.length < 8) return 'Password must contain at least 8 characters.';
+    if (!password || password.length < 8) {
+      return password ? t('authPasswordMinimum') : t('authPasswordRequired');
+    }
     return '';
   },
   confirmPassword: (formData: FormData) => {
     const password = String(formData.get('password') || '');
     const confirmPassword = String(formData.get('confirmPassword') || '');
-    if (!confirmPassword) return 'Confirm your password.';
-    if (password !== confirmPassword) return 'Passwords must match.';
+    if (!confirmPassword) return t('authConfirmPasswordRequired');
+    if (password !== confirmPassword) return t('authPasswordsMismatch');
     return '';
   },
-};
+});
 
-const validateRegister = (formData: FormData): AuthFormState | null => {
+const validateRegister = (
+  formData: FormData,
+  validators: ReturnType<typeof getRegisterValidators>,
+): AuthFormState | null => {
   const name = String(formData.get('name') || '').trim();
   const email = String(formData.get('email') || '').trim();
   const password = String(formData.get('password') || '');
   const confirmPassword = String(formData.get('confirmPassword') || '');
   const errors: Record<string, string> = {};
 
-  if (!name) errors.name = 'Name is required.';
-  if (!email) errors.email = 'Email is required.';
-  else if (!/(.+)@(.+)\.(.{2,})/.test(email)) errors.email = 'Enter a valid email address.';
-  if (!password) errors.password = 'Password is required.';
-  else if (password.length < 8) errors.password = 'Password must contain at least 8 characters.';
-  if (!confirmPassword) errors.confirmPassword = 'Confirm your password.';
-  else if (password !== confirmPassword) errors.confirmPassword = 'Passwords must match.';
+  const formValues = new FormData();
+  formValues.set('name', name);
+  formValues.set('email', email);
+  formValues.set('password', password);
+  formValues.set('confirmPassword', confirmPassword);
+  Object.entries(validators).forEach(([key, validator]) => {
+    const error = validator(formValues);
+    if (error) errors[key] = error;
+  });
 
   if (!Object.keys(errors).length) {
     return null;
@@ -73,9 +81,10 @@ export default function RegisterForm({
   initialState = emptyAuthFormState,
 }: RegisterFormProps) {
   const t = useTranslation();
+  const registerValidators = getRegisterValidators(t);
   const [state, formAction] = useActionState(
     async (previousState: AuthFormState, formData: FormData) => {
-      const validation = validateRegister(formData);
+      const validation = validateRegister(formData, registerValidators);
       if (validation) {
         return validation;
       }
@@ -116,7 +125,7 @@ export default function RegisterForm({
         name="email"
         required
         error={errors.email}
-        helper="Used for account sign in and password recovery."
+        helper={t('authEmailHelper')}
       >
         <input
           className={inputClass}
@@ -136,13 +145,13 @@ export default function RegisterForm({
         name="password"
         required
         error={errors.password}
-        helper="Must contain at least 8 characters."
+        helper={t('authPasswordMinimum')}
       >
         <PasswordInput
           className={inputClass}
           name="password"
           autoComplete="new-password"
-          placeholder={t('userPassword')}
+          placeholder={t('authCreateStrongPassword')}
           invalid={Boolean(errors.password)}
           describedBy="password-helper"
           value={password}
@@ -159,7 +168,7 @@ export default function RegisterForm({
       <PasswordStrengthMeter password={password} />
 
       <Field
-        label={t('userPassword')}
+        label={t('authConfirmPassword')}
         name="confirmPassword"
         required
         error={errors.confirmPassword}
@@ -168,7 +177,7 @@ export default function RegisterForm({
           className={inputClass}
           name="confirmPassword"
           autoComplete="new-password"
-          placeholder={t('userPassword')}
+          placeholder={t('authConfirmPasswordPlaceholder')}
           invalid={Boolean(errors.confirmPassword)}
           describedBy="confirmPassword-helper"
           value={confirmPassword}
