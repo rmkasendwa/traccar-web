@@ -188,7 +188,7 @@ const EditAttributesAccordion = ({
         {convertToList(attributes).map(({ key, value, type, dataType }) => {
           if (type === 'boolean') {
             return (
-              <Grid container direction="row" justifyContent="space-between" key={key}>
+              <Grid className="flex items-center justify-between" key={key}>
                 <FormControlLabel
                   control={
                     <Checkbox

@@ -30,6 +30,16 @@ export default () => {
   return useMemo(
     () => [
       {
+        id: 'googleRoads',
+        title: t('mapGoogleRoad'),
+        source: sourceCustom(
+          [`google://satellite/{z}/{x}/{y}?key=${googleKey}&layerType=layerRoadmap&overlay=true`],
+          20,
+        ),
+        available: Boolean(googleKey),
+        attribute: 'googleKey',
+      },
+      {
         id: 'googleTraffic',
         title: t('mapGoogleTraffic'),
         source: sourceCustom(
