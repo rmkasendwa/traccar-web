@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { createContext, use, useEffect, useMemo, useState } from 'react';
+import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
-import usePersistedState from '@/lib/usePersistedState';
+import { getLanguageDirection, isSupportedLanguage, LANGUAGE_COOKIE } from '@/lib/localization';
 
 import en from '@/providers/localization/messages/en.json';
 import 'dayjs/locale/en';
@@ -143,30 +143,6 @@ const loadLocale = (language) => {
   return cache.get(language);
 };
 
-const getDefaultLanguage = () => {
-  if (typeof window === 'undefined') {
-    return 'en';
-  }
-  const browserLanguages = window.navigator.languages ? window.navigator.languages.slice() : [];
-  const browserLanguage = window.navigator.userLanguage || window.navigator.language;
-  browserLanguages.push(browserLanguage);
-  browserLanguages.push(browserLanguage.substring(0, 2));
-
-  for (let i = 0; i < browserLanguages.length; i += 1) {
-    let language = browserLanguages[i].replace('-', '_');
-    if (language in languages) {
-      return language;
-    }
-    if (language.length > 2) {
-      language = language.substring(0, 2);
-      if (language in languages) {
-        return language;
-      }
-    }
-  }
-  return 'en';
-};
-
 const LocalizationContext = createContext({
   languages,
   language: 'en',
@@ -175,7 +151,7 @@ const LocalizationContext = createContext({
 });
 
 const ResolvedLocalizationProvider = ({ language, data, setLocalLanguage, children }) => {
-  const direction = /^(ar|he|fa)$/.test(language) ? 'rtl' : 'ltr';
+  const direction = getLanguageDirection(language);
 
   const value = useMemo(
     () => ({
@@ -195,23 +171,25 @@ const ResolvedLocalizationProvider = ({ language, data, setLocalLanguage, childr
   return <LocalizationContext value={value}>{children}</LocalizationContext>;
 };
 
-export const LocalizationProvider = ({ children }) => {
-  const { userLanguage, serverLanguage } = useSelector((state) => {
-    const serverLanguage = state.session.server?.attributes?.language;
+export const LocalizationProvider = ({ children, initialLanguage, initialMessages }) => {
+  const userLanguage = useSelector((state) => {
     const userLanguage = state.session.user?.attributes?.language;
-    return {
-      userLanguage: userLanguage && userLanguage in languages ? userLanguage : null,
-      serverLanguage: serverLanguage && serverLanguage in languages ? serverLanguage : null,
-    };
+    return userLanguage && userLanguage in languages ? userLanguage : null;
   });
 
-  const [localLanguage, setLocalLanguage] = usePersistedState(
-    'language',
-    serverLanguage || getDefaultLanguage(),
-  );
+  const [localLanguage, setLocalLanguageState] = useState(initialLanguage);
+  const setLocalLanguage = useCallback((nextLanguage) => {
+    if (isSupportedLanguage(nextLanguage)) {
+      document.cookie = `${LANGUAGE_COOKIE}=${encodeURIComponent(nextLanguage)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      setLocalLanguageState(nextLanguage);
+    }
+  }, []);
 
   const language = userLanguage || localLanguage;
-  const [resolvedLocale, setResolvedLocale] = useState({ language: 'en', data: en });
+  const [resolvedLocale, setResolvedLocale] = useState({
+    language: initialLanguage,
+    data: initialMessages,
+  });
 
   useEffect(() => {
     let active = true;

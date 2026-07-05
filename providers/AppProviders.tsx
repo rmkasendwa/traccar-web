@@ -14,9 +14,16 @@ import QueryParameterController from '@/controllers/QueryParameterController';
 type AppProvidersProps = {
   children: ReactNode;
   initialServer?: unknown;
+  initialLanguage: string;
+  initialMessages: Record<string, string>;
 };
 
-export default function AppProviders({ children, initialServer }: AppProvidersProps) {
+export default function AppProviders({
+  children,
+  initialServer,
+  initialLanguage,
+  initialMessages,
+}: AppProvidersProps) {
   if (initialServer && !store.getState().session.server) {
     store.dispatch(sessionActions.updateServer(initialServer));
   }
@@ -30,7 +37,7 @@ export default function AppProviders({ children, initialServer }: AppProvidersPr
   return (
     <ErrorBoundary>
       <Provider store={store}>
-        <LocalizationProvider>
+        <LocalizationProvider initialLanguage={initialLanguage} initialMessages={initialMessages}>
           <AppThemeProvider>
             <ServerProvider>
               <QueryParameterController>{children}</QueryParameterController>

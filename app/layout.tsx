@@ -1,8 +1,16 @@
 import type { Metadata, Viewport } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 import type { ReactNode } from 'react';
+import { cookies, headers } from 'next/headers';
 import AppProviders from '@/providers/AppProviders';
 import { fetchFromRequestOrigin } from '@/lib/serverFetch';
+import {
+  getLanguageDirection,
+  isSupportedLanguage,
+  LANGUAGE_COOKIE,
+  matchLanguage,
+} from '@/lib/localization';
+import en from '@/providers/localization/messages/en.json';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -30,10 +38,31 @@ const getInitialServer = async () => {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
-  const initialServer = await getInitialServer();
+  const [initialServer, cookieStore, headerStore] = await Promise.all([
+    getInitialServer(),
+    cookies(),
+    headers(),
+  ]);
+  const cookieLanguage = cookieStore.get(LANGUAGE_COOKIE)?.value;
+  const serverLanguage = initialServer?.attributes?.language;
+  const acceptedLanguage = headerStore
+    .get('accept-language')
+    ?.split(',')
+    .map(matchLanguage)
+    .find(Boolean);
+  const initialLanguage = isSupportedLanguage(cookieLanguage)
+    ? cookieLanguage
+    : isSupportedLanguage(serverLanguage)
+      ? serverLanguage
+      : acceptedLanguage || 'en';
+  const initialMessages =
+    initialLanguage === 'en'
+      ? en
+      : (await import(`@/providers/localization/messages/${initialLanguage}.json`)).default;
+  const direction = getLanguageDirection(initialLanguage);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={initialLanguage.replace('_', '-')} dir={direction} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -49,7 +78,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           shadow={false}
           zIndex={9999}
         />
-        <AppProviders initialServer={initialServer}>{children}</AppProviders>
+        <AppProviders
+          initialServer={initialServer}
+          initialLanguage={initialLanguage}
+          initialMessages={initialMessages}
+        >
+          {children}
+        </AppProviders>
       </body>
     </html>
   );
