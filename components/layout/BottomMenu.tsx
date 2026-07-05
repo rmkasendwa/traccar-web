@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from '@/lib/router';
+import { Link, useNavigate, useLocation } from '@/lib/router';
 import {
   Paper,
   BottomNavigation,
@@ -37,6 +37,17 @@ const BottomMenu = () => {
   const selectedDeviceId = useSelector((state) => state.devices.selectedId);
 
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const reportsLink = () => {
+    let id = selectedDeviceId;
+    if (id == null) {
+      const deviceIds = Object.keys(devices);
+      if (deviceIds.length === 1) {
+        [id] = deviceIds;
+      }
+    }
+    return id != null ? `/reports/combined?deviceId=${id}` : '/reports/combined';
+  };
 
   const currentSelection = () => {
     if (location.pathname === `/settings/user/${user.id}`) {
@@ -93,29 +104,8 @@ const BottomMenu = () => {
 
   const handleSelection = (event, value) => {
     switch (value) {
-      case 'map':
-        navigate('/');
-        break;
-      case 'reports': {
-        let id = selectedDeviceId;
-        if (id == null) {
-          const deviceIds = Object.keys(devices);
-          if (deviceIds.length === 1) {
-            id = deviceIds[0];
-          }
-        }
-
-        if (id != null) {
-          navigate(`/reports/combined?deviceId=${id}`);
-        } else {
-          navigate('/reports/combined');
-        }
-        break;
-      }
-      case 'settings':
-        navigate('/settings/preferences?menu=true');
-        break;
       case 'account':
+        event.preventDefault();
         setAnchorEl(event.currentTarget);
         break;
       case 'logout':
@@ -130,6 +120,8 @@ const BottomMenu = () => {
     <Paper square elevation={3}>
       <BottomNavigation value={currentSelection()} onChange={handleSelection} showLabels>
         <BottomNavigationAction
+          component={Link}
+          to="/"
           label={t('mapTitle')}
           icon={
             <Badge color="error" variant="dot" overlap="circular" invisible={socket !== false}>
@@ -140,6 +132,8 @@ const BottomMenu = () => {
         />
         {!disableReports && (
           <BottomNavigationAction
+            component={Link}
+            to={reportsLink()}
             label={t('reportTitle')}
             icon={<DescriptionIcon />}
             value="reports"
@@ -147,6 +141,8 @@ const BottomMenu = () => {
         )}
         {!readonly && (
           <BottomNavigationAction
+            component={Link}
+            to="/settings/preferences?menu=true"
             label={t('settingsTitle')}
             icon={<SettingsIcon />}
             value="settings"
@@ -159,7 +155,13 @@ const BottomMenu = () => {
             value="logout"
           />
         ) : (
-          <BottomNavigationAction label={t('settingsUser')} icon={<PersonIcon />} value="account" />
+          <BottomNavigationAction
+            component={Link}
+            to={`/settings/user/${user.id}`}
+            label={t('settingsUser')}
+            icon={<PersonIcon />}
+            value="account"
+          />
         )}
       </BottomNavigation>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>

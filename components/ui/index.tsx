@@ -890,22 +890,26 @@ export const BottomNavigationAction = ({
   icon,
   selected,
   showLabel = true,
+  component: Component = 'button',
   className,
   ...props
-}) => (
-  <button
-    type="button"
-    className={cn(
-      'flex flex-1 flex-col items-center justify-center text-xs',
-      selected ? 'text-(--color-primary)' : 'text-(--color-muted)',
-      className,
-    )}
-    {...props}
-  >
-    {icon}
-    {showLabel && <span>{label}</span>}
-  </button>
-);
+}) => {
+  const componentProps = Component === 'button' ? { type: 'button' } : {};
+  return (
+    <Component
+      {...componentProps}
+      className={cn(
+        'flex flex-1 flex-col items-center justify-center text-xs',
+        selected ? 'text-(--color-primary)' : 'text-(--color-muted)',
+        className,
+      )}
+      {...props}
+    >
+      {icon}
+      {showLabel && <span>{label}</span>}
+    </Component>
+  );
+};
 
 export const Skeleton = ({ variant, width, height, className }) => (
   <span

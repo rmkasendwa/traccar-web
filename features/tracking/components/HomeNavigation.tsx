@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BarChart3, LogOut, Map, Settings, UserRound } from 'lucide-react';
-import { useNavigate } from '@/lib/router';
+import { Link, useNavigate } from '@/lib/router';
 import { sessionActions } from '@/store';
 import FloatingPanel from '@/features/tracking/components/FloatingPanel';
 import { nativePostMessage } from '@/controllers/NativeInterface';
@@ -16,11 +16,11 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
   const selectedId = useSelector((state: any) => state.devices.selectedId);
   const [accountOpen, setAccountOpen] = useState(false);
 
-  const reports = () => {
-    const ids = Object.keys(devices);
-    const deviceId = selectedId || (ids.length === 1 ? ids[0] : null);
-    navigate(deviceId ? `/reports/combined?deviceId=${deviceId}` : '/reports/combined');
-  };
+  const ids = Object.keys(devices);
+  const reportDeviceId = selectedId || (ids.length === 1 ? ids[0] : null);
+  const reportsHref = reportDeviceId
+    ? `/reports/combined?deviceId=${reportDeviceId}`
+    : '/reports/combined';
   const logout = async () => {
     await fetch('/api/session', { method: 'DELETE' });
     nativePostMessage('logout');
@@ -41,45 +41,57 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
       }
       aria-label="Main navigation"
     >
-      <button
-        type="button"
+      <Link
+        href="/"
         className={`${itemClass} bg-(--color-surface-hover) text-sky-600 dark:text-sky-400`}
       >
         <Map size={19} />
         Map
-      </button>
-      <button type="button" onClick={reports} className={itemClass}>
+      </Link>
+      <Link href={reportsHref} className={itemClass}>
         <BarChart3 size={19} />
         Reports
-      </button>
-      <button
-        type="button"
-        onClick={() => navigate('/settings/preferences?menu=true')}
-        className={itemClass}
-      >
+      </Link>
+      <Link href="/settings/preferences?menu=true" className={itemClass}>
         <Settings size={19} />
         Settings
-      </button>
+      </Link>
       <FloatingPanel
         open={accountOpen}
         onOpenChange={setAccountOpen}
         placement={mobile ? 'top-end' : 'top-end'}
         className="w-52"
         trigger={(props, ref) => (
-          <button {...props} ref={ref as any} type="button" className={itemClass}>
+          <Link
+            {...props}
+            ref={ref as any}
+            href={`/settings/user/${user.id}`}
+            onClick={(event) => {
+              if (
+                event.button === 0 &&
+                !event.metaKey &&
+                !event.ctrlKey &&
+                !event.shiftKey &&
+                !event.altKey
+              ) {
+                event.preventDefault();
+                props.onClick?.(event);
+              }
+            }}
+            className={itemClass}
+          >
             <UserRound size={19} />
             Account
-          </button>
+          </Link>
         )}
       >
-        <button
-          type="button"
-          onClick={() => navigate(`/settings/user/${user.id}`)}
+        <Link
+          href={`/settings/user/${user.id}`}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-(--color-surface-hover)"
         >
           <UserRound size={17} />
           Profile
-        </button>
+        </Link>
         <button
           type="button"
           onClick={logout}
