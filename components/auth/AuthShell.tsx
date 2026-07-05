@@ -20,7 +20,7 @@ export default function AuthShell({ title, subtitle, children }: AuthShellProps)
           />
           <div className="absolute right-6 top-6 flex items-center gap-2 md:right-12 md:top-12">
             <LanguageSelect />
-            <ThemeModeControl compact onDark />
+            <ThemeModeControl compact onDark popover />
           </div>
           <div className="hidden max-w-md md:block">
             <p className="text-xs font-bold uppercase text-white/70">

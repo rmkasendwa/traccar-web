@@ -19,6 +19,9 @@ import { useAsyncTask } from '@/lib/react';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 
 type SelectFieldProps = {
+  className?: string;
+  appearance?: 'default' | 'onDark';
+  compact?: boolean;
   label?: string;
   fullWidth?: boolean;
   multiple?: boolean;
@@ -38,6 +41,9 @@ type SelectFieldProps = {
 };
 
 const SelectField = ({
+  className,
+  appearance = 'default',
+  compact = false,
   label,
   fullWidth,
   multiple,
@@ -131,7 +137,7 @@ const SelectField = ({
     };
 
     return (
-      <div className={fullWidth ? 'w-full' : ''}>
+      <div className={`${fullWidth ? 'w-full' : ''} ${className || ''}`}>
         {label && <span className="mb-1 block text-sm text-(--color-muted)">{label}</span>}
         <button
           ref={refs.setReference}
@@ -139,17 +145,21 @@ const SelectField = ({
           disabled={disabled}
           aria-haspopup="listbox"
           aria-expanded={open}
-          className="flex min-h-10 w-full items-center gap-2 rounded-xl border border-(--color-divider) bg-(--color-paper) px-3 text-left text-sm text-(--color-text) transition hover:border-slate-400 focus-visible:border-sky-500 focus-visible:outline-2 focus-visible:outline-sky-500/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-(--color-divider)"
+          className={`flex w-full items-center gap-2 border text-left text-sm transition focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50 ${compact ? 'min-h-8 rounded-lg px-2.5' : 'min-h-10 rounded-xl px-3'} ${
+            appearance === 'onDark'
+              ? 'border-white/10 bg-white/8 text-white hover:border-white/20 hover:bg-white/12 focus-visible:border-sky-400 focus-visible:outline-sky-400/25'
+              : 'border-(--color-divider) bg-(--color-paper) text-(--color-text) hover:border-slate-400 focus-visible:border-sky-500 focus-visible:outline-sky-500/20 disabled:hover:border-(--color-divider)'
+          }`}
           {...getReferenceProps()}
         >
           <span
-            className={`min-w-0 flex-1 truncate ${selectedItems.length ? '' : 'text-(--color-muted)'}`}
+            className={`min-w-0 flex-1 truncate ${selectedItems.length ? '' : appearance === 'onDark' ? 'text-white/65' : 'text-(--color-muted)'}`}
           >
             {summary}
           </span>
           <ChevronDown
             size={16}
-            className={`shrink-0 text-(--color-muted) transition ${open ? 'rotate-180' : ''}`}
+            className={`shrink-0 transition ${appearance === 'onDark' ? 'text-white/60' : 'text-(--color-muted)'} ${open ? 'rotate-180' : ''}`}
           />
         </button>
         {open && (
