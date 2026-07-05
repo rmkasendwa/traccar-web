@@ -48,14 +48,12 @@ export default function LanguageSelect() {
     <SelectField
       appearance="onDark"
       compact
-      className="w-20"
+      className="w-34"
       value={language}
       data={languageList}
       keyGetter={(item: LanguageOption) => item.code}
       titleGetter={(item: LanguageOption) => `${countryFlag(item.country)}  ${item.name}`}
-      summaryGetter={(item: LanguageOption) =>
-        `${countryFlag(item.country)} ${item.code.split(/[-_]/)[0].toUpperCase()}`
-      }
+      summaryGetter={(item: LanguageOption) => `${countryFlag(item.country)}  ${item.name}`}
       placeholder={t('loginLanguage')}
       onChange={(event) => setLocalLanguage(event.target.value)}
     />

@@ -149,7 +149,7 @@ const SelectField = ({
           aria-expanded={open}
           className={`flex w-full items-center border text-left text-sm transition focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50 ${compact ? 'h-7 gap-1.5 rounded-md px-2' : 'min-h-10 gap-2 rounded-xl px-3'} ${
             appearance === 'onDark'
-              ? 'border-white/10 bg-white/8 text-white hover:border-white/20 hover:bg-white/12 focus-visible:border-sky-400 focus-visible:outline-sky-400/25'
+              ? 'border-transparent bg-transparent text-white/70 hover:bg-white/6 hover:text-white focus-visible:border-white/15 focus-visible:bg-white/6 focus-visible:text-white focus-visible:outline-white/15'
               : 'border-(--color-divider) bg-(--color-paper) text-(--color-text) hover:border-slate-400 focus-visible:border-sky-500 focus-visible:outline-sky-500/20 disabled:hover:border-(--color-divider)'
           }`}
           {...getReferenceProps()}
