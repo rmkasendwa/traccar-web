@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import ThemeModeControl from '@/components/ui/ThemeModeControl';
+import LanguageSelect from '@/components/auth/LanguageSelect';
 
 type AuthShellProps = {
   title: string;
@@ -17,7 +18,8 @@ export default function AuthShell({ title, subtitle, children }: AuthShellProps)
             aria-label="Traccar"
             className="block h-14 w-36 max-w-full bg-white [mask:url('/logo-wordmark.svg')_center/contain_no-repeat] [-webkit-mask:url('/logo-wordmark.svg')_center/contain_no-repeat] sm:w-52"
           />
-          <div className="absolute right-6 top-6 md:right-12 md:top-12">
+          <div className="absolute right-6 top-6 flex items-center gap-2 md:right-12 md:top-12">
+            <LanguageSelect />
             <ThemeModeControl compact onDark />
           </div>
           <div className="hidden max-w-md md:block">
