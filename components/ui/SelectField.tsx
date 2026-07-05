@@ -33,6 +33,7 @@ type SelectFieldProps = {
   data?: any[];
   keyGetter?: (item: any) => any;
   titleGetter?: (item: any) => string;
+  summaryGetter?: (item: any) => string;
   helperText?: string;
   placeholder?: string;
   singleLine?: boolean;
@@ -55,6 +56,7 @@ const SelectField = ({
   data,
   keyGetter = (item) => item.id,
   titleGetter = (item) => item.name,
+  summaryGetter = titleGetter,
   helperText,
   placeholder,
   singleLine: _singleLine,
@@ -114,7 +116,7 @@ const SelectField = ({
     const summary = selectedItems.length
       ? multiple && selectedItems.length > 1
         ? `${titleGetter(selectedItems[0])} +${selectedItems.length - 1}`
-        : titleGetter(selectedItems[0])
+        : summaryGetter(selectedItems[0])
       : placeholder || emptyTitle || 'Select…';
     const filteredItems = items.filter((item) =>
       titleGetter(item).toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
