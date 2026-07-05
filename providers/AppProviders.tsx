@@ -10,12 +10,14 @@ import ServerProvider from '@/providers/ServerProvider';
 import ErrorBoundary from '@/providers/ErrorBoundary';
 import AppThemeProvider from '@/providers/AppThemeProvider';
 import QueryParameterController from '@/controllers/QueryParameterController';
+import type { ThemeMode } from '@/lib/theme';
 
 type AppProvidersProps = {
   children: ReactNode;
   initialServer?: unknown;
   initialLanguage: string;
   initialMessages: Record<string, string>;
+  initialThemeMode: ThemeMode;
 };
 
 export default function AppProviders({
@@ -23,6 +25,7 @@ export default function AppProviders({
   initialServer,
   initialLanguage,
   initialMessages,
+  initialThemeMode,
 }: AppProvidersProps) {
   if (initialServer && !store.getState().session.server) {
     store.dispatch(sessionActions.updateServer(initialServer));
@@ -38,7 +41,7 @@ export default function AppProviders({
     <ErrorBoundary>
       <Provider store={store}>
         <LocalizationProvider initialLanguage={initialLanguage} initialMessages={initialMessages}>
-          <AppThemeProvider>
+          <AppThemeProvider initialMode={initialThemeMode}>
             <ServerProvider>
               <QueryParameterController>{children}</QueryParameterController>
               <ErrorHandler />

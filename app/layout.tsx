@@ -11,6 +11,7 @@ import {
   matchLanguage,
 } from '@/lib/localization';
 import en from '@/providers/localization/messages/en.json';
+import { isThemeMode, THEME_COOKIE } from '@/lib/theme';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -60,13 +61,20 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       ? en
       : (await import(`@/providers/localization/messages/${initialLanguage}.json`)).default;
   const direction = getLanguageDirection(initialLanguage);
+  const cookieThemeMode = cookieStore.get(THEME_COOKIE)?.value;
+  const initialThemeMode = isThemeMode(cookieThemeMode) ? cookieThemeMode : 'system';
 
   return (
-    <html lang={initialLanguage.replace('_', '-')} dir={direction} suppressHydrationWarning>
+    <html
+      lang={initialLanguage.replace('_', '-')}
+      dir={direction}
+      className={initialThemeMode === 'dark' ? 'dark' : undefined}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var m=localStorage.getItem('themeMode')||'system';var d=m==='dark'||(m==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){}})();`,
+            __html: `(function(){try{var m=${JSON.stringify(initialThemeMode)};var d=m==='dark'||(m==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){}})();`,
           }}
         />
       </head>
@@ -82,6 +90,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           initialServer={initialServer}
           initialLanguage={initialLanguage}
           initialMessages={initialMessages}
+          initialThemeMode={initialThemeMode}
         >
           {children}
         </AppProviders>

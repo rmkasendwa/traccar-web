@@ -1,10 +1,9 @@
 // @ts-nocheck
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ThemeProvider, useAppTheme, useMediaQuery } from '@/components/ui/theme';
 import { useLocalization } from '@/providers/localization/LocalizationProvider';
-
-type ThemeMode = 'system' | 'light' | 'dark';
+import { isThemeMode, THEME_COOKIE, type ThemeMode } from '@/lib/theme';
 
 const ThemeModeContext = createContext<{
   mode: ThemeMode;
@@ -13,28 +12,26 @@ const ThemeModeContext = createContext<{
 
 export const useThemeMode = () => useContext(ThemeModeContext);
 
-const AppThemeProvider = ({ children }) => {
+const AppThemeProvider = ({ children, initialMode }) => {
   const server = useSelector((state) => state.session.server);
   const { direction } = useLocalization();
-  const [mode, setModeState] = useState('system');
-  const [ready, setReady] = useState(false);
+  const [mode, setModeState] = useState(initialMode);
+  const [ready, setReady] = useState(initialMode !== 'system');
   const preferDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const darkMode = mode === 'dark' || (mode === 'system' && preferDarkMode);
 
   const themeInstance = useAppTheme(server, darkMode, direction);
 
-  useEffect(() => {
-    const storedMode = window.localStorage.getItem('themeMode');
-    if (['system', 'light', 'dark'].includes(storedMode)) {
-      setModeState(storedMode);
+  const setMode = useCallback((nextMode) => {
+    if (isThemeMode(nextMode)) {
+      document.cookie = `${THEME_COOKIE}=${nextMode}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      setModeState(nextMode);
     }
-    setReady(true);
   }, []);
 
-  const setMode = (nextMode) => {
-    window.localStorage.setItem('themeMode', nextMode);
-    setModeState(nextMode);
-  };
+  useEffect(() => {
+    setReady(true);
+  }, []);
 
   useEffect(() => {
     if (!ready) {
