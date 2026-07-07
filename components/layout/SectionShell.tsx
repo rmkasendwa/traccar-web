@@ -130,9 +130,6 @@ export default function SectionShell({
       <div className="min-h-0 flex-1 overflow-y-auto">
         <Navigation groups={groups} onNavigate={() => setDrawerOpen(false)} />
       </div>
-      <div className="border-t border-(--color-divider) p-3">
-        <ThemeModeControl />
-      </div>
     </div>
   );
 
@@ -161,23 +158,26 @@ export default function SectionShell({
 
       <main className="flex min-w-0 flex-1 flex-col">
         <header className="shrink-0 border-b border-(--color-divider) bg-(--color-paper) px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setDrawerOpen(true)}
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-(--color-divider) text-(--color-muted) transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 lg:hidden"
-              aria-label={`Open ${title.toLocaleLowerCase()} navigation`}
-            >
-              <Menu size={19} />
-            </button>
-            <div className="min-w-0">
-              <h1 className="truncate text-xl font-bold tracking-tight text-(--color-text) sm:text-2xl">
-                {currentItem?.label || title}
-              </h1>
-              <p className="mt-0.5 hidden text-sm text-(--color-muted) sm:block">
-                {currentItem?.description || description}
-              </p>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(true)}
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-(--color-divider) text-(--color-muted) transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 lg:hidden"
+                aria-label={`Open ${title.toLocaleLowerCase()} navigation`}
+              >
+                <Menu size={19} />
+              </button>
+              <div className="min-w-0">
+                <h1 className="truncate text-xl font-bold tracking-tight text-(--color-text) sm:text-2xl">
+                  {currentItem?.label || title}
+                </h1>
+                <p className="mt-0.5 hidden text-sm text-(--color-muted) sm:block">
+                  {currentItem?.description || description}
+                </p>
+              </div>
             </div>
+            <ThemeModeControl compact popover />
           </div>
         </header>
         <div className="min-h-0 flex-1 overflow-hidden">

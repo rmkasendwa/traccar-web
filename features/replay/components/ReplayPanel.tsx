@@ -48,7 +48,7 @@ export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanel
                 <span className="sr-only">Replay loaded</span>
               </span>
             )}
-            <ThemeModeControl compact onDark />
+            <ThemeModeControl compact onDark popover />
             <label
               htmlFor="replay-panel-expanded"
               className="grid h-9 w-9 cursor-pointer place-items-center rounded-xl border border-white/10 bg-white/8 text-slate-300 transition hover:bg-white/15 hover:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-sky-400 md:hidden"

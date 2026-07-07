@@ -130,7 +130,7 @@ export default function DeviceSidebar({
               {socket === false ? 'Reconnecting' : 'Live tracking'}
             </p>
           </div>
-          <ThemeModeControl compact />
+          <ThemeModeControl compact popover />
         </div>
 
         <div className="flex gap-2">
