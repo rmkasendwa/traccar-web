@@ -678,5 +678,8 @@
     "authEmailInvalid": "Хүчинтэй имэйл хаяг оруулна уу.",
     "authPasswordRequired": "Нууц үг шаардлагатай.",
     "authConfirmPasswordRequired": "Нууц үгээ баталгаажуулна уу.",
-    "authPasswordsMismatch": "Нууц үг таарч байх ёстой."
+    "authPasswordsMismatch": "Нууц үг таарч байх ёстой.",
+    "authShellEyebrow": "Флотын харагдах байдал эндээс эхэлдэг",
+    "authShellTitle": "Ажлын талбартаа аюулгүй нэвтрэх.",
+    "authShellDescription": "Дэлгэц бүр дээр ажилладаг төвлөрсөн туршлагыг ашиглан нэвтэрч орох, бүртгэл үүсгэх эсвэл хандалтыг сэргээх."
 }

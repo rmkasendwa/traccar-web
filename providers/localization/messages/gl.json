@@ -678,5 +678,8 @@
     "authEmailInvalid": "Introduce un enderezo de correo electrónico válido.",
     "authPasswordRequired": "O contrasinal é necesario.",
     "authConfirmPasswordRequired": "Confirma o teu contrasinal.",
-    "authPasswordsMismatch": "Os contrasinais deben coincidir."
+    "authPasswordsMismatch": "Os contrasinais deben coincidir.",
+    "authShellEyebrow": "A visibilidade da flota comeza aquí",
+    "authShellTitle": "Acceso seguro ao teu espazo de traballo.",
+    "authShellDescription": "Inicia sesión, crea unha conta ou recupera o acceso cunha experiencia enfocada que funciona en todas as pantallas."
 }

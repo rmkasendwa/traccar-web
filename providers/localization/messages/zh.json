@@ -678,5 +678,8 @@
     "authEmailInvalid": "输入有效的电子邮件地址。",
     "authPasswordRequired": "需要密码。",
     "authConfirmPasswordRequired": "确认您的密码。",
-    "authPasswordsMismatch": "密码必须匹配。"
+    "authPasswordsMismatch": "密码必须匹配。",
+    "authShellEyebrow": "车队可见性从这里开始",
+    "authShellTitle": "安全访问您的工作空间。",
+    "authShellDescription": "登录、创建帐户或恢复访问权限，享受适用于每个屏幕的专注体验。"
 }

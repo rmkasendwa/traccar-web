@@ -678,5 +678,8 @@
     "authEmailInvalid": "Yaroqli elektron pochta manzilini kiriting.",
     "authPasswordRequired": "Parol kerak.",
     "authConfirmPasswordRequired": "Parolingizni tasdiqlang.",
-    "authPasswordsMismatch": "Parollar mos kelishi kerak."
+    "authPasswordsMismatch": "Parollar mos kelishi kerak.",
+    "authShellEyebrow": "Filoning ko'rinishi shu erda boshlanadi",
+    "authShellTitle": "Ish joyingizga xavfsiz kirish.",
+    "authShellDescription": "Har bir ekranda ishlaydigan fokuslangan tajriba bilan tizimga kiring, hisob yarating yoki ruxsatni tiklang."
 }

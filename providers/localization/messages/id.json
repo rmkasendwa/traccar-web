@@ -678,5 +678,8 @@
     "authEmailInvalid": "Masukkan alamat email yang valid.",
     "authPasswordRequired": "Kata sandi diperlukan.",
     "authConfirmPasswordRequired": "Konfirmasikan kata sandi Anda.",
-    "authPasswordsMismatch": "Kata sandi harus cocok."
+    "authPasswordsMismatch": "Kata sandi harus cocok.",
+    "authShellEyebrow": "Visibilitas armada dimulai di sini",
+    "authShellTitle": "Akses aman ke ruang kerja Anda.",
+    "authShellDescription": "Masuk, buat akun, atau pulihkan akses dengan pengalaman terfokus yang berfungsi di setiap layar."
 }

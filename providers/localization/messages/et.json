@@ -678,5 +678,8 @@
     "authEmailInvalid": "Sisestage kehtiv e-posti aadress.",
     "authPasswordRequired": "Parool on nõutav.",
     "authConfirmPasswordRequired": "Kinnitage oma parool.",
-    "authPasswordsMismatch": "Paroolid peavad ühtima."
+    "authPasswordsMismatch": "Paroolid peavad ühtima.",
+    "authShellEyebrow": "Laevastiku nähtavus algab siit",
+    "authShellTitle": "Turvaline juurdepääs oma tööruumile.",
+    "authShellDescription": "Logige sisse, looge konto või taastage juurdepääs keskendunud kasutuskogemusega, mis töötab igal ekraanil."
 }

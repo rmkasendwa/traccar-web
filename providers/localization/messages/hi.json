@@ -678,5 +678,8 @@
     "authEmailInvalid": "एक वैध ईमेल पता दर्ज करें।",
     "authPasswordRequired": "पासवर्ड आवश्यक है.",
     "authConfirmPasswordRequired": "अपने पासवर्ड की पुष्टि करें।",
-    "authPasswordsMismatch": "पासवर्ड का मिलान होना चाहिए।"
+    "authPasswordsMismatch": "पासवर्ड का मिलान होना चाहिए।",
+    "authShellEyebrow": "बेड़े की दृश्यता यहीं से शुरू होती है",
+    "authShellTitle": "अपने कार्यक्षेत्र तक सुरक्षित पहुंच।",
+    "authShellDescription": "साइन इन करें, एक खाता बनाएं, या हर स्क्रीन पर काम करने वाले एक केंद्रित अनुभव के साथ पहुंच पुनर्प्राप्त करें।"
 }

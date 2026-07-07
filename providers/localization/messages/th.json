@@ -678,5 +678,8 @@
     "authEmailInvalid": "ป้อนที่อยู่อีเมลที่ถูกต้อง",
     "authPasswordRequired": "ต้องใช้รหัสผ่าน",
     "authConfirmPasswordRequired": "ยืนยันรหัสผ่านของคุณ",
-    "authPasswordsMismatch": "รหัสผ่านต้องตรงกัน"
+    "authPasswordsMismatch": "รหัสผ่านต้องตรงกัน",
+    "authShellEyebrow": "การมองเห็นกองเรือเริ่มต้นที่นี่",
+    "authShellTitle": "เข้าถึงพื้นที่ทำงานของคุณอย่างปลอดภัย",
+    "authShellDescription": "ลงชื่อเข้าใช้ สร้างบัญชี หรือกู้คืนการเข้าถึงด้วยประสบการณ์ที่มุ่งเน้นซึ่งทำงานบนทุกหน้าจอ"
 }

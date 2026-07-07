@@ -678,5 +678,8 @@
     "authEmailInvalid": "একটি বৈধ ইমেল ঠিকানা লিখুন।",
     "authPasswordRequired": "পাসওয়ার্ড প্রয়োজন।",
     "authConfirmPasswordRequired": "আপনার পাসওয়ার্ড নিশ্চিত করুন।",
-    "authPasswordsMismatch": "পাসওয়ার্ড অবশ্যই মিলবে।"
+    "authPasswordsMismatch": "পাসওয়ার্ড অবশ্যই মিলবে।",
+    "authShellEyebrow": "ফ্লিট দৃশ্যমানতা এখানে শুরু হয়",
+    "authShellTitle": "আপনার কর্মক্ষেত্রে নিরাপদ অ্যাক্সেস।",
+    "authShellDescription": "সাইন ইন করুন, একটি অ্যাকাউন্ট তৈরি করুন বা একটি ফোকাসড অভিজ্ঞতার সাথে অ্যাক্সেস পুনরুদ্ধার করুন যা প্রতিটি স্ক্রিনে কাজ করে।"
 }

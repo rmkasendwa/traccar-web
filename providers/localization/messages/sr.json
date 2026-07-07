@@ -678,5 +678,8 @@
     "authEmailInvalid": "Унесите исправну адресу е-поште.",
     "authPasswordRequired": "Лозинка је потребна.",
     "authConfirmPasswordRequired": "Потврдите своју лозинку.",
-    "authPasswordsMismatch": "Лозинке се морају подударати."
+    "authPasswordsMismatch": "Лозинке се морају подударати.",
+    "authShellEyebrow": "Видљивост флоте почиње овде",
+    "authShellTitle": "Безбедан приступ свом радном простору.",
+    "authShellDescription": "Пријавите се, направите налог или повратите приступ уз фокусирано искуство које функционише на сваком екрану."
 }

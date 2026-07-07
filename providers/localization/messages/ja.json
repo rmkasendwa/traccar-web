@@ -678,5 +678,8 @@
     "authEmailInvalid": "有効な電子メール アドレスを入力してください。",
     "authPasswordRequired": "パスワードが必要です。",
     "authConfirmPasswordRequired": "パスワードを確認してください。",
-    "authPasswordsMismatch": "パスワードは一致する必要があります。"
+    "authPasswordsMismatch": "パスワードは一致する必要があります。",
+    "authShellEyebrow": "フリートの可視化はここから始まります",
+    "authShellTitle": "ワークスペースへの安全なアクセス。",
+    "authShellDescription": "すべての画面で機能する集中的なエクスペリエンスで、サインイン、アカウントの作成、またはアクセスの回復を行います。"
 }

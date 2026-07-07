@@ -678,5 +678,8 @@
     "authEmailInvalid": "Masukkan alamat e-mel yang sah.",
     "authPasswordRequired": "Kata laluan diperlukan.",
     "authConfirmPasswordRequired": "Sahkan kata laluan anda.",
-    "authPasswordsMismatch": "Kata laluan mesti sepadan."
+    "authPasswordsMismatch": "Kata laluan mesti sepadan.",
+    "authShellEyebrow": "Keterlihatan armada bermula di sini",
+    "authShellTitle": "Akses selamat ke ruang kerja anda.",
+    "authShellDescription": "Log masuk, buat akaun atau pulihkan akses dengan pengalaman terfokus yang berfungsi pada setiap skrin."
 }

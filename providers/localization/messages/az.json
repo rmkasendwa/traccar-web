@@ -678,5 +678,8 @@
     "authEmailInvalid": "Etibarlı e-poçt ünvanı daxil edin.",
     "authPasswordRequired": "Parol tələb olunur.",
     "authConfirmPasswordRequired": "Parolunuzu təsdiq edin.",
-    "authPasswordsMismatch": "Parollar uyğun olmalıdır."
+    "authPasswordsMismatch": "Parollar uyğun olmalıdır.",
+    "authShellEyebrow": "Donanmanın görünməsi buradan başlayır",
+    "authShellTitle": "İş yerinizə təhlükəsiz giriş.",
+    "authShellDescription": "Daxil olun, hesab yaradın və ya hər ekranda işləyən fokuslanmış təcrübə ilə girişi bərpa edin."
 }

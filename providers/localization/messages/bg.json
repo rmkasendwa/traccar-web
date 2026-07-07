@@ -678,5 +678,8 @@
     "authEmailInvalid": "Въведете валиден имейл адрес.",
     "authPasswordRequired": "Изисква се парола.",
     "authConfirmPasswordRequired": "Потвърдете паролата си.",
-    "authPasswordsMismatch": "Паролите трябва да съвпадат."
+    "authPasswordsMismatch": "Паролите трябва да съвпадат.",
+    "authShellEyebrow": "Видимостта на флота започва тук",
+    "authShellTitle": "Сигурен достъп до вашето работно пространство.",
+    "authShellDescription": "Влезте, създайте акаунт или възстановете достъпа с фокусирано изживяване, което работи на всеки екран."
 }

@@ -678,5 +678,8 @@
     "authEmailInvalid": "Nhập địa chỉ email hợp lệ.",
     "authPasswordRequired": "Cần có mật khẩu.",
     "authConfirmPasswordRequired": "Xác nhận mật khẩu của bạn.",
-    "authPasswordsMismatch": "Mật khẩu phải trùng nhau."
+    "authPasswordsMismatch": "Mật khẩu phải trùng nhau.",
+    "authShellEyebrow": "Khả năng hiển thị của hạm đội bắt đầu từ đây",
+    "authShellTitle": "Truy cập an toàn vào không gian làm việc của bạn.",
+    "authShellDescription": "Đăng nhập, tạo tài khoản hoặc khôi phục quyền truy cập bằng trải nghiệm tập trung hoạt động trên mọi màn hình."
 }

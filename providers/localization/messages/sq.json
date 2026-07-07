@@ -678,5 +678,8 @@
     "authEmailInvalid": "Fut një adresë të vlefshme emaili.",
     "authPasswordRequired": "Kërkohet fjalëkalimi.",
     "authConfirmPasswordRequired": "Konfirmo fjalëkalimin tënd.",
-    "authPasswordsMismatch": "Fjalëkalimet duhet të përputhen."
+    "authPasswordsMismatch": "Fjalëkalimet duhet të përputhen.",
+    "authShellEyebrow": "Dukshmëria e flotës fillon këtu",
+    "authShellTitle": "Qasje e sigurt në hapësirën tuaj të punës.",
+    "authShellDescription": "Hyni, krijoni një llogari ose rikuperoni aksesin me një përvojë të fokusuar që funksionon në çdo ekran."
 }

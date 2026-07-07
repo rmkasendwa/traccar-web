@@ -678,5 +678,8 @@
     "authEmailInvalid": "أدخل عنوان بريد إلكتروني صالحًا.",
     "authPasswordRequired": "كلمة المرور مطلوبة.",
     "authConfirmPasswordRequired": "أكّد كلمة المرور.",
-    "authPasswordsMismatch": "يجب أن تتطابق كلمتا المرور."
+    "authPasswordsMismatch": "يجب أن تتطابق كلمتا المرور.",
+    "authShellEyebrow": "رؤية الأسطول تبدأ من هنا",
+    "authShellTitle": "الوصول الآمن إلى مساحة العمل الخاصة بك.",
+    "authShellDescription": "قم بتسجيل الدخول أو إنشاء حساب أو استعادة الوصول من خلال تجربة مركزة تعمل على كل شاشة."
 }

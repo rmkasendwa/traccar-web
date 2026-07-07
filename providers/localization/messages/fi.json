@@ -678,5 +678,8 @@
     "authEmailInvalid": "Anna kelvollinen sähköpostiosoite.",
     "authPasswordRequired": "Salasana vaaditaan.",
     "authConfirmPasswordRequired": "Vahvista salasanasi.",
-    "authPasswordsMismatch": "Salasanojen on oltava samat."
+    "authPasswordsMismatch": "Salasanojen on oltava samat.",
+    "authShellEyebrow": "Laivaston näkyvyys alkaa tästä",
+    "authShellTitle": "Suojaa pääsy työtilaan.",
+    "authShellDescription": "Kirjaudu sisään, luo tili tai palauta käyttöoikeus kohdistetulla käyttökokemuksella, joka toimii kaikilla näytöillä."
 }

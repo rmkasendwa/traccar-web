@@ -678,5 +678,8 @@
     "authEmailInvalid": "הזן כתובת דוא\"ל חוקית.",
     "authPasswordRequired": "נדרשת סיסמה.",
     "authConfirmPasswordRequired": "אשר את הסיסמה שלך.",
-    "authPasswordsMismatch": "סיסמאות חייבות להתאים."
+    "authPasswordsMismatch": "סיסמאות חייבות להתאים.",
+    "authShellEyebrow": "נראות הצי מתחילה כאן",
+    "authShellTitle": "גישה מאובטחת לסביבת העבודה שלך.",
+    "authShellDescription": "היכנס, צור חשבון או שחזר גישה עם חוויה ממוקדת שפועלת על כל מסך."
 }

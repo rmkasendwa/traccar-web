@@ -678,5 +678,8 @@
     "authEmailInvalid": "Enter a valid email address.",
     "authPasswordRequired": "Գաղտնաբառը պարտադիր է:",
     "authConfirmPasswordRequired": "Հաստատեք ձեր գաղտնաբառը:",
-    "authPasswordsMismatch": "Գաղտնաբառերը պետք է համապատասխանեն:"
+    "authPasswordsMismatch": "Գաղտնաբառերը պետք է համապատասխանեն:",
+    "authShellEyebrow": "Նավատորմի տեսանելիությունը սկսվում է այստեղից",
+    "authShellTitle": "Ապահով մուտք դեպի ձեր աշխատանքային տարածք:",
+    "authShellDescription": "Մուտք գործեք, ստեղծեք հաշիվ կամ վերականգնեք մուտքը կենտրոնացված փորձով, որն աշխատում է յուրաքանչյուր էկրանին:"
 }

@@ -678,5 +678,8 @@
     "authEmailInvalid": "Geben Sie eine gültige E-Mail-Adresse ein.",
     "authPasswordRequired": "Passwort ist erforderlich.",
     "authConfirmPasswordRequired": "Bestätigen Sie Ihr Passwort.",
-    "authPasswordsMismatch": "Passwörter müssen übereinstimmen."
+    "authPasswordsMismatch": "Passwörter müssen übereinstimmen.",
+    "authShellEyebrow": "Hier beginnt die Sichtbarkeit der Flotte",
+    "authShellTitle": "Sicherer Zugriff auf Ihren Arbeitsbereich.",
+    "authShellDescription": "Melden Sie sich an, erstellen Sie ein Konto oder stellen Sie den Zugriff wieder her – mit einem fokussierten Erlebnis, das auf jedem Bildschirm funktioniert."
 }

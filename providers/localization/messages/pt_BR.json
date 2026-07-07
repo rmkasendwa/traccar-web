@@ -678,5 +678,8 @@
     "authEmailInvalid": "Insira um endereço de e-mail válido.",
     "authPasswordRequired": "A senha é obrigatória.",
     "authConfirmPasswordRequired": "Confirme sua senha.",
-    "authPasswordsMismatch": "As senhas devem ser iguais."
+    "authPasswordsMismatch": "As senhas devem ser iguais.",
+    "authShellEyebrow": "A visibilidade da frota começa aqui",
+    "authShellTitle": "Acesso seguro ao seu espaço de trabalho.",
+    "authShellDescription": "Sign in, create an account, or recover access with a focused experience that works on every screen."
 }

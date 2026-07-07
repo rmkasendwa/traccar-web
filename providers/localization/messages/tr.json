@@ -678,5 +678,8 @@
     "authEmailInvalid": "Geçerli bir e-posta adresi girin.",
     "authPasswordRequired": "Şifre gerekli.",
     "authConfirmPasswordRequired": "Şifrenizi doğrulayın.",
-    "authPasswordsMismatch": "Şifreler eşleşmelidir."
+    "authPasswordsMismatch": "Şifreler eşleşmelidir.",
+    "authShellEyebrow": "Filo görünürlüğü burada başlıyor",
+    "authShellTitle": "Çalışma alanınıza güvenli erişim.",
+    "authShellDescription": "Her ekranda çalışan odaklanmış bir deneyimle oturum açın, bir hesap oluşturun veya erişimi kurtarın."
 }

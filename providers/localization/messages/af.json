@@ -678,5 +678,8 @@
     "authEmailInvalid": "Voer 'n geldige e-posadres in.",
     "authPasswordRequired": "Wagwoord word vereis.",
     "authConfirmPasswordRequired": "Bevestig jou wagwoord.",
-    "authPasswordsMismatch": "Wagwoorde moet ooreenstem."
+    "authPasswordsMismatch": "Wagwoorde moet ooreenstem.",
+    "authShellEyebrow": "Vlootsigbaarheid begin hier",
+    "authShellTitle": "Veilige toegang tot jou werkspasie.",
+    "authShellDescription": "Meld aan, skep 'n rekening of herstel toegang met 'n gefokusde ervaring wat op elke skerm werk."
 }

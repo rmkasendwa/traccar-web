@@ -678,5 +678,8 @@
     "authEmailInvalid": "Zadajte platnú e-mailovú adresu.",
     "authPasswordRequired": "Vyžaduje sa heslo.",
     "authConfirmPasswordRequired": "Potvrďte svoje heslo.",
-    "authPasswordsMismatch": "Heslá sa musia zhodovať."
+    "authPasswordsMismatch": "Heslá sa musia zhodovať.",
+    "authShellEyebrow": "Viditeľnosť flotily začína tu",
+    "authShellTitle": "Bezpečný prístup k vášmu pracovnému priestoru.",
+    "authShellDescription": "Prihláste sa, vytvorte si účet alebo obnovte prístup pomocou sústredeného prostredia, ktoré funguje na každej obrazovke."
 }

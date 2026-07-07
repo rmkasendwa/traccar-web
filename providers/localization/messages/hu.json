@@ -678,5 +678,8 @@
     "authEmailInvalid": "Adjon meg egy érvényes e-mail címet.",
     "authPasswordRequired": "Jelszó szükséges.",
     "authConfirmPasswordRequired": "Erősítse meg jelszavát.",
-    "authPasswordsMismatch": "A jelszavaknak egyezniük kell."
+    "authPasswordsMismatch": "A jelszavaknak egyezniük kell.",
+    "authShellEyebrow": "A flotta láthatósága itt kezdődik",
+    "authShellTitle": "Biztonságos hozzáférés a munkaterülethez.",
+    "authShellDescription": "Jelentkezzen be, hozzon létre fiókot, vagy állítsa vissza a hozzáférést egy olyan fókuszált élménnyel, amely minden képernyőn működik."
 }

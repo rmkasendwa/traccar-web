@@ -678,5 +678,8 @@
     "authEmailInvalid": "یک آدرس ایمیل معتبر وارد کنید.",
     "authPasswordRequired": "رمز عبور لازم است.",
     "authConfirmPasswordRequired": "رمز عبور خود را تأیید کنید.",
-    "authPasswordsMismatch": "رمزهای عبور باید مطابقت داشته باشند."
+    "authPasswordsMismatch": "رمزهای عبور باید مطابقت داشته باشند.",
+    "authShellEyebrow": "دید ناوگان از اینجا شروع می شود",
+    "authShellTitle": "دسترسی ایمن به فضای کاری خود",
+    "authShellDescription": "با تجربه‌ای متمرکز که در هر صفحه‌ای کار می‌کند، وارد سیستم شوید، یک حساب ایجاد کنید، یا دسترسی را بازیابی کنید."
 }

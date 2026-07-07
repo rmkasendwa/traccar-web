@@ -678,5 +678,8 @@
     "authEmailInvalid": "Внесете валидна адреса за е-пошта.",
     "authPasswordRequired": "Потребна е лозинка.",
     "authConfirmPasswordRequired": "Потврдете ја вашата лозинка.",
-    "authPasswordsMismatch": "Лозинките мора да се совпаѓаат."
+    "authPasswordsMismatch": "Лозинките мора да се совпаѓаат.",
+    "authShellEyebrow": "Видливоста на флотата започнува овде",
+    "authShellTitle": "Безбеден пристап до вашиот работен простор.",
+    "authShellDescription": "Најавете се, креирајте сметка или вратете го пристапот со фокусирано искуство што работи на секој екран."
 }

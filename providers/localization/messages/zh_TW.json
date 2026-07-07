@@ -678,5 +678,8 @@
     "authEmailInvalid": "輸入有效的電子郵件地址。",
     "authPasswordRequired": "需要密碼。",
     "authConfirmPasswordRequired": "確認您的密碼。",
-    "authPasswordsMismatch": "密碼必須符合。"
+    "authPasswordsMismatch": "密碼必須符合。",
+    "authShellEyebrow": "車隊可見性從這裡開始",
+    "authShellTitle": "安全存取您的工作空間。",
+    "authShellDescription": "登入、建立帳戶或恢復存取權限，享受適用於每個螢幕的專注體驗。"
 }

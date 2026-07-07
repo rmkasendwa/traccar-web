@@ -678,5 +678,8 @@
     "authEmailInvalid": "Dogry e-poçta salgysyny giriziň.",
     "authPasswordRequired": "Parol talap edilýär",
     "authConfirmPasswordRequired": "Parolyňyzy tassyklaň.",
-    "authPasswordsMismatch": "Parollar gabat gelmeli."
+    "authPasswordsMismatch": "Parollar gabat gelmeli.",
+    "authShellEyebrow": "Flotyň görünişi şu ýerden başlaýar",
+    "authShellTitle": "Iş ýeriňize ygtybarly giriş.",
+    "authShellDescription": "Hasabyňyza giriň, hasap dörediň ýa-da her ekranda işleýän esasy tejribe bilen girişi dikeldiň."
 }

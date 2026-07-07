@@ -678,5 +678,8 @@
     "authEmailInvalid": "मान्य इमेल ठेगाना प्रविष्ट गर्नुहोस्।",
     "authPasswordRequired": "पासवर्ड आवश्यक छ।",
     "authConfirmPasswordRequired": "आफ्नो पासवर्ड पुष्टि गर्नुहोस्।",
-    "authPasswordsMismatch": "पासवर्डहरू मिल्नुपर्छ।"
+    "authPasswordsMismatch": "पासवर्डहरू मिल्नुपर्छ।",
+    "authShellEyebrow": "फ्लीट दृश्यता यहाँ सुरु हुन्छ",
+    "authShellTitle": "आफ्नो कार्यक्षेत्रमा सुरक्षित पहुँच।",
+    "authShellDescription": "साइन इन गर्नुहोस्, खाता सिर्जना गर्नुहोस्, वा प्रत्येक स्क्रिनमा काम गर्ने केन्द्रित अनुभवको साथ पहुँच पुन: प्राप्ति गर्नुहोस्।"
 }

@@ -678,5 +678,8 @@
     "authEmailInvalid": "Introduïu una adreça electrònica vàlida.",
     "authPasswordRequired": "Cal una contrasenya.",
     "authConfirmPasswordRequired": "Confirmeu la vostra contrasenya.",
-    "authPasswordsMismatch": "Les contrasenyes han de coincidir."
+    "authPasswordsMismatch": "Les contrasenyes han de coincidir.",
+    "authShellEyebrow": "La visibilitat de la flota comença aquí",
+    "authShellTitle": "Accés segur al vostre espai de treball.",
+    "authShellDescription": "Inicieu la sessió, creeu un compte o recupereu l'accés amb una experiència centrada que funciona a totes les pantalles."
 }

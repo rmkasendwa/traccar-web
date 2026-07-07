@@ -678,5 +678,8 @@
     "authEmailInvalid": "유효한 이메일 주소를 입력하세요.",
     "authPasswordRequired": "비밀번호가 필요합니다.",
     "authConfirmPasswordRequired": "비밀번호를 확인하세요.",
-    "authPasswordsMismatch": "비밀번호는 일치해야 합니다."
+    "authPasswordsMismatch": "비밀번호는 일치해야 합니다.",
+    "authShellEyebrow": "함대 가시성이 여기에서 시작됩니다",
+    "authShellTitle": "작업 공간에 안전하게 액세스하세요.",
+    "authShellDescription": "로그인하고, 계정을 만들고, 모든 화면에서 작동하는 집중된 경험을 통해 액세스 권한을 복구하세요."
 }

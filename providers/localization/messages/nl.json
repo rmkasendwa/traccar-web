@@ -678,5 +678,8 @@
     "authEmailInvalid": "Voer een geldig e-mailadres in.",
     "authPasswordRequired": "Wachtwoord is vereist.",
     "authConfirmPasswordRequired": "Bevestig uw wachtwoord.",
-    "authPasswordsMismatch": "Wachtwoorden moeten overeenkomen."
+    "authPasswordsMismatch": "Wachtwoorden moeten overeenkomen.",
+    "authShellEyebrow": "De zichtbaarheid van uw vloot begint hier",
+    "authShellTitle": "Veilige toegang tot uw werkplek.",
+    "authShellDescription": "Meld u aan, maak een account aan of herstel de toegang met een gerichte ervaring die op elk scherm werkt."
 }

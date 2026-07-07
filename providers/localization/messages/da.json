@@ -678,5 +678,8 @@
     "authEmailInvalid": "Indtast en gyldig e-mailadresse.",
     "authPasswordRequired": "Adgangskode er påkrævet.",
     "authConfirmPasswordRequired": "Bekræft din adgangskode.",
-    "authPasswordsMismatch": "Adgangskoder skal matche."
+    "authPasswordsMismatch": "Adgangskoder skal matche.",
+    "authShellEyebrow": "Flådens synlighed starter her",
+    "authShellTitle": "Sikker adgang til dit arbejdsområde.",
+    "authShellDescription": "Log ind, opret en konto, eller gendan adgangen med en fokuseret oplevelse, der fungerer på alle skærme."
 }

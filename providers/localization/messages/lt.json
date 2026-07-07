@@ -678,5 +678,8 @@
     "authEmailInvalid": "Įveskite galiojantį el. pašto adresą.",
     "authPasswordRequired": "Reikalingas slaptažodis.",
     "authConfirmPasswordRequired": "Patvirtinkite slaptažodį.",
-    "authPasswordsMismatch": "Slaptažodžiai turi sutapti."
+    "authPasswordsMismatch": "Slaptažodžiai turi sutapti.",
+    "authShellEyebrow": "Laivyno matomumas prasideda čia",
+    "authShellTitle": "Saugi prieiga prie savo darbo vietos.",
+    "authShellDescription": "Prisijunkite, susikurkite paskyrą arba susigrąžinkite prieigą naudodami tikslią patirtį, kuri veikia kiekviename ekrane."
 }

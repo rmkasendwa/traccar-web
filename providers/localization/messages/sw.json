@@ -678,5 +678,8 @@
     "authEmailInvalid": "Weka barua pepe halali.",
     "authPasswordRequired": "Nenosiri linahitajika.",
     "authConfirmPasswordRequired": "Thibitisha nenosiri lako.",
-    "authPasswordsMismatch": "Nenosiri lazima lilingane."
+    "authPasswordsMismatch": "Nenosiri lazima lilingane.",
+    "authShellEyebrow": "Mwonekano wa meli huanzia hapa",
+    "authShellTitle": "Salama ufikiaji wa nafasi yako ya kazi.",
+    "authShellDescription": "Ingia, fungua akaunti, au urejeshe ufikiaji ukitumia matumizi mahususi ambayo yanafanya kazi kwenye kila skrini."
 }

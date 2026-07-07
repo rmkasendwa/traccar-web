@@ -678,5 +678,8 @@
     "authEmailInvalid": "Ange en giltig e-postadress.",
     "authPasswordRequired": "Lösenord krävs.",
     "authConfirmPasswordRequired": "Bekräfta ditt lösenord.",
-    "authPasswordsMismatch": "Lösenord måste matcha."
+    "authPasswordsMismatch": "Lösenord måste matcha.",
+    "authShellEyebrow": "Flottans sikt börjar här",
+    "authShellTitle": "Säker åtkomst till din arbetsyta.",
+    "authShellDescription": "Logga in, skapa ett konto eller återställ åtkomst med en fokuserad upplevelse som fungerar på alla skärmar."
 }

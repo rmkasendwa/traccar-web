@@ -678,5 +678,8 @@
     "authEmailInvalid": "Introdu o adresă de e-mail validă.",
     "authPasswordRequired": "Este necesară parola.",
     "authConfirmPasswordRequired": "Confirmați-vă parola.",
-    "authPasswordsMismatch": "Parolele trebuie să se potrivească."
+    "authPasswordsMismatch": "Parolele trebuie să se potrivească.",
+    "authShellEyebrow": "Vizibilitatea flotei începe aici",
+    "authShellTitle": "Acces securizat la spațiul dvs. de lucru.",
+    "authShellDescription": "Conectați-vă, creați un cont sau recuperați accesul cu o experiență concentrată care funcționează pe fiecare ecran."
 }

@@ -678,5 +678,8 @@
     "authEmailInvalid": "Ievadiet derīgu e-pasta adresi.",
     "authPasswordRequired": "Nepieciešama parole.",
     "authConfirmPasswordRequired": "Apstipriniet savu paroli.",
-    "authPasswordsMismatch": "Parolēm ir jāsakrīt."
+    "authPasswordsMismatch": "Parolēm ir jāsakrīt.",
+    "authShellEyebrow": "Flotes redzamība sākas šeit",
+    "authShellTitle": "Droša piekļuve savai darbvietai.",
+    "authShellDescription": "Pierakstieties, izveidojiet kontu vai atgūstiet piekļuvi, izmantojot mērķtiecīgu pieredzi, kas darbojas visos ekrānos."
 }

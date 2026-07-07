@@ -678,5 +678,8 @@
     "authEmailInvalid": "Skriv inn en gyldig e-postadresse.",
     "authPasswordRequired": "Passord kreves.",
     "authConfirmPasswordRequired": "Bekreft passordet ditt.",
-    "authPasswordsMismatch": "Passord må samsvare."
+    "authPasswordsMismatch": "Passord må samsvare.",
+    "authShellEyebrow": "Synlighet for flåten starter her",
+    "authShellTitle": "Sikker tilgang til arbeidsområdet ditt.",
+    "authShellDescription": "Logg på, opprett en konto eller gjenopprett tilgang med en fokusert opplevelse som fungerer på hver skjerm."
 }

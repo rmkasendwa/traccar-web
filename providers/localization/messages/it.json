@@ -678,5 +678,8 @@
     "authEmailInvalid": "Inserisci un indirizzo email valido.",
     "authPasswordRequired": "È richiesta la password.",
     "authConfirmPasswordRequired": "Conferma la tua password.",
-    "authPasswordsMismatch": "Le password devono corrispondere."
+    "authPasswordsMismatch": "Le password devono corrispondere.",
+    "authShellEyebrow": "La visibilità della flotta inizia da qui",
+    "authShellTitle": "Proteggi l'accesso al tuo spazio di lavoro.",
+    "authShellDescription": "Accedi, crea un account o ripristina l'accesso con un'esperienza mirata che funziona su ogni schermo."
 }

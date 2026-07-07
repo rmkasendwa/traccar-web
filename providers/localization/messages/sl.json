@@ -678,5 +678,8 @@
     "authEmailInvalid": "Vnesite veljaven e-poštni naslov.",
     "authPasswordRequired": "Zahtevano je geslo.",
     "authConfirmPasswordRequired": "Potrdite svoje geslo.",
-    "authPasswordsMismatch": "Gesli se morata ujemati."
+    "authPasswordsMismatch": "Gesli se morata ujemati.",
+    "authShellEyebrow": "Vidnost flote se začne tukaj",
+    "authShellTitle": "Secure access to your workspace.",
+    "authShellDescription": "Prijavite se, ustvarite račun ali obnovite dostop z osredotočeno izkušnjo, ki deluje na vsakem zaslonu."
 }

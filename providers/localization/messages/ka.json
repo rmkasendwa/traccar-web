@@ -678,5 +678,8 @@
     "authEmailInvalid": "შეიყვანეთ სწორი ელფოსტის მისამართი.",
     "authPasswordRequired": "საჭიროა პაროლი.",
     "authConfirmPasswordRequired": "დაადასტურეთ თქვენი პაროლი.",
-    "authPasswordsMismatch": "პაროლები უნდა ემთხვეოდეს."
+    "authPasswordsMismatch": "პაროლები უნდა ემთხვეოდეს.",
+    "authShellEyebrow": "ფლოტის ხილვადობა იწყება აქ",
+    "authShellTitle": "უსაფრთხო წვდომა თქვენს სამუშაო სივრცეზე.",
+    "authShellDescription": "შედით სისტემაში, შექმენით ანგარიში ან აღადგინეთ წვდომა ფოკუსირებული გამოცდილებით, რომელიც მუშაობს ყველა ეკრანზე."
 }

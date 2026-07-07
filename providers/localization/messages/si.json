@@ -678,5 +678,8 @@
     "authEmailInvalid": "වලංගු විද්‍යුත් තැපැල් ලිපිනයක් ඇතුළත් කරන්න.",
     "authPasswordRequired": "මුරපදය අවශ්‍යයි.",
     "authConfirmPasswordRequired": "ඔබගේ මුරපදය තහවුරු කරන්න.",
-    "authPasswordsMismatch": "මුරපද ගැලපිය යුතුය."
+    "authPasswordsMismatch": "මුරපද ගැලපිය යුතුය.",
+    "authShellEyebrow": "Fleet visibility starts here",
+    "authShellTitle": "ඔබේ වැඩබිමට ආරක්ෂිත ප්‍රවේශය.",
+    "authShellDescription": "සෑම තිරයකම ක්‍රියා කරන නාභිගත අත්දැකීමක් සමඟින් පුරන්න, ගිණුමක් සාදන්න, හෝ ප්‍රවේශය ප්‍රතිසාධන කරන්න."
 }
