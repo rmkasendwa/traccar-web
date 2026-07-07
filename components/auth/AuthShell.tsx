@@ -16,7 +16,7 @@ export default function AuthShell({ titleKey, subtitle, children }: AuthShellPro
   return (
     <main className="h-dvh overflow-hidden bg-(--color-background) text-(--color-text)">
       <div className="flex h-full w-full flex-col overflow-hidden md:flex-row">
-        <aside className="relative flex shrink-0 items-center justify-between gap-3 bg-blue-950 px-4 py-5 text-white dark:bg-slate-950 sm:px-6 md:h-full md:basis-[44%] md:flex-col md:items-stretch md:justify-between md:overflow-hidden md:p-12 lg:basis-[40%]">
+        <aside className="relative flex shrink-0 items-center justify-between gap-3 bg-blue-950 px-4 py-5 text-white dark:bg-slate-950 sm:px-6 md:h-full md:basis-1/2 md:flex-col md:items-stretch md:justify-between md:overflow-hidden md:p-12">
           <span
             role="img"
             aria-label="Traccar"
