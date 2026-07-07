@@ -16,13 +16,13 @@ export default function AuthShell({ titleKey, subtitle, children }: AuthShellPro
   return (
     <main className="h-dvh overflow-hidden bg-(--color-background) text-(--color-text)">
       <div className="flex h-full w-full flex-col overflow-hidden md:flex-row">
-        <aside className="relative flex shrink-0 bg-blue-950 p-6 text-white dark:bg-slate-950 md:h-full md:basis-[44%] md:flex-col md:justify-between md:overflow-hidden md:p-12 lg:basis-[40%]">
+        <aside className="relative flex shrink-0 items-center justify-between gap-3 bg-blue-950 px-4 py-5 text-white dark:bg-slate-950 sm:px-6 md:h-full md:basis-[44%] md:flex-col md:items-stretch md:justify-between md:overflow-hidden md:p-12 lg:basis-[40%]">
           <span
             role="img"
             aria-label="Traccar"
-            className="block h-14 w-36 max-w-full bg-white [mask:url('/logo-wordmark.svg')_center/contain_no-repeat] [-webkit-mask:url('/logo-wordmark.svg')_center/contain_no-repeat] sm:w-52"
+            className="block h-12 w-32 shrink-0 bg-white [mask:url('/logo-wordmark.svg')_left_center/contain_no-repeat] [-webkit-mask:url('/logo-wordmark.svg')_left_center/contain_no-repeat] sm:h-14 sm:w-52"
           />
-          <div className="absolute right-4 top-4 flex items-center gap-1.5 md:right-5 md:top-5">
+          <div className="flex min-w-0 items-center justify-end gap-1.5 md:absolute md:right-5 md:top-5">
             <LanguageSelect />
             <ThemeModeControl compact onDark popover />
           </div>

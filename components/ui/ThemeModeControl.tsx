@@ -32,6 +32,7 @@ export default function ThemeModeControl({
       <FloatingPanel
         open={open}
         onOpenChange={setOpen}
+        placement="bottom-start"
         className="w-40 p-1.5"
         trigger={(props, ref) => (
           <button

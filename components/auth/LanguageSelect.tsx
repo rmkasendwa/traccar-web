@@ -48,7 +48,7 @@ export default function LanguageSelect() {
     <SelectField
       appearance="onDark"
       compact
-      className="inline-block max-w-34"
+      className="inline-block min-w-0 max-w-34"
       value={language}
       data={languageList}
       keyGetter={(item: LanguageOption) => item.code}
