@@ -375,131 +375,129 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
   );
 
   return (
-    <section className="relative isolate border-b border-(--color-divider) bg-(--color-paper) p-4 print:hidden sm:p-5">
+    <section className="relative isolate border-b border-(--color-divider) bg-(--color-paper) p-3 print:hidden sm:p-4">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-28 bg-gradient-to-b from-sky-500/6 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-28 bg-linear-to-b from-sky-500/6 to-transparent"
       />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-8 top-0 z-0 h-24 w-64 rounded-full bg-sky-400/5 blur-3xl"
       />
-      <div className="relative z-10 mb-5 flex items-center gap-3">
-        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-sky-500 to-cyan-600 text-white shadow-lg shadow-sky-500/20 ring-1 ring-white/20">
-          <SlidersHorizontal size={19} strokeWidth={2.25} aria-hidden="true" />
-        </span>
-        <div className="min-w-0">
-          <h2 className="text-base font-bold tracking-tight text-(--color-text)">
-            Report criteria
-          </h2>
-          <p className="truncate text-sm text-(--color-muted)">
-            Choose what to include, then generate your report.
-          </p>
+      <div className="relative z-10 flex flex-col gap-3 xl:flex-row xl:items-end">
+        <div className="flex shrink-0 items-center gap-3 xl:w-64 xl:self-center">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/20 ring-1 ring-white/20">
+            <SlidersHorizontal size={18} strokeWidth={2.25} aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
+            <h2 className="text-sm font-bold tracking-tight text-(--color-text)">
+              Report criteria
+            </h2>
+            <p className="truncate text-xs text-(--color-muted) xl:whitespace-normal">
+              Choose what to include, then generate your report.
+            </p>
+          </div>
         </div>
-        <div className="ml-auto hidden items-center gap-2 rounded-full border border-(--color-divider) bg-(--color-paper)/70 px-3 py-1.5 text-xs font-medium text-(--color-muted) shadow-sm backdrop-blur sm:flex">
-          <span className="h-1.5 w-1.5 rounded-full bg-sky-500 shadow-[0_0_0_3px_rgb(14_165_233/0.12)]" />
-          Adaptive layout
-        </div>
-      </div>
-      <div className="relative z-10 rounded-2xl border border-(--color-divider) bg-(--color-background)/35 p-3 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] sm:p-4">
-        <OverflowFilterRow actions={reportActions}>
-          {deviceType !== 'none' && (
-            <div className="min-w-0">
-              <SelectField
-                label={t(deviceType === 'multiple' ? 'deviceTitle' : 'reportDevice')}
-                data={
-                  deviceType === 'multiple'
-                    ? deviceList
-                    : deviceList.filter((it) => it.id !== 'all')
-                }
-                value={deviceType === 'multiple' ? deviceIds : deviceIds.find(() => true)}
-                allValue="all"
-                onChange={(e) => {
-                  const values =
+        <div className="min-w-0 flex-1 rounded-2xl border border-(--color-divider) bg-(--color-background)/35 p-2.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] sm:p-3">
+          <OverflowFilterRow actions={reportActions}>
+            {deviceType !== 'none' && (
+              <div className="min-w-0">
+                <SelectField
+                  label={t(deviceType === 'multiple' ? 'deviceTitle' : 'reportDevice')}
+                  data={
                     deviceType === 'multiple'
-                      ? e.target.value
-                      : [e.target.value].filter((id) => id);
-                  updateReportParams(searchParams, setSearchParams, 'deviceId', values);
-                }}
-                multiple={deviceType === 'multiple'}
-                singleLine={deviceType === 'multiple'}
-                fullWidth
-              />
-            </div>
-          )}
-          {deviceType === 'multiple' && (
-            <div className="min-w-0">
-              <SelectField
-                label={t('settingsGroups')}
-                data={groupList}
-                value={groupIds}
-                onChange={(e) => {
-                  const values = e.target.value;
-                  updateReportParams(searchParams, setSearchParams, 'groupId', values);
-                }}
-                multiple
-                singleLine
-                fullWidth
-              />
-            </div>
-          )}
-          {selectedOption !== 'schedule' ? (
-            <>
-              <div className="min-w-0">
-                <SelectField
-                  label={t('reportPeriod')}
-                  data={periodOptions}
-                  value={period}
-                  onChange={(e) => setPeriod(e.target.value)}
+                      ? deviceList
+                      : deviceList.filter((it) => it.id !== 'all')
+                  }
+                  value={deviceType === 'multiple' ? deviceIds : deviceIds.find(() => true)}
+                  allValue="all"
+                  onChange={(e) => {
+                    const values =
+                      deviceType === 'multiple'
+                        ? e.target.value
+                        : [e.target.value].filter((id) => id);
+                    updateReportParams(searchParams, setSearchParams, 'deviceId', values);
+                  }}
+                  multiple={deviceType === 'multiple'}
+                  singleLine={deviceType === 'multiple'}
                   fullWidth
                 />
               </div>
-              {period === 'custom' && (
+            )}
+            {deviceType === 'multiple' && (
+              <div className="min-w-0">
+                <SelectField
+                  label={t('settingsGroups')}
+                  data={groupList}
+                  value={groupIds}
+                  onChange={(e) => {
+                    const values = e.target.value;
+                    updateReportParams(searchParams, setSearchParams, 'groupId', values);
+                  }}
+                  multiple
+                  singleLine
+                  fullWidth
+                />
+              </div>
+            )}
+            {selectedOption !== 'schedule' ? (
+              <>
                 <div className="min-w-0">
-                  <TextField
-                    label={t('reportFrom')}
-                    type="datetime-local"
-                    value={customFrom}
-                    onChange={(e) => setCustomFrom(e.target.value)}
+                  <SelectField
+                    label={t('reportPeriod')}
+                    data={periodOptions}
+                    value={period}
+                    onChange={(e) => setPeriod(e.target.value)}
                     fullWidth
                   />
                 </div>
-              )}
-              {period === 'custom' && (
+                {period === 'custom' && (
+                  <div className="min-w-0">
+                    <TextField
+                      label={t('reportFrom')}
+                      type="datetime-local"
+                      value={customFrom}
+                      onChange={(e) => setCustomFrom(e.target.value)}
+                      fullWidth
+                    />
+                  </div>
+                )}
+                {period === 'custom' && (
+                  <div className="min-w-0">
+                    <TextField
+                      label={t('reportTo')}
+                      type="datetime-local"
+                      value={customTo}
+                      onChange={(e) => setCustomTo(e.target.value)}
+                      fullWidth
+                    />
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
                 <div className="min-w-0">
                   <TextField
-                    label={t('reportTo')}
-                    type="datetime-local"
-                    value={customTo}
-                    onChange={(e) => setCustomTo(e.target.value)}
+                    value={description || ''}
+                    onChange={(event) => setDescription(event.target.value)}
+                    label={t('sharedDescription')}
                     fullWidth
                   />
                 </div>
-              )}
-            </>
-          ) : (
-            <>
-              <div className="min-w-0">
-                <TextField
-                  value={description || ''}
-                  onChange={(event) => setDescription(event.target.value)}
-                  label={t('sharedDescription')}
-                  fullWidth
-                />
-              </div>
-              <div className="min-w-0">
-                <SelectField
-                  value={calendarId}
-                  onChange={(event) => setCalendarId(Number(event.target.value))}
-                  endpoint="/api/calendars"
-                  label={t('sharedCalendar')}
-                  fullWidth
-                />
-              </div>
-            </>
-          )}
-          {children}
-        </OverflowFilterRow>
+                <div className="min-w-0">
+                  <SelectField
+                    value={calendarId}
+                    onChange={(event) => setCalendarId(Number(event.target.value))}
+                    endpoint="/api/calendars"
+                    label={t('sharedCalendar')}
+                    fullWidth
+                  />
+                </div>
+              </>
+            )}
+            {children}
+          </OverflowFilterRow>
+        </div>
       </div>
     </section>
   );
