@@ -103,18 +103,32 @@ const OverflowFilterRow = ({ children, actions }) => {
             onClick={() => setOverflowOpen((open) => !open)}
             aria-label="Show more report filters"
             aria-expanded={overflowOpen}
-            title="More filters"
-            className="h-10 min-w-10 rounded-xl border-(--color-divider) px-2 text-(--color-muted)"
+            title={`${overflowFields.length} more ${overflowFields.length === 1 ? 'filter' : 'filters'}`}
+            className="group relative h-11 min-w-11 rounded-xl border-sky-500/40 bg-sky-500/5 px-2 text-sky-600 shadow-sm transition-all hover:-translate-y-0.5 hover:border-sky-500 hover:bg-sky-500/10 hover:shadow-md dark:text-sky-300"
           >
-            <ChevronsRight size={18} />
+            <ChevronsRight size={18} className="transition-transform group-hover:translate-x-0.5" />
+            <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full border-2 border-(--color-paper) bg-sky-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm">
+              {overflowFields.length}
+            </span>
           </Button>
           {overflowOpen && (
-            <div className="absolute right-0 top-full z-50 mt-2 flex w-[min(20rem,calc(100vw-2rem))] flex-col gap-3 rounded-xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-xl">
-              {overflowFields.map((field, index) => (
-                <div key={`overflow-filter-${visibleCount + index}`} className="min-w-0">
-                  {field}
+            <div className="absolute right-0 top-full z-50 mt-3 w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-(--color-divider) bg-(--color-paper) shadow-2xl ring-1 ring-black/5 dark:ring-white/5">
+              <div className="flex items-center justify-between border-b border-(--color-divider) bg-sky-500/5 px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-(--color-text)">More criteria</p>
+                  <p className="text-xs text-(--color-muted)">Additional report filters</p>
                 </div>
-              ))}
+                <span className="rounded-full bg-sky-500/10 px-2.5 py-1 text-xs font-bold text-sky-700 dark:text-sky-300">
+                  {overflowFields.length}
+                </span>
+              </div>
+              <div className="flex flex-col gap-4 p-4">
+                {overflowFields.map((field, index) => (
+                  <div key={`overflow-filter-${visibleCount + index}`} className="min-w-0">
+                    {field}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -361,112 +375,132 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
   );
 
   return (
-    <section className="border-b border-(--color-divider) bg-(--color-paper) p-4 print:hidden sm:p-5">
-      <div className="mb-4 flex items-center gap-3">
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">
-          <SlidersHorizontal size={17} aria-hidden="true" />
+    <section className="relative isolate border-b border-(--color-divider) bg-(--color-paper) p-4 print:hidden sm:p-5">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-28 bg-gradient-to-b from-sky-500/6 to-transparent"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-8 top-0 z-0 h-24 w-64 rounded-full bg-sky-400/5 blur-3xl"
+      />
+      <div className="relative z-10 mb-5 flex items-center gap-3">
+        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-sky-500 to-cyan-600 text-white shadow-lg shadow-sky-500/20 ring-1 ring-white/20">
+          <SlidersHorizontal size={19} strokeWidth={2.25} aria-hidden="true" />
         </span>
-        <div>
-          <h2 className="text-sm font-bold text-(--color-text)">Report criteria</h2>
-          <p className="text-xs text-(--color-muted)">
+        <div className="min-w-0">
+          <h2 className="text-base font-bold tracking-tight text-(--color-text)">
+            Report criteria
+          </h2>
+          <p className="truncate text-sm text-(--color-muted)">
             Choose what to include, then generate your report.
           </p>
         </div>
+        <div className="ml-auto hidden items-center gap-2 rounded-full border border-(--color-divider) bg-(--color-paper)/70 px-3 py-1.5 text-xs font-medium text-(--color-muted) shadow-sm backdrop-blur sm:flex">
+          <span className="h-1.5 w-1.5 rounded-full bg-sky-500 shadow-[0_0_0_3px_rgb(14_165_233/0.12)]" />
+          Adaptive layout
+        </div>
       </div>
-      <OverflowFilterRow actions={reportActions}>
-        {deviceType !== 'none' && (
-          <div className="min-w-0">
-            <SelectField
-              label={t(deviceType === 'multiple' ? 'deviceTitle' : 'reportDevice')}
-              data={
-                deviceType === 'multiple' ? deviceList : deviceList.filter((it) => it.id !== 'all')
-              }
-              value={deviceType === 'multiple' ? deviceIds : deviceIds.find(() => true)}
-              allValue="all"
-              onChange={(e) => {
-                const values =
-                  deviceType === 'multiple' ? e.target.value : [e.target.value].filter((id) => id);
-                updateReportParams(searchParams, setSearchParams, 'deviceId', values);
-              }}
-              multiple={deviceType === 'multiple'}
-              singleLine={deviceType === 'multiple'}
-              fullWidth
-            />
-          </div>
-        )}
-        {deviceType === 'multiple' && (
-          <div className="min-w-0">
-            <SelectField
-              label={t('settingsGroups')}
-              data={groupList}
-              value={groupIds}
-              onChange={(e) => {
-                const values = e.target.value;
-                updateReportParams(searchParams, setSearchParams, 'groupId', values);
-              }}
-              multiple
-              singleLine
-              fullWidth
-            />
-          </div>
-        )}
-        {selectedOption !== 'schedule' ? (
-          <>
+      <div className="relative z-10 rounded-2xl border border-(--color-divider) bg-(--color-background)/35 p-3 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] sm:p-4">
+        <OverflowFilterRow actions={reportActions}>
+          {deviceType !== 'none' && (
             <div className="min-w-0">
               <SelectField
-                label={t('reportPeriod')}
-                data={periodOptions}
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
+                label={t(deviceType === 'multiple' ? 'deviceTitle' : 'reportDevice')}
+                data={
+                  deviceType === 'multiple'
+                    ? deviceList
+                    : deviceList.filter((it) => it.id !== 'all')
+                }
+                value={deviceType === 'multiple' ? deviceIds : deviceIds.find(() => true)}
+                allValue="all"
+                onChange={(e) => {
+                  const values =
+                    deviceType === 'multiple'
+                      ? e.target.value
+                      : [e.target.value].filter((id) => id);
+                  updateReportParams(searchParams, setSearchParams, 'deviceId', values);
+                }}
+                multiple={deviceType === 'multiple'}
+                singleLine={deviceType === 'multiple'}
                 fullWidth
               />
             </div>
-            {period === 'custom' && (
+          )}
+          {deviceType === 'multiple' && (
+            <div className="min-w-0">
+              <SelectField
+                label={t('settingsGroups')}
+                data={groupList}
+                value={groupIds}
+                onChange={(e) => {
+                  const values = e.target.value;
+                  updateReportParams(searchParams, setSearchParams, 'groupId', values);
+                }}
+                multiple
+                singleLine
+                fullWidth
+              />
+            </div>
+          )}
+          {selectedOption !== 'schedule' ? (
+            <>
               <div className="min-w-0">
-                <TextField
-                  label={t('reportFrom')}
-                  type="datetime-local"
-                  value={customFrom}
-                  onChange={(e) => setCustomFrom(e.target.value)}
+                <SelectField
+                  label={t('reportPeriod')}
+                  data={periodOptions}
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
                   fullWidth
                 />
               </div>
-            )}
-            {period === 'custom' && (
+              {period === 'custom' && (
+                <div className="min-w-0">
+                  <TextField
+                    label={t('reportFrom')}
+                    type="datetime-local"
+                    value={customFrom}
+                    onChange={(e) => setCustomFrom(e.target.value)}
+                    fullWidth
+                  />
+                </div>
+              )}
+              {period === 'custom' && (
+                <div className="min-w-0">
+                  <TextField
+                    label={t('reportTo')}
+                    type="datetime-local"
+                    value={customTo}
+                    onChange={(e) => setCustomTo(e.target.value)}
+                    fullWidth
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            <>
               <div className="min-w-0">
                 <TextField
-                  label={t('reportTo')}
-                  type="datetime-local"
-                  value={customTo}
-                  onChange={(e) => setCustomTo(e.target.value)}
+                  value={description || ''}
+                  onChange={(event) => setDescription(event.target.value)}
+                  label={t('sharedDescription')}
                   fullWidth
                 />
               </div>
-            )}
-          </>
-        ) : (
-          <>
-            <div className="min-w-0">
-              <TextField
-                value={description || ''}
-                onChange={(event) => setDescription(event.target.value)}
-                label={t('sharedDescription')}
-                fullWidth
-              />
-            </div>
-            <div className="min-w-0">
-              <SelectField
-                value={calendarId}
-                onChange={(event) => setCalendarId(Number(event.target.value))}
-                endpoint="/api/calendars"
-                label={t('sharedCalendar')}
-                fullWidth
-              />
-            </div>
-          </>
-        )}
-        {children}
-      </OverflowFilterRow>
+              <div className="min-w-0">
+                <SelectField
+                  value={calendarId}
+                  onChange={(event) => setCalendarId(Number(event.target.value))}
+                  endpoint="/api/calendars"
+                  label={t('sharedCalendar')}
+                  fullWidth
+                />
+              </div>
+            </>
+          )}
+          {children}
+        </OverflowFilterRow>
+      </div>
     </section>
   );
 };
