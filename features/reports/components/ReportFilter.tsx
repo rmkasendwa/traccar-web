@@ -1,5 +1,14 @@
 // @ts-nocheck
-import { useEffect, useMemo, useState } from 'react';
+import {
+  Children,
+  Fragment,
+  isValidElement,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSearchParams } from '@/lib/router';
 import { Button, TextField, Typography } from '@/components/ui';
 import { useSelector } from 'react-redux';
@@ -9,7 +18,113 @@ import SplitButton from '@/components/ui/SplitButton';
 import SelectField from '@/components/ui/SelectField';
 import { useRestriction } from '@/lib/permissions';
 import { deviceEquality } from '@/features/devices/lib/deviceEquality';
-import { RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { ChevronsRight, RotateCcw, SlidersHorizontal } from 'lucide-react';
+
+const FIELD_MIN_WIDTH = 224;
+const FIELD_GAP = 12;
+const OVERFLOW_BUTTON_WIDTH = 40;
+
+const flattenChildren = (children) =>
+  Children.toArray(children).flatMap((child) =>
+    isValidElement(child) && child.type === Fragment
+      ? flattenChildren(child.props.children)
+      : [child],
+  );
+
+const OverflowFilterRow = ({ children, actions }) => {
+  const fields = flattenChildren(children);
+  const containerRef = useRef(null);
+  const actionsRef = useRef(null);
+  const overflowRef = useRef(null);
+  const [visibleCount, setVisibleCount] = useState(fields.length);
+  const [overflowOpen, setOverflowOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const actionsElement = actionsRef.current;
+    if (!container || !actionsElement) return undefined;
+
+    const updateVisibleCount = () => {
+      const width = container.clientWidth;
+      const actionsWidth = actionsElement.getBoundingClientRect().width;
+      const allFieldsWidth = fields.length * FIELD_MIN_WIDTH + fields.length * FIELD_GAP;
+
+      if (width >= actionsWidth + allFieldsWidth) {
+        setVisibleCount(fields.length);
+        return;
+      }
+
+      const available = width - actionsWidth - OVERFLOW_BUTTON_WIDTH - FIELD_GAP * 2;
+      setVisibleCount(
+        Math.max(
+          0,
+          Math.min(
+            fields.length - 1,
+            Math.floor((available + FIELD_GAP) / (FIELD_MIN_WIDTH + FIELD_GAP)),
+          ),
+        ),
+      );
+    };
+
+    const observer = new ResizeObserver(updateVisibleCount);
+    observer.observe(container);
+    observer.observe(actionsElement);
+    updateVisibleCount();
+    return () => observer.disconnect();
+  }, [fields.length]);
+
+  const overflowFields = fields.slice(visibleCount);
+
+  useEffect(() => {
+    if (!overflowFields.length) setOverflowOpen(false);
+  }, [overflowFields.length]);
+
+  useEffect(() => {
+    if (!overflowOpen) return undefined;
+    const close = (event) => {
+      if (!overflowRef.current?.contains(event.target)) setOverflowOpen(false);
+    };
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
+  }, [overflowOpen]);
+
+  return (
+    <div ref={containerRef} className="relative flex min-w-0 items-end gap-3">
+      {fields.slice(0, visibleCount).map((field, index) => (
+        <div key={`visible-filter-${index}`} className="min-w-56 flex-1">
+          {field}
+        </div>
+      ))}
+      {overflowFields.length > 0 && (
+        <div ref={overflowRef} className="relative shrink-0">
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setOverflowOpen((open) => !open)}
+            aria-label="Show more report filters"
+            aria-expanded={overflowOpen}
+            title="More filters"
+            className="h-10 min-w-10 rounded-xl border-(--color-divider) px-2 text-(--color-muted)"
+          >
+            <ChevronsRight size={18} />
+          </Button>
+          {overflowOpen && (
+            <div className="absolute right-0 top-full z-50 mt-2 flex w-[min(20rem,calc(100vw-2rem))] flex-col gap-3 rounded-xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-xl">
+              {overflowFields.map((field, index) => (
+                <div key={`overflow-filter-${visibleCount + index}`} className="min-w-0">
+                  {field}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      <div ref={actionsRef} className="min-w-56 shrink-0">
+        {actions}
+      </div>
+    </div>
+  );
+};
 
 export const updateReportParams = (searchParams, setSearchParams, key, values) => {
   const newParams = new URLSearchParams(searchParams);
@@ -200,6 +315,51 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
     setSearchParams(new URLSearchParams(), { replace: true });
   };
 
+  const reportActions = (
+    <div className="flex min-w-0 gap-2">
+      <div className="min-w-0 flex-1">
+        {Object.keys(options).length === 1 ? (
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            disabled={disabled}
+            onClick={onClick}
+            className="rounded-xl bg-sky-600 font-semibold shadow-sm hover:bg-sky-500"
+          >
+            <Typography variant="button" noWrap>
+              {t(loading ? 'sharedLoading' : 'reportShow')}
+            </Typography>
+          </Button>
+        ) : (
+          <SplitButton
+            fullWidth
+            variant="contained"
+            color="primary"
+            disabled={disabled}
+            onClick={onClick}
+            selected={selectedOption}
+            setSelected={onSelected}
+            options={options}
+            className="[&>button]:bg-sky-600 [&>button]:font-semibold [&>button]:shadow-sm [&>button:hover]:bg-sky-500 [&>button:first-child]:rounded-l-xl [&>button:last-child]:rounded-r-xl"
+          />
+        )}
+      </div>
+      {searchParams.size > 0 && (
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={resetFilters}
+          aria-label="Reset report filters"
+          title="Reset filters"
+          className="rounded-xl border-(--color-divider) px-3 text-(--color-muted) hover:border-sky-500 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-sky-950"
+        >
+          <RotateCcw size={16} />
+        </Button>
+      )}
+    </div>
+  );
+
   return (
     <section className="border-b border-(--color-divider) bg-(--color-paper) p-4 print:hidden sm:p-5">
       <div className="mb-4 flex items-center gap-3">
@@ -213,7 +373,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
           </p>
         </div>
       </div>
-      <div className="flex items-end gap-3 overflow-x-auto pb-1 [&>*]:min-w-56 [&>*]:flex-1">
+      <OverflowFilterRow actions={reportActions}>
         {deviceType !== 'none' && (
           <div className="min-w-0">
             <SelectField
@@ -306,49 +466,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
           </>
         )}
         {children}
-        <div className="flex min-w-0 gap-2">
-          <div className="min-w-0 flex-1">
-            {Object.keys(options).length === 1 ? (
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                disabled={disabled}
-                onClick={onClick}
-                className="rounded-xl bg-sky-600 font-semibold shadow-sm hover:bg-sky-500"
-              >
-                <Typography variant="button" noWrap>
-                  {t(loading ? 'sharedLoading' : 'reportShow')}
-                </Typography>
-              </Button>
-            ) : (
-              <SplitButton
-                fullWidth
-                variant="contained"
-                color="primary"
-                disabled={disabled}
-                onClick={onClick}
-                selected={selectedOption}
-                setSelected={onSelected}
-                options={options}
-                className="[&>button]:bg-sky-600 [&>button]:font-semibold [&>button]:shadow-sm [&>button:hover]:bg-sky-500 [&>button:first-child]:rounded-l-xl [&>button:last-child]:rounded-r-xl"
-              />
-            )}
-          </div>
-          {searchParams.size > 0 && (
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={resetFilters}
-              aria-label="Reset report filters"
-              title="Reset filters"
-              className="rounded-xl border-(--color-divider) px-3 text-(--color-muted) hover:border-sky-500 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-sky-950"
-            >
-              <RotateCcw size={16} />
-            </Button>
-          )}
-        </div>
-      </div>
+      </OverflowFilterRow>
     </section>
   );
 };
