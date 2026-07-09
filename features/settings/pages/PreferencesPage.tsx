@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useNavigate } from '@/lib/router';
 import {
   Accordion,
@@ -88,6 +89,23 @@ const PreferencesPage = () => {
     { id: 'all', name: t('notificationAlways') },
   ];
   const selectedMapOverlays = attributes.selectedMapOverlay?.split(',').filter(Boolean) || [];
+  const orderedMapOverlays = selectedMapOverlays
+    .map((id) => mapOverlays.find((overlay) => overlay.id === id) || { id, title: id })
+    .reverse();
+
+  const moveSelectedMapOverlay = (overlayId, direction) => {
+    const index = selectedMapOverlays.indexOf(overlayId);
+    const targetIndex = direction === 'up' ? index + 1 : index - 1;
+    if (targetIndex < 0 || targetIndex >= selectedMapOverlays.length) {
+      return;
+    }
+    const nextMapOverlays = [...selectedMapOverlays];
+    [nextMapOverlays[index], nextMapOverlays[targetIndex]] = [
+      nextMapOverlays[targetIndex],
+      nextMapOverlays[index],
+    ];
+    setAttributes({ ...attributes, selectedMapOverlay: nextMapOverlays.join(',') });
+  };
 
   const generateToken = useCatch(async () => {
     const expiration = dayjs(tokenExpiration, 'YYYY-MM-DD').toISOString();
@@ -196,6 +214,44 @@ const PreferencesPage = () => {
                     }
                   }}
                 />
+                {orderedMapOverlays.length > 1 && (
+                  <div className="space-y-2">
+                    <span className="block text-sm text-(--color-muted)">Layer order</span>
+                    <div className="space-y-1.5">
+                      {orderedMapOverlays.map((overlay, displayIndex) => (
+                        <div
+                          key={overlay.id}
+                          className="flex min-h-11 items-center gap-2 rounded-xl border border-(--color-divider) bg-(--color-paper) px-3"
+                        >
+                          <span className="min-w-0 flex-1 truncate text-sm">{overlay.title}</span>
+                          {displayIndex === 0 && (
+                            <span className="rounded-full bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-950 dark:text-sky-200">
+                              Top
+                            </span>
+                          )}
+                          <IconButton
+                            size="small"
+                            title="Move layer up"
+                            aria-label="Move layer up"
+                            disabled={displayIndex === 0}
+                            onClick={() => moveSelectedMapOverlay(overlay.id, 'up')}
+                          >
+                            <ArrowUp size={16} />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            title="Move layer down"
+                            aria-label="Move layer down"
+                            disabled={displayIndex === orderedMapOverlays.length - 1}
+                            onClick={() => moveSelectedMapOverlay(overlay.id, 'down')}
+                          >
+                            <ArrowDown size={16} />
+                          </IconButton>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <SelectField
                   multiple
                   fullWidth
