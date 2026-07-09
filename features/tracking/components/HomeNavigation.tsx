@@ -18,6 +18,7 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
   const itemClass = mobile
     ? 'flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[0.65rem] font-medium text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text)'
     : 'flex flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-2.5 text-[0.68rem] font-medium text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text)';
+  const labelClass = mobile ? 'text-[0.65rem] font-medium' : 'text-[0.68rem] font-medium';
 
   return (
     <nav
@@ -47,8 +48,9 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
         placement={mobile ? 'top-end' : 'top-end'}
         className={itemClass}
         label="Account"
+        labelClassName={labelClass}
         showLabel
-        avatarSize="sm"
+        avatarSize="nav"
       />
     </nav>
   );

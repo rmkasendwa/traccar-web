@@ -20,12 +20,13 @@ type User = {
 
 type ProfileAvatarProps = {
   user?: User | null;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'nav' | 'sm' | 'md' | 'lg';
   className?: string;
 };
 
 type AccountAvatarMenuProps = {
   className?: string;
+  labelClassName?: string;
   placement?: 'bottom-end' | 'top-end';
   label?: string;
   showLabel?: boolean;
@@ -33,6 +34,7 @@ type AccountAvatarMenuProps = {
 };
 
 const avatarSizes = {
+  nav: 'h-[19px] w-[19px] text-[0.48rem]',
   sm: 'h-7 w-7 text-[0.65rem]',
   md: 'h-9 w-9 text-xs',
   lg: 'h-11 w-11 text-sm',
@@ -213,6 +215,7 @@ export function ProfileAvatar({ user, size = 'md', className = '' }: ProfileAvat
 
 export default function AccountAvatarMenu({
   className = '',
+  labelClassName = 'text-sm font-medium',
   placement = 'bottom-end',
   label,
   showLabel = false,
@@ -273,12 +276,12 @@ export default function AccountAvatarMenu({
           {...props}
           ref={ref as any}
           type="button"
-          className={`inline-flex min-w-0 items-center gap-2 rounded-full text-(--color-text) transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${showLabel ? 'px-2 py-1.5' : 'p-1'} ${className}`}
+          className={`inline-flex min-w-0 items-center gap-2 rounded-full transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${showLabel ? 'px-2 py-1.5' : 'p-1'} ${className}`}
           aria-label={`Open account menu for ${accessibleName}`}
         >
           <ProfileAvatar user={user} size={avatarSize} />
           {showLabel && (
-            <span className="min-w-0 truncate pr-1 text-sm font-medium">
+            <span className={`min-w-0 truncate pr-1 ${labelClassName}`}>
               {label || user.name || t('settingsUser')}
             </span>
           )}
