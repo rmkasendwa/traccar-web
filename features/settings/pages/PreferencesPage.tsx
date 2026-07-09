@@ -87,7 +87,7 @@ const PreferencesPage = () => {
     { id: 'selected', name: t('deviceSelected') },
     { id: 'all', name: t('notificationAlways') },
   ];
-  const overlayOptions = [{ id: '', title: 'None', available: true }, ...mapOverlays];
+  const selectedMapOverlays = attributes.selectedMapOverlay?.split(',').filter(Boolean) || [];
 
   const generateToken = useCatch(async () => {
     const expiration = dayjs(tokenExpiration, 'YYYY-MM-DD').toISOString();
@@ -172,25 +172,27 @@ const PreferencesPage = () => {
                   }}
                 />
                 <SelectField
+                  multiple
                   fullWidth
                   label={t('mapOverlay')}
-                  value={attributes.selectedMapOverlay || ''}
-                  data={overlayOptions}
+                  value={selectedMapOverlays}
+                  data={mapOverlays}
                   titleGetter={(overlay) =>
                     overlay.available ? overlay.title : `${overlay.title} · Configure`
                   }
                   onChange={(event) => {
-                    const clicked = mapOverlays.find(
-                      (overlay) => overlay.id === event.target.value,
+                    const added = event.target.value.find(
+                      (id) => !selectedMapOverlays.includes(id),
                     );
-                    if (!clicked || clicked.available) {
-                      setAttributes({
-                        ...attributes,
-                        selectedMapOverlay: event.target.value,
-                      });
-                    } else if (clicked.id !== 'custom') {
+                    const clicked = mapOverlays.find((overlay) => overlay.id === added);
+                    if (clicked && !clicked.available && clicked.id !== 'custom') {
                       const query = new URLSearchParams({ attribute: clicked.attribute });
                       navigate(`/settings/user/${user.id}?${query.toString()}`);
+                    } else if (!clicked || clicked.available) {
+                      setAttributes({
+                        ...attributes,
+                        selectedMapOverlay: event.target.value.join(','),
+                      });
                     }
                   }}
                 />
