@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 import ThemeModeControl from '@/components/ui/ThemeModeControl';
 import { SectionShellProvider } from '@/components/layout/SectionShellContext';
+import AccountAvatarMenu from '@/components/layout/AccountAvatarMenu';
 
 export type SectionNavigationItem = {
   label: string;
@@ -177,7 +178,10 @@ export default function SectionShell({
                 </p>
               </div>
             </div>
-            <ThemeModeControl compact popover />
+            <div className="flex shrink-0 items-center gap-2">
+              <ThemeModeControl compact popover />
+              <AccountAvatarMenu />
+            </div>
           </div>
         </header>
         <div className="min-h-0 flex-1 overflow-hidden">

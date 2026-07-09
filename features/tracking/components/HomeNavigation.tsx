@@ -1,32 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { BarChart3, LogOut, Map, Settings, UserRound } from 'lucide-react';
-import { Link, useNavigate } from '@/lib/router';
-import { sessionActions } from '@/store';
-import FloatingPanel from '@/features/tracking/components/FloatingPanel';
-import { nativePostMessage } from '@/controllers/NativeInterface';
+import { useSelector } from 'react-redux';
+import { BarChart3, Map, Settings } from 'lucide-react';
+import { Link } from '@/lib/router';
+import AccountAvatarMenu from '@/components/layout/AccountAvatarMenu';
 
 export default function HomeNavigation({ mobile = false }: { mobile?: boolean }) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const user = useSelector((state: any) => state.session.user);
   const devices = useSelector((state: any) => state.devices.items);
   const selectedId = useSelector((state: any) => state.devices.selectedId);
-  const [accountOpen, setAccountOpen] = useState(false);
 
   const ids = Object.keys(devices);
   const reportDeviceId = selectedId || (ids.length === 1 ? ids[0] : null);
   const reportsHref = reportDeviceId
     ? `/reports/combined?deviceId=${reportDeviceId}`
     : '/reports/combined';
-  const logout = async () => {
-    await fetch('/api/session', { method: 'DELETE' });
-    nativePostMessage('logout');
-    dispatch(sessionActions.updateUser(null));
-    navigate('/login');
-  };
 
   const itemClass = mobile
     ? 'flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[0.65rem] font-medium text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text)'
@@ -56,51 +43,13 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
         <Settings size={19} />
         Settings
       </Link>
-      <FloatingPanel
-        open={accountOpen}
-        onOpenChange={setAccountOpen}
+      <AccountAvatarMenu
         placement={mobile ? 'top-end' : 'top-end'}
-        className="w-52"
-        trigger={(props, ref) => (
-          <Link
-            {...props}
-            ref={ref as any}
-            href={`/settings/user/${user.id}`}
-            onClick={(event) => {
-              if (
-                event.button === 0 &&
-                !event.metaKey &&
-                !event.ctrlKey &&
-                !event.shiftKey &&
-                !event.altKey
-              ) {
-                event.preventDefault();
-                props.onClick?.(event);
-              }
-            }}
-            className={itemClass}
-          >
-            <UserRound size={19} />
-            Account
-          </Link>
-        )}
-      >
-        <Link
-          href={`/settings/user/${user.id}`}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-(--color-surface-hover)"
-        >
-          <UserRound size={17} />
-          Profile
-        </Link>
-        <button
-          type="button"
-          onClick={logout}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
-        >
-          <LogOut size={17} />
-          Log out
-        </button>
-      </FloatingPanel>
+        className={itemClass}
+        label="Account"
+        showLabel
+        avatarSize="sm"
+      />
     </nav>
   );
 }

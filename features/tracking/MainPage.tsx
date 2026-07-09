@@ -6,6 +6,7 @@ import { Menu, X } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import AccountAvatarMenu from '@/components/layout/AccountAvatarMenu';
 import EventsDrawer from './EventsDrawer';
 import DeviceSidebar from './components/DeviceSidebar';
 import HomeNavigation from './components/HomeNavigation';
@@ -131,6 +132,9 @@ const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
       >
         <Menu size={21} />
       </button>
+      <div className="absolute right-3 top-3 z-20 rounded-full border border-(--color-divider) bg-(--color-paper) p-0.5 shadow-lg backdrop-blur">
+        <AccountAvatarMenu />
+      </div>
 
       <div
         className={`absolute inset-0 z-30 bg-slate-950/35 transition-opacity md:hidden ${
