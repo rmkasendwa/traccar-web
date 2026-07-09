@@ -45,7 +45,7 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
         Settings
       </Link>
       <AccountAvatarMenu
-        placement={mobile ? 'top-end' : 'top-end'}
+        placement="top-start"
         className={itemClass}
         label="Account"
         labelClassName={labelClass}

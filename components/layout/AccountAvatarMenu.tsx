@@ -27,7 +27,7 @@ type ProfileAvatarProps = {
 type AccountAvatarMenuProps = {
   className?: string;
   labelClassName?: string;
-  placement?: 'bottom-end' | 'top-end';
+  placement?: 'bottom-end' | 'top-end' | 'top-start';
   label?: string;
   showLabel?: boolean;
   avatarSize?: ProfileAvatarProps['size'];
