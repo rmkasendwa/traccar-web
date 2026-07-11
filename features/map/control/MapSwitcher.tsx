@@ -15,7 +15,7 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react';
-import { Check, Layers } from 'lucide-react';
+import { Check, Map as MapIcon } from 'lucide-react';
 import { useTheme } from '@/components/ui';
 import { map } from '@/features/map/core/MapView';
 
@@ -91,7 +91,7 @@ const MapSwitcher = ({ styles, selectedId, onSelect }: MapSwitcherProps) => {
         element.appendChild(button);
         refs.setReference(button);
         iconRoot = createRoot(button);
-        iconRoot.render(<Layers size={18} />);
+        iconRoot.render(<MapIcon size={18} />);
         return element;
       },
       onRemove: () => {
