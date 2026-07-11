@@ -75,6 +75,10 @@ body {
   background-image: none !important;
 }
 
+.maplibregl-ctrl-group button.map-overlay-control.active {
+  color: #0284c7;
+}
+
 .maplibregl-ctrl-group button.map-tool-control > svg {
   display: block;
   margin: 0;

@@ -9,6 +9,7 @@ import MapGeofence from '@/features/map/MapGeofence';
 import MapScale from '@/features/map/MapScale';
 import MapPadding from '@/features/map/MapPadding';
 import MapOverlay from '@/features/map/overlay/MapOverlay';
+import MapOverlaySwitcher from '@/features/map/control/MapOverlaySwitcher';
 import { map } from '@/features/map/core/MapView';
 import { toMapCoordinates } from '@/features/map/core/mapUtil';
 import { useMediaQuery, useTheme } from '@/components/ui';
@@ -111,6 +112,7 @@ function ReplayMap({ positions, currentPosition, onSelectPosition }: ReplayMapPr
       <MapView>
         <MapPadding start={desktop ? 376 : 0} />
         <MapOverlay />
+        <MapOverlaySwitcher />
         <MapGeofence />
         {positions.length > 0 && (
           <>

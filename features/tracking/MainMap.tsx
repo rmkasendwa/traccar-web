@@ -2,6 +2,7 @@
 import { useMediaQuery, useTheme } from '@/components/ui';
 import MapGeocoder from '@/features/map/control/MapGeocoder';
 import MapNotification from '@/features/map/control/MapNotification';
+import MapOverlaySwitcher from '@/features/map/control/MapOverlaySwitcher';
 import MapRuler from '@/features/map/control/MapRuler';
 import MapView from '@/features/map/core/MapView';
 import MapAccuracy from '@/features/map/main/MapAccuracy';
@@ -43,6 +44,7 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
     <>
       <MapView>
         <MapOverlay />
+        <MapOverlaySwitcher />
         <MapGeofence />
         <MapAccuracy positions={filteredPositions} />
         <MapLiveRoutes deviceIds={filteredPositions.map((p) => p.deviceId)} />
