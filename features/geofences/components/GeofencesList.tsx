@@ -1,13 +1,47 @@
-// @ts-nocheck
-import { Fragment } from 'react';
+import { Fragment, type ComponentType, type MouseEvent, type PropsWithChildren } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@/components/ui/styles';
-import { Divider, List, ListItemButton, ListItemText } from '@/components/ui';
+import {
+  Divider as BaseDivider,
+  List as BaseList,
+  ListItemButton as BaseListItemButton,
+  ListItemText as BaseListItemText,
+} from '@/components/ui';
 
-import { geofencesActions } from '@/store';
-import CollectionActions from '@/features/settings/components/CollectionActions';
+import { geofencesActions, type AppDispatch, type RootState } from '@/store';
+import BaseCollectionActions from '@/features/settings/components/CollectionActions';
 import { useCatchCallback } from '@/lib/react';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import type { ApiId, Geofence } from '@/types/traccar';
+
+const CollectionActions = BaseCollectionActions as ComponentType<{
+  customActions?: unknown[];
+  editPath: string;
+  endpoint: string;
+  itemId: ApiId;
+  onReload: () => void;
+  readonly?: boolean;
+}>;
+const Divider = BaseDivider as ComponentType<{ className?: string }>;
+const List = BaseList as ComponentType<
+  PropsWithChildren<{
+    className?: string;
+  }>
+>;
+const ListItemButton = BaseListItemButton as ComponentType<
+  PropsWithChildren<{
+    onClick?: () => void;
+    selected?: boolean;
+  }>
+>;
+const ListItemText = BaseListItemText as ComponentType<{
+  primary?: string;
+}>;
+
+type GeofencesListProps = {
+  selectedGeofenceId?: ApiId;
+  onGeofenceSelected: (geofenceId: ApiId) => void;
+};
 
 const useStyles = makeStyles()(() => ({
   list: {
@@ -19,31 +53,47 @@ const useStyles = makeStyles()(() => ({
     height: '25px',
     filter: 'brightness(0) invert(1)',
   },
+  empty: {
+    padding: '24px 16px',
+  },
 }));
 
-const GeofencesList = ({ onGeofenceSelected }) => {
-  const { classes } = useStyles();
-  const dispatch = useDispatch();
+const selectGeofences = (state: RootState) => state.geofences.items;
+const stopPropagation = (event: MouseEvent) => event.stopPropagation();
 
-  const items = useSelector((state) => state.geofences.items);
+const GeofencesList = ({ selectedGeofenceId, onGeofenceSelected }: GeofencesListProps) => {
+  const { classes } = useStyles({});
+  const dispatch = useDispatch<AppDispatch>();
+
+  const items = useSelector<RootState, Record<ApiId, Geofence>>(selectGeofences);
+  const geofences = Object.values(items).sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
 
   const refreshGeofences = useCatchCallback(async () => {
     const response = await fetchOrThrow('/api/geofences');
-    dispatch(geofencesActions.refresh(await response.json()));
+    dispatch(geofencesActions.refresh((await response.json()) as Geofence[]));
   }, [dispatch]);
 
   return (
     <List className={classes.list}>
-      {Object.values(items).map((item, index, list) => (
+      {geofences.length === 0 && <div className={classes.empty}>No geofences yet</div>}
+      {geofences.map((item, index, list) => (
         <Fragment key={item.id}>
-          <ListItemButton key={item.id} onClick={() => onGeofenceSelected(item.id)}>
+          <ListItemButton
+            key={item.id}
+            selected={item.id === selectedGeofenceId}
+            onClick={() => item.id && onGeofenceSelected(item.id)}
+          >
             <ListItemText primary={item.name} />
-            <CollectionActions
-              itemId={item.id}
-              editPath="/settings/geofence"
-              endpoint="geofences"
-              onReload={refreshGeofences}
-            />
+            {item.id && (
+              <div onClick={stopPropagation}>
+                <CollectionActions
+                  itemId={item.id}
+                  editPath="/settings/geofence"
+                  endpoint="geofences"
+                  onReload={refreshGeofences}
+                />
+              </div>
+            )}
           </ListItemButton>
           {index < list.length - 1 ? <Divider /> : null}
         </Fragment>
