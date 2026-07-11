@@ -1,27 +1,82 @@
-// @ts-nocheck
-import { useState } from 'react';
+import { useState, type ComponentType, type PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  Typography,
-  Container,
-  Paper,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
+  Typography as BaseTypography,
+  Container as BaseContainer,
+  Paper as BasePaper,
+  AppBar as BaseAppBar,
+  Toolbar as BaseToolbar,
+  IconButton as BaseIconButton,
+  Table as BaseTable,
+  TableHead as BaseTableHead,
+  TableRow as BaseTableRow,
+  TableCell as BaseTableCell,
+  TableBody as BaseTableBody,
+  useTheme,
 } from '@/components/ui';
 import { makeStyles } from '@/components/ui/styles';
 import { useNavigate, useParams } from '@/lib/router';
 import { useAsyncTask } from '@/lib/react';
 import BackIcon from '@/components/ui/BackIcon';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import type { RootState } from '@/store';
+import type { Position } from '@/types/traccar';
 
-const useStyles = makeStyles()((theme) => ({
+const Typography = BaseTypography as ComponentType<
+  PropsWithChildren<{
+    variant?: 'h6';
+  }>
+>;
+const Container = BaseContainer as ComponentType<
+  PropsWithChildren<{
+    maxWidth?: 'sm';
+  }>
+>;
+const Paper = BasePaper as ComponentType<PropsWithChildren>;
+const AppBar = BaseAppBar as ComponentType<
+  PropsWithChildren<{
+    color?: 'inherit';
+    position?: 'sticky';
+  }>
+>;
+const Toolbar = BaseToolbar as ComponentType<PropsWithChildren>;
+const IconButton = BaseIconButton as ComponentType<
+  PropsWithChildren<{
+    color?: 'inherit';
+    edge?: 'start';
+    onClick?: () => void;
+    sx?: Record<string, unknown>;
+  }>
+>;
+const Table = BaseTable as ComponentType<PropsWithChildren>;
+const TableHead = BaseTableHead as ComponentType<PropsWithChildren>;
+const TableRow = BaseTableRow as ComponentType<PropsWithChildren>;
+const TableCell = BaseTableCell as ComponentType<PropsWithChildren>;
+const TableBody = BaseTableBody as ComponentType<PropsWithChildren>;
+
+type CellTower = {
+  cellId?: number;
+  locationAreaCode?: number;
+  mobileCountryCode?: number;
+  mobileNetworkCode?: number;
+};
+
+type WifiAccessPoint = {
+  macAddress?: string;
+  signalStrength?: number;
+};
+
+type PositionNetwork = {
+  cellTowers?: CellTower[];
+  wifiAccessPoints?: WifiAccessPoint[];
+};
+
+type NetworkPosition = Omit<Position, 'network'> & {
+  network?: PositionNetwork;
+};
+
+const useStyles = makeStyles()((theme: ReturnType<typeof useTheme>) => ({
   root: {
     height: '100%',
     display: 'flex',
@@ -38,18 +93,18 @@ const useStyles = makeStyles()((theme) => ({
 }));
 
 const NetworkPage = () => {
-  const { classes } = useStyles();
+  const { classes } = useStyles({});
   const navigate = useNavigate();
 
-  const { positionId } = useParams();
+  const { positionId } = useParams<{ positionId?: string }>();
 
-  const [item, setItem] = useState({});
+  const [item, setItem] = useState<NetworkPosition | null>(null);
 
   useAsyncTask(
-    async ({ signal }) => {
+    async ({ signal }: { signal: AbortSignal }) => {
       if (positionId) {
         const response = await fetchOrThrow(`/api/positions?id=${positionId}`, { signal });
-        const positions = await response.json();
+        const positions = (await response.json()) as NetworkPosition[];
         if (positions.length > 0) {
           setItem(positions[0]);
         }
@@ -58,8 +113,8 @@ const NetworkPage = () => {
     [positionId],
   );
 
-  const deviceName = useSelector((state) => {
-    if (item) {
+  const deviceName = useSelector((state: RootState) => {
+    if (item?.deviceId) {
       const device = state.devices.items[item.deviceId];
       if (device) {
         return device.name;
@@ -91,8 +146,8 @@ const NetworkPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(item.network?.cellTowers || []).map((cell) => (
-                  <TableRow key={cell.cellId}>
+                {(item?.network?.cellTowers || []).map((cell, index) => (
+                  <TableRow key={cell.cellId ?? `${cell.locationAreaCode ?? 'cell'}-${index}`}>
                     <TableCell>{cell.mobileCountryCode}</TableCell>
                     <TableCell>{cell.mobileNetworkCode}</TableCell>
                     <TableCell>{cell.locationAreaCode}</TableCell>
@@ -113,8 +168,8 @@ const NetworkPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(item.network?.wifiAccessPoints || []).map((wifi) => (
-                  <TableRow key={wifi.macAddress}>
+                {(item?.network?.wifiAccessPoints || []).map((wifi, index) => (
+                  <TableRow key={wifi.macAddress ?? `wifi-${index}`}>
                     <TableCell>{wifi.macAddress}</TableCell>
                     <TableCell>{wifi.signalStrength}</TableCell>
                   </TableRow>
