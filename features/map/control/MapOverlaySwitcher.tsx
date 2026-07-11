@@ -25,6 +25,7 @@ import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import { map } from '@/features/map/core/MapView';
 import useMapOverlays from '@/features/map/overlay/useMapOverlays';
 import { sessionActions } from '@/store';
+import { parseApiResponse, traccarSchemas } from '@/lib/api/schemas';
 
 const parseSelectedMapOverlays = (value: unknown) =>
   Array.isArray(value)
@@ -112,7 +113,9 @@ const MapOverlaySwitcher = () => {
           },
         }),
       });
-      dispatch(sessionActions.updateUser(await response.json()));
+      dispatch(
+        sessionActions.updateUser(parseApiResponse(traccarSchemas.User, await response.json())),
+      );
     } finally {
       setSaving(false);
     }

@@ -1,17 +1,24 @@
-// @ts-nocheck
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+import type { Event } from '@/types/traccar';
+
+type EventsState = {
+  items: Event[];
+};
+
+const initialState: EventsState = {
+  items: [],
+};
 
 const { reducer, actions } = createSlice({
   name: 'events',
-  initialState: {
-    items: [],
-  },
+  initialState,
   reducers: {
-    add(state, action) {
+    add(state, action: PayloadAction<Event[]>) {
       state.items.unshift(...action.payload);
       state.items.splice(50);
     },
-    delete(state, action) {
+    delete(state, action: PayloadAction<Event>) {
       state.items = state.items.filter((item) => item.id !== action.payload.id);
     },
     deleteAll(state) {

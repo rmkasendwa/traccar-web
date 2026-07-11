@@ -1,15 +1,24 @@
-// @ts-nocheck
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+import type { Driver } from '@/types/traccar';
+
+type DriversState = {
+  items: Record<string, Driver>;
+};
+
+const initialState: DriversState = {
+  items: {},
+};
 
 const { reducer, actions } = createSlice({
   name: 'drivers',
-  initialState: {
-    items: {},
-  },
+  initialState,
   reducers: {
-    refresh(state, action) {
+    refresh(state, action: PayloadAction<Driver[]>) {
       state.items = {};
-      action.payload.forEach((item) => (state.items[item.uniqueId] = item));
+      action.payload.forEach((item) => {
+        if (item.uniqueId) state.items[item.uniqueId] = item;
+      });
     },
   },
 });

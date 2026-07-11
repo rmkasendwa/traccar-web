@@ -31,6 +31,7 @@ import { speedFromKnots, speedUnitString } from '@/lib/converter';
 import { useAttributePreference } from '@/lib/preferences';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import FloatingPanel from '@/features/tracking/components/FloatingPanel';
+import { parseApiResponse, traccarSchemas } from '@/lib/api/schemas';
 
 dayjs.extend(relativeTime);
 
@@ -159,7 +160,7 @@ export default function SelectedDeviceCard({
         area: `CIRCLE (${position.latitude} ${position.longitude}, 50)`,
       }),
     });
-    const geofence = await response.json();
+    const geofence = parseApiResponse(traccarSchemas.Geofence, await response.json());
     await fetchOrThrow('/api/permissions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

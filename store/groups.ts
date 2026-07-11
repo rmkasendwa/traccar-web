@@ -1,15 +1,24 @@
-// @ts-nocheck
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+import type { ApiId, Group } from '@/types/traccar';
+
+type GroupsState = {
+  items: Record<ApiId, Group>;
+};
+
+const initialState: GroupsState = {
+  items: {},
+};
 
 const { reducer, actions } = createSlice({
   name: 'groups',
-  initialState: {
-    items: {},
-  },
+  initialState,
   reducers: {
-    refresh(state, action) {
+    refresh(state, action: PayloadAction<Group[]>) {
       state.items = {};
-      action.payload.forEach((item) => (state.items[item.id] = item));
+      action.payload.forEach((item) => {
+        if (item.id !== undefined) state.items[item.id] = item;
+      });
     },
   },
 });

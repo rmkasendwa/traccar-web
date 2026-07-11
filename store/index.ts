@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import { errorsReducer as errors } from '@/store/errors';
@@ -37,7 +36,12 @@ export { driversActions } from '@/store/drivers';
 export { maintenancesActions } from '@/store/maintenances';
 export { calendarsActions } from '@/store/calendars';
 
-export default configureStore({
+const store = configureStore({
   reducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(throttleMiddleware),
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+export default store;

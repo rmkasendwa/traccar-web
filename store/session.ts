@@ -1,44 +1,69 @@
-// @ts-nocheck
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+import type { ApiId, Position, Server, User } from '@/types/traccar';
+
+type RoutePoint = [number, number];
+
+type SessionState = {
+  server: Server | null;
+  user: User | null;
+  socket: WebSocket | null;
+  includeLogs: boolean;
+  logs: unknown[];
+  positions: Record<ApiId, Position>;
+  history: Record<ApiId, RoutePoint[]>;
+};
+
+const initialState: SessionState = {
+  server: null,
+  user: null,
+  socket: null,
+  includeLogs: false,
+  logs: [],
+  positions: {},
+  history: {},
+};
+
+const getAttribute = (user: User | null, server: Server | null, key: string) =>
+  user?.attributes?.[key] ?? server?.attributes?.[key];
 
 const { reducer, actions } = createSlice({
   name: 'session',
-  initialState: {
-    server: null,
-    user: null,
-    socket: null,
-    includeLogs: false,
-    logs: [],
-    positions: {},
-    history: {},
-  },
+  initialState,
   reducers: {
-    updateServer(state, action) {
+    updateServer(state, action: PayloadAction<Server>) {
       state.server = action.payload;
     },
-    updateUser(state, action) {
+    updateUser(state, action: PayloadAction<User | null>) {
       state.user = action.payload;
     },
-    updateSocket(state, action) {
+    updateSocket(state, action: PayloadAction<WebSocket | null>) {
       state.socket = action.payload;
     },
-    enableLogs(state, action) {
+    enableLogs(state, action: PayloadAction<boolean>) {
       state.includeLogs = action.payload;
       if (!action.payload) {
         state.logs = [];
       }
     },
-    updateLogs(state, action) {
+    updateLogs(state, action: PayloadAction<unknown[]>) {
       state.logs.push(...action.payload);
     },
-    updatePositions(state, action) {
-      const liveRoutes =
-        state.user.attributes.mapLiveRoutes || state.server.attributes.mapLiveRoutes || 'none';
+    updatePositions(state, action: PayloadAction<Position[]>) {
+      const liveRoutes = getAttribute(state.user, state.server, 'mapLiveRoutes') || 'none';
+      const rawLiveRoutesLimit = getAttribute(state.user, state.server, 'web.liveRouteLength');
       const liveRoutesLimit =
-        state.user.attributes['web.liveRouteLength'] ||
-        state.server.attributes['web.liveRouteLength'] ||
-        10;
+        typeof rawLiveRoutesLimit === 'number' || typeof rawLiveRoutesLimit === 'string'
+          ? Number(rawLiveRoutesLimit)
+          : 10;
       action.payload.forEach((position) => {
+        if (
+          position.deviceId === undefined ||
+          position.longitude === undefined ||
+          position.latitude === undefined
+        ) {
+          return;
+        }
         state.positions[position.deviceId] = position;
         if (liveRoutes !== 'none') {
           const route = state.history[position.deviceId] || [];

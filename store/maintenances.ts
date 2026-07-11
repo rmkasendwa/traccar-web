@@ -1,15 +1,24 @@
-// @ts-nocheck
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+import type { ApiId, Maintenance } from '@/types/traccar';
+
+type MaintenancesState = {
+  items: Record<ApiId, Maintenance>;
+};
+
+const initialState: MaintenancesState = {
+  items: {},
+};
 
 const { reducer, actions } = createSlice({
   name: 'maintenances',
-  initialState: {
-    items: {},
-  },
+  initialState,
   reducers: {
-    refresh(state, action) {
+    refresh(state, action: PayloadAction<Maintenance[]>) {
       state.items = {};
-      action.payload.forEach((item) => (state.items[item.id] = item));
+      action.payload.forEach((item) => {
+        if (item.id !== undefined) state.items[item.id] = item;
+      });
     },
   },
 });

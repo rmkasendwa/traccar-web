@@ -1,18 +1,29 @@
-// @ts-nocheck
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+import type { ApiId, Geofence } from '@/types/traccar';
+
+type GeofencesState = {
+  items: Record<ApiId, Geofence>;
+};
+
+const initialState: GeofencesState = {
+  items: {},
+};
 
 const { reducer, actions } = createSlice({
   name: 'geofences',
-  initialState: {
-    items: {},
-  },
+  initialState,
   reducers: {
-    refresh(state, action) {
+    refresh(state, action: PayloadAction<Geofence[]>) {
       state.items = {};
-      action.payload.forEach((item) => (state.items[item.id] = item));
+      action.payload.forEach((item) => {
+        if (item.id !== undefined) state.items[item.id] = item;
+      });
     },
-    update(state, action) {
-      action.payload.forEach((item) => (state.items[item.id] = item));
+    update(state, action: PayloadAction<Geofence[]>) {
+      action.payload.forEach((item) => {
+        if (item.id !== undefined) state.items[item.id] = item;
+      });
     },
   },
 });

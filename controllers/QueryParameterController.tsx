@@ -9,6 +9,7 @@ import { devicesActions } from '@/store';
 import { generateLoginToken } from '@/controllers/NativeInterface';
 import { useLocalization } from '@/providers/localization/LocalizationProvider';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import { parseApiResponse, traccarSchemas } from '@/lib/api/schemas';
 
 type QueryParameterControllerProps = {
   children: ReactNode;
@@ -39,9 +40,10 @@ export default function QueryParameterController({ children }: QueryParameterCon
           `/api/devices?uniqueId=${encodeURIComponent(uniqueId)}`,
           { signal },
         );
-        const items = await response.json();
-        if (items.length > 0) {
-          dispatch(devicesActions.selectId(items[0].id));
+        const items = parseApiResponse(traccarSchemas.Device.array(), await response.json());
+        const deviceId = items[0]?.id;
+        if (deviceId !== undefined) {
+          dispatch(devicesActions.selectId(deviceId));
         }
         newParams.delete('uniqueId');
       }

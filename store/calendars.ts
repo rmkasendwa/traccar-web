@@ -1,15 +1,24 @@
-// @ts-nocheck
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+import type { ApiId, Calendar } from '@/types/traccar';
+
+type CalendarsState = {
+  items: Record<ApiId, Calendar>;
+};
+
+const initialState: CalendarsState = {
+  items: {},
+};
 
 const { reducer, actions } = createSlice({
   name: 'calendars',
-  initialState: {
-    items: {},
-  },
+  initialState,
   reducers: {
-    refresh(state, action) {
+    refresh(state, action: PayloadAction<Calendar[]>) {
       state.items = {};
-      action.payload.forEach((item) => (state.items[item.id] = item));
+      action.payload.forEach((item) => {
+        if (item.id !== undefined) state.items[item.id] = item;
+      });
     },
   },
 });
