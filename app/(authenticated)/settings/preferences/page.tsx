@@ -346,136 +346,144 @@ const PreferencesPage = () => {
                 </FormGroup>
               </AccordionDetails>
             </Accordion>
-            <Accordion className="preferences-card">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1">{t('deviceTitle')}</Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
-                <SelectField
-                  value={attributes.devicePrimary || 'name'}
-                  onChange={(e) => setAttributes({ ...attributes, devicePrimary: e.target.value })}
-                  data={deviceFields}
-                  titleGetter={(it) => t(it.name)}
-                  label={t('devicePrimaryInfo')}
-                />
-                <SelectField
-                  value={attributes.deviceSecondary}
-                  onChange={(e) =>
-                    setAttributes({ ...attributes, deviceSecondary: e.target.value })
-                  }
-                  data={deviceFields}
-                  titleGetter={(it) => t(it.name)}
-                  label={t('deviceSecondaryInfo')}
-                />
-              </AccordionDetails>
-            </Accordion>
-            <Accordion className="preferences-card">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1">{t('sharedSound')}</Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
-                <SelectField
-                  multiple
-                  value={attributes.soundEvents?.split(',') || []}
-                  onChange={(e) =>
-                    setAttributes({ ...attributes, soundEvents: e.target.value.join(',') })
-                  }
-                  endpoint="/api/notifications/types"
-                  keyGetter={(it) => it.type}
-                  titleGetter={(it) => t(prefixString('event', it.type))}
-                  label={t('eventsSoundEvents')}
-                />
-                <SelectField
-                  multiple
-                  value={attributes.soundAlarms?.split(',') || ['sos']}
-                  onChange={(e) =>
-                    setAttributes({ ...attributes, soundAlarms: e.target.value.join(',') })
-                  }
-                  data={alarms}
-                  keyGetter={(it) => it.key}
-                  label={t('eventsSoundAlarms')}
-                />
-              </AccordionDetails>
-            </Accordion>
           </>
         )}
-        <Accordion className="preferences-card">
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle1">{t('userToken')}</Typography>
-          </AccordionSummary>
-          <AccordionDetails className={classes.details}>
-            <TextField
-              label={t('userExpirationTime')}
-              type="date"
-              value={tokenExpiration}
-              onChange={(e) => {
-                setTokenExpiration(e.target.value);
-                setToken(null);
-              }}
-            />
-            <FormControl>
-              <OutlinedInput
-                multiline
-                rows={6}
-                readOnly
-                type="text"
-                value={token || ''}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <div className={classes.verticalActions}>
-                      <IconButton
-                        size="small"
-                        edge="end"
-                        onClick={generateToken}
-                        disabled={!!token}
-                      >
-                        <CachedIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        edge="end"
-                        onClick={() => navigator.clipboard.writeText(token)}
-                        disabled={!token}
-                      >
-                        <ContentCopyIcon fontSize="small" />
-                      </IconButton>
-                    </div>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-          </AccordionDetails>
-        </Accordion>
-        {!readonly && (
-          <>
+        <div className="preferences-columns">
+          <div className="preferences-column">
+            {!readonly && (
+              <Accordion className="preferences-card">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="subtitle1">{t('deviceTitle')}</Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.details}>
+                  <SelectField
+                    value={attributes.devicePrimary || 'name'}
+                    onChange={(e) =>
+                      setAttributes({ ...attributes, devicePrimary: e.target.value })
+                    }
+                    data={deviceFields}
+                    titleGetter={(it) => t(it.name)}
+                    label={t('devicePrimaryInfo')}
+                  />
+                  <SelectField
+                    value={attributes.deviceSecondary}
+                    onChange={(e) =>
+                      setAttributes({ ...attributes, deviceSecondary: e.target.value })
+                    }
+                    data={deviceFields}
+                    titleGetter={(it) => t(it.name)}
+                    label={t('deviceSecondaryInfo')}
+                  />
+                </AccordionDetails>
+              </Accordion>
+            )}
             <Accordion className="preferences-card">
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1">{t('sharedInfoTitle')}</Typography>
+                <Typography variant="subtitle1">{t('userToken')}</Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.details}>
-                <TextField value={versionApp} label={t('settingsAppVersion')} disabled />
                 <TextField
-                  value={versionServer || '-'}
-                  label={t('settingsServerVersion')}
-                  disabled
+                  label={t('userExpirationTime')}
+                  type="date"
+                  value={tokenExpiration}
+                  onChange={(e) => {
+                    setTokenExpiration(e.target.value);
+                    setToken(null);
+                  }}
                 />
-                <TextField
-                  value={socket ? t('deviceStatusOnline') : t('deviceStatusOffline')}
-                  label={t('settingsConnection')}
-                  disabled
-                />
-                <Button variant="outlined" color="primary" onClick={() => navigate('/emulator')}>
-                  {t('sharedEmulator')}
-                </Button>
-                {admin && (
-                  <Button variant="outlined" color="error" onClick={handleReboot}>
-                    {t('serverReboot')}
+                <FormControl>
+                  <OutlinedInput
+                    multiline
+                    rows={6}
+                    readOnly
+                    type="text"
+                    value={token || ''}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <div className={classes.verticalActions}>
+                          <IconButton
+                            size="small"
+                            edge="end"
+                            onClick={generateToken}
+                            disabled={!!token}
+                          >
+                            <CachedIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            edge="end"
+                            onClick={() => navigator.clipboard.writeText(token)}
+                            disabled={!token}
+                          >
+                            <ContentCopyIcon fontSize="small" />
+                          </IconButton>
+                        </div>
+                      </InputAdornment>
+                    }
+                  />
+                </FormControl>
+              </AccordionDetails>
+            </Accordion>
+          </div>
+          {!readonly && (
+            <div className="preferences-column">
+              <Accordion className="preferences-card">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="subtitle1">{t('sharedSound')}</Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.details}>
+                  <SelectField
+                    multiple
+                    value={attributes.soundEvents?.split(',') || []}
+                    onChange={(e) =>
+                      setAttributes({ ...attributes, soundEvents: e.target.value.join(',') })
+                    }
+                    endpoint="/api/notifications/types"
+                    keyGetter={(it) => it.type}
+                    titleGetter={(it) => t(prefixString('event', it.type))}
+                    label={t('eventsSoundEvents')}
+                  />
+                  <SelectField
+                    multiple
+                    value={attributes.soundAlarms?.split(',') || ['sos']}
+                    onChange={(e) =>
+                      setAttributes({ ...attributes, soundAlarms: e.target.value.join(',') })
+                    }
+                    data={alarms}
+                    keyGetter={(it) => it.key}
+                    label={t('eventsSoundAlarms')}
+                  />
+                </AccordionDetails>
+              </Accordion>
+              <Accordion className="preferences-card">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="subtitle1">{t('sharedInfoTitle')}</Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.details}>
+                  <TextField value={versionApp} label={t('settingsAppVersion')} disabled />
+                  <TextField
+                    value={versionServer || '-'}
+                    label={t('settingsServerVersion')}
+                    disabled
+                  />
+                  <TextField
+                    value={socket ? t('deviceStatusOnline') : t('deviceStatusOffline')}
+                    label={t('settingsConnection')}
+                    disabled
+                  />
+                  <Button variant="outlined" color="primary" onClick={() => navigate('/emulator')}>
+                    {t('sharedEmulator')}
                   </Button>
-                )}
-              </AccordionDetails>
-            </Accordion>
-          </>
-        )}
+                  {admin && (
+                    <Button variant="outlined" color="error" onClick={handleReboot}>
+                      {t('serverReboot')}
+                    </Button>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+            </div>
+          )}
+        </div>
       </div>
     </PageLayout>
   );
