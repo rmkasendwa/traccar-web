@@ -6,10 +6,10 @@ import { Menu, X } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import EventsDrawer from './EventsDrawer';
-import DeviceSidebar from './components/DeviceSidebar';
-import HomeNavigation from './components/HomeNavigation';
-import SelectedDeviceCard from './components/SelectedDeviceCard';
+import EventsDrawer from '@/features/tracking/EventsDrawer';
+import DeviceSidebar from '@/features/tracking/components/DeviceSidebar';
+import HomeNavigation from '@/features/tracking/components/HomeNavigation';
+import SelectedDeviceCard from '@/features/tracking/components/SelectedDeviceCard';
 
 const MainMap = dynamic(() => import('@/features/tracking/MainMap'), {
   ssr: false,
@@ -23,7 +23,7 @@ type MainPageProps = {
   initialPositions: any[];
 };
 
-const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
+const MainPageClient = ({ initialDevices, initialPositions }: MainPageProps) => {
   const dispatch = useDispatch();
   const deviceItems = useSelector((state: any) => state.devices.items);
   const positionItems = useSelector((state: any) => state.session.positions);
@@ -180,4 +180,4 @@ const MainPage = ({ initialDevices, initialPositions }: MainPageProps) => {
   );
 };
 
-export default MainPage;
+export default MainPageClient;

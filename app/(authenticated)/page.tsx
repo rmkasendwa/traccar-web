@@ -1,4 +1,4 @@
-import MainPage from '@/features/tracking/MainPage';
+import MainPageClient from '@/app/(authenticated)/MainPageClient';
 import { fetchFromRequestOrigin } from '@/lib/serverFetch';
 
 const readJson = async (path: string) => {
@@ -15,5 +15,5 @@ export default async function Page() {
     readJson('/api/positions').catch(() => []),
   ]);
 
-  return <MainPage initialDevices={devices} initialPositions={positions} />;
+  return <MainPageClient initialDevices={devices} initialPositions={positions} />;
 }

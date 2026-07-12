@@ -1,5 +1,54 @@
-import CommandPage from '@/features/commands/pages/CommandPage';
+// @ts-nocheck
+'use client';
+import { useState } from 'react';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  TextField,
+} from '@/components/ui';
+import { ExpandMoreIcon } from '@/components/ui/icons';
+import EditItemView from '@/features/settings/components/EditItemView';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
+import BaseCommandView from '@/features/commands/components/BaseCommandView';
+import SettingsMenu from '@/features/settings/components/SettingsMenu';
+import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
 
-export default function Page() {
-  return <CommandPage />;
-}
+const CommandPage = () => {
+  const { classes } = useSettingsStyles();
+  const t = useTranslation();
+
+  const [item, setItem] = useState();
+
+  const validate = () => item && item.type;
+
+  return (
+    <EditItemView
+      endpoint="commands"
+      item={item}
+      setItem={setItem}
+      validate={validate}
+      menu={<SettingsMenu />}
+      breadcrumbs={['settingsTitle', 'sharedSavedCommand']}
+    >
+      {item && (
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="subtitle1">{t('sharedRequired')}</Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.details}>
+            <TextField
+              value={item.description || ''}
+              onChange={(event) => setItem({ ...item, description: event.target.value })}
+              label={t('sharedDescription')}
+            />
+            <BaseCommandView item={item} setItem={setItem} />
+          </AccordionDetails>
+        </Accordion>
+      )}
+    </EditItemView>
+  );
+};
+
+export default CommandPage;

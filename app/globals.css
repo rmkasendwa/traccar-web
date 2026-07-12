@@ -361,6 +361,7 @@ textarea {
   }
 
   .preferences-card {
+    --preferences-field-gap: 1.25rem;
     align-self: start;
     overflow: hidden;
     border: 1px solid var(--color-divider);
@@ -388,13 +389,14 @@ textarea {
   }
 
   .preferences-card > div {
+    gap: var(--preferences-field-gap) !important;
     padding: 1.25rem;
   }
 
   .preferences-card-wide > div {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem !important;
+    gap: var(--preferences-field-gap) !important;
   }
 
   .preferences-card-wide > div > :nth-last-child(-n + 1) {
@@ -405,8 +407,8 @@ textarea {
     display: grid !important;
     grid-column: 1 / -1;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem !important;
-    padding-top: 0.25rem;
+    gap: var(--preferences-field-gap) !important;
+    padding-top: 0;
   }
 
   .preferences-card .preferences-toggle-grid label {

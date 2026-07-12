@@ -1,5 +1,168 @@
-import UsersPage from '@/features/users/pages/UsersPage';
+// @ts-nocheck
+'use client';
+import { useCallback, useReducer, useState } from 'react';
+import { useNavigate } from '@/lib/router';
+import {
+  Table,
+  TableRow,
+  TableCell,
+  TableHead,
+  TableBody,
+  Switch,
+  TableFooter,
+  FormControlLabel,
+} from '@/components/ui';
+import { LoginIcon } from '@/components/ui/icons';
+import { LinkIcon } from '@/components/ui/icons';
+import { useCatch, useAsyncTask, useScrollToLoad, pageSize } from '@/lib/react';
+import { formatBoolean, formatTime } from '@/lib/formatter';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
+import PageLayout from '@/components/layout/PageLayout';
+import SettingsMenu from '@/features/settings/components/SettingsMenu';
+import CollectionFab from '@/features/settings/components/CollectionFab';
+import CollectionActions from '@/features/settings/components/CollectionActions';
+import TableShimmer from '@/components/ui/TableShimmer';
+import { useManager } from '@/lib/permissions';
+import SearchHeader from '@/features/settings/components/SearchHeader';
+import useSettingsStyles from '@/features/settings/hooks/useSettingsStyles';
+import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import UserDevicesValue from '@/features/users/components/UserDevicesValue';
+import CollectionEmptyState from '@/features/settings/components/CollectionEmptyState';
 
-export default function Page() {
-  return <UsersPage />;
-}
+const UsersPage = () => {
+  const { classes } = useSettingsStyles();
+  const navigate = useNavigate();
+  const t = useTranslation();
+
+  const manager = useManager();
+
+  const [reloadKey, reload] = useReducer((k) => k + 1, 0);
+  const [items, setItems] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [hasMore, setHasMore] = useState(true);
+  const [temporary, setTemporary] = useState(false);
+
+  const handleLogin = useCatch(async (userId) => {
+    await fetchOrThrow(`/api/session/${userId}`);
+    window.location.replace('/');
+  });
+
+  const actionLogin = {
+    key: 'login',
+    title: t('loginLogin'),
+    icon: <LoginIcon fontSize="small" />,
+    handler: handleLogin,
+  };
+
+  const actionConnections = {
+    key: 'connections',
+    title: t('sharedConnections'),
+    icon: <LinkIcon fontSize="small" />,
+    handler: (userId) => navigate(`/settings/user/${userId}/connections`),
+  };
+
+  const loadItems = useCallback(
+    async (offset, signal) => {
+      const query = new URLSearchParams({ excludeAttributes: true, limit: pageSize, offset });
+      if (searchKeyword) {
+        query.append('keyword', searchKeyword);
+      }
+      const response = await fetchOrThrow(`/api/users?${query.toString()}`, { signal });
+      const data = await response.json();
+      setItems((previous) => (offset ? [...previous, ...data] : data));
+      setHasMore(data.length >= pageSize);
+    },
+    [searchKeyword],
+  );
+
+  const sentinelRef = useScrollToLoad(() => loadItems(items.length));
+
+  useAsyncTask(
+    async ({ signal }) => {
+      void reloadKey;
+      setItems([]);
+      await loadItems(0, signal);
+    },
+    [reloadKey, loadItems],
+  );
+
+  return (
+    <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'settingsUsers']}>
+      <SearchHeader
+        keyword={searchKeyword}
+        setKeyword={setSearchKeyword}
+        editPath="/settings/user"
+        addLabel="Add user"
+      />
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>{t('sharedName')}</TableCell>
+            <TableCell>{t('userEmail')}</TableCell>
+            <TableCell>{t('userAdmin')}</TableCell>
+            <TableCell>{t('sharedDisabled')}</TableCell>
+            <TableCell>{t('userExpirationTime')}</TableCell>
+            <TableCell>{t('deviceTitle')}</TableCell>
+            <TableCell className={classes.columnAction} />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {!hasMore && items.filter((u) => temporary || !u.temporary).length === 0 && (
+            <CollectionEmptyState
+              colSpan={7}
+              editPath="/settings/user"
+              itemName="users"
+              searchKeyword={searchKeyword}
+            />
+          )}
+          {items
+            .filter((u) => temporary || !u.temporary)
+            .map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.email}</TableCell>
+                <TableCell>{formatBoolean(item.administrator, t)}</TableCell>
+                <TableCell>{formatBoolean(item.disabled, t)}</TableCell>
+                <TableCell>{formatTime(item.expirationTime, 'date')}</TableCell>
+                <TableCell>
+                  <UserDevicesValue userId={item.id} />
+                </TableCell>
+                <TableCell className={classes.columnAction} padding="none">
+                  <CollectionActions
+                    itemId={item.id}
+                    editPath="/settings/user"
+                    endpoint="users"
+                    onReload={reload}
+                    customActions={manager ? [actionLogin, actionConnections] : [actionConnections]}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          {hasMore && (
+            <TableShimmer ref={items.length > 0 ? sentinelRef : null} columns={7} endAction />
+          )}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={7} align="right">
+              <FormControlLabel
+                control={
+                  <Switch
+                    value={temporary}
+                    onChange={(e) => setTemporary(e.target.checked)}
+                    size="small"
+                  />
+                }
+                label={t('userTemporary')}
+                labelPlacement="start"
+              />
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+      <CollectionFab editPath="/settings/user" />
+    </PageLayout>
+  );
+};
+
+export default UsersPage;
