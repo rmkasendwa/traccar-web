@@ -18,7 +18,7 @@ import SplitButton from '@/components/ui/SplitButton';
 import SelectField from '@/components/ui/SelectField';
 import { useRestriction } from '@/lib/permissions';
 import { deviceEquality } from '@/features/devices/lib/deviceEquality';
-import { ChevronsRight, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { ChevronsRight, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
 
 const FIELD_MIN_WIDTH = 224;
 const FIELD_GAP = 12;
@@ -112,22 +112,45 @@ const OverflowFilterRow = ({ children, actions }) => {
             </span>
           </Button>
           {overflowOpen && (
-            <div className="absolute right-0 top-full z-50 mt-3 w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-(--color-divider) bg-(--color-paper) shadow-2xl ring-1 ring-black/5 dark:ring-white/5">
-              <div className="flex items-center justify-between border-b border-(--color-divider) bg-sky-500/5 px-4 py-3">
-                <div>
-                  <p className="text-sm font-bold text-(--color-text)">More criteria</p>
-                  <p className="text-xs text-(--color-muted)">Additional report filters</p>
-                </div>
-                <span className="rounded-full bg-sky-500/10 px-2.5 py-1 text-xs font-bold text-sky-700 dark:text-sky-300">
-                  {overflowFields.length}
-                </span>
-              </div>
-              <div className="flex flex-col gap-4 p-4">
-                {overflowFields.map((field, index) => (
-                  <div key={`overflow-filter-${visibleCount + index}`} className="min-w-0">
-                    {field}
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="More report criteria"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-3 sm:block sm:bg-transparent sm:p-0 sm:backdrop-blur-none"
+              onPointerDown={(event) => {
+                if (event.target === event.currentTarget) setOverflowOpen(false);
+              }}
+            >
+              <div className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-hidden rounded-2xl border border-(--color-divider) bg-(--color-paper) shadow-2xl ring-1 ring-black/5 dark:ring-white/5 sm:w-[min(21rem,calc(100vw-2rem))]">
+                <div className="flex items-center justify-between gap-3 border-b border-(--color-divider) bg-sky-500/5 px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-(--color-text)">More criteria</p>
+                    <p className="truncate text-xs text-(--color-muted)">
+                      Additional report filters
+                    </p>
                   </div>
-                ))}
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span className="rounded-full bg-sky-500/10 px-2.5 py-1 text-xs font-bold text-sky-700 dark:text-sky-300">
+                      {overflowFields.length}
+                    </span>
+                    <Button
+                      variant="text"
+                      color="primary"
+                      onClick={() => setOverflowOpen(false)}
+                      aria-label="Close more report filters"
+                      className="h-8 min-w-8 rounded-lg px-2 text-(--color-muted) hover:bg-sky-500/10 hover:text-sky-700 dark:hover:text-sky-200 sm:hidden"
+                    >
+                      <X size={16} />
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex max-h-[calc(100dvh-7rem)] flex-col gap-4 overflow-y-auto p-4">
+                  {overflowFields.map((field, index) => (
+                    <div key={`overflow-filter-${visibleCount + index}`} className="min-w-0">
+                      {field}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
