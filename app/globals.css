@@ -197,6 +197,12 @@ textarea {
     box-shadow: 0 8px 30px rgb(15 23 42 / 0.06);
   }
 
+  @media (max-width: 900px), (max-height: 760px) {
+    .report-page {
+      border-top: 0;
+    }
+  }
+
   .report-page table thead {
     position: sticky;
     top: 0;

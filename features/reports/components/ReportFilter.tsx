@@ -24,6 +24,7 @@ const FIELD_MIN_WIDTH = 224;
 const FIELD_GAP = 12;
 const OVERFLOW_BUTTON_WIDTH = 40;
 const COMPACT_LABEL_WIDTH = 40;
+const COMPACT_FILTER_MEDIA_QUERY = '(max-width: 900px), (max-height: 760px)';
 
 const flattenChildren = (children) =>
   Children.toArray(children).flatMap((child) =>
@@ -49,7 +50,7 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
       const width = container.clientWidth;
       const actionsWidth = actionsElement.getBoundingClientRect().width;
       const compactLabelVisible =
-        compactLabel && window.matchMedia('(max-width: 700px), (max-height: 760px)').matches;
+        compactLabel && window.matchMedia(COMPACT_FILTER_MEDIA_QUERY).matches;
       const compactLabelWidth = compactLabelVisible ? COMPACT_LABEL_WIDTH + FIELD_GAP : 0;
       const allFieldsWidth = fields.length * FIELD_MIN_WIDTH + fields.length * FIELD_GAP;
 
@@ -103,7 +104,7 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
   return (
     <div ref={containerRef} className="relative flex min-w-0 items-end gap-2 sm:gap-3">
       {compactLabel && (
-        <div className="hidden shrink-0 [@media(max-height:760px)]:block [@media(max-width:700px)]:block">
+        <div className="hidden shrink-0 [@media(max-height:760px)]:block [@media(max-width:900px)]:block">
           {compactLabel}
         </div>
       )}
@@ -179,7 +180,7 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
       )}
       <div
         ref={actionsRef}
-        className="min-w-36 shrink-0 sm:min-w-56 [@media(max-height:760px)]:min-w-36 [@media(max-width:700px)]:min-w-36"
+        className="min-w-36 shrink-0 sm:min-w-56 [@media(max-height:760px)]:min-w-36 [@media(max-width:900px)]:min-w-36"
       >
         {actions}
       </div>
@@ -424,17 +425,17 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
   );
 
   return (
-    <section className="relative isolate border-b border-(--color-divider) bg-(--color-paper) p-2 print:hidden sm:p-3 lg:p-4 [@media(max-height:760px)]:border-b-0 [@media(max-height:760px)]:p-2 [@media(max-width:700px)]:border-b-0">
+    <section className="relative isolate border-b border-(--color-divider) bg-(--color-paper) p-2 print:hidden sm:p-3 lg:p-4 [@media(max-height:760px)]:border-b-0 [@media(max-height:760px)]:p-2 [@media(max-width:900px)]:border-b-0">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-16 bg-linear-to-b from-sky-500/6 to-transparent sm:h-24"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-16 bg-linear-to-b from-sky-500/6 to-transparent sm:h-24 [@media(max-height:760px)]:hidden [@media(max-width:900px)]:hidden"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-8 top-0 z-0 hidden h-24 w-64 rounded-full bg-sky-400/5 blur-3xl sm:block"
+        className="pointer-events-none absolute left-8 top-0 z-0 hidden h-24 w-64 rounded-full bg-sky-400/5 blur-3xl sm:block [@media(max-height:760px)]:hidden [@media(max-width:900px)]:hidden"
       />
       <div className="relative z-10 flex flex-col gap-2 lg:flex-row lg:items-end xl:gap-3">
-        <div className="flex shrink-0 items-center gap-2.5 lg:w-56 lg:self-center xl:w-64 [@media(max-height:760px)]:sr-only [@media(max-width:700px)]:sr-only">
+        <div className="flex shrink-0 items-center gap-2.5 lg:w-56 lg:self-center xl:w-64 [@media(max-height:760px)]:hidden [@media(max-width:900px)]:hidden">
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/20 ring-1 ring-white/20 sm:h-10 sm:w-10">
             <SlidersHorizontal size={18} strokeWidth={2.25} aria-hidden="true" />
           </span>
@@ -447,7 +448,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
             </p>
           </div>
         </div>
-        <div className="min-w-0 flex-1 rounded-xl border border-(--color-divider) bg-(--color-background)/35 p-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] sm:rounded-2xl sm:p-3 [@media(max-height:760px)]:rounded-none [@media(max-height:760px)]:border-0 [@media(max-height:760px)]:bg-transparent [@media(max-height:760px)]:p-0 [@media(max-width:700px)]:rounded-none [@media(max-width:700px)]:border-0 [@media(max-width:700px)]:bg-transparent [@media(max-width:700px)]:p-0">
+        <div className="min-w-0 flex-1 rounded-xl border border-(--color-divider) bg-(--color-background)/35 p-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] sm:rounded-2xl sm:p-3 [@media(max-height:760px)]:rounded-none [@media(max-height:760px)]:border-0 [@media(max-height:760px)]:bg-transparent [@media(max-height:760px)]:p-0 [@media(max-width:900px)]:rounded-none [@media(max-width:900px)]:border-0 [@media(max-width:900px)]:bg-transparent [@media(max-width:900px)]:p-0">
           <OverflowFilterRow
             actions={reportActions}
             compactLabel={
@@ -463,7 +464,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
             {deviceType !== 'none' && (
               <div className="min-w-0">
                 <SelectField
-                  className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&>button]:min-h-10"
+                  className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:900px)]:[&>span:first-child]:sr-only [@media(max-width:900px)]:[&>button]:min-h-10"
                   label={t(deviceType === 'multiple' ? 'deviceTitle' : 'reportDevice')}
                   data={
                     deviceType === 'multiple'
@@ -488,7 +489,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
             {deviceType === 'multiple' && (
               <div className="min-w-0">
                 <SelectField
-                  className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&>button]:min-h-10"
+                  className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:900px)]:[&>span:first-child]:sr-only [@media(max-width:900px)]:[&>button]:min-h-10"
                   label={t('settingsGroups')}
                   data={groupList}
                   value={groupIds}
@@ -506,7 +507,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
               <>
                 <div className="min-w-0">
                   <SelectField
-                    className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&>button]:min-h-10"
+                    className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:900px)]:[&>span:first-child]:sr-only [@media(max-width:900px)]:[&>button]:min-h-10"
                     label={t('reportPeriod')}
                     data={periodOptions}
                     value={period}
@@ -517,7 +518,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
                 {period === 'custom' && (
                   <div className="min-w-0">
                     <TextField
-                      className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&_input]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&_input]:min-h-10"
+                      className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&_input]:min-h-10 [@media(max-width:900px)]:[&>span:first-child]:sr-only [@media(max-width:900px)]:[&_input]:min-h-10"
                       label={t('reportFrom')}
                       size="small"
                       type="datetime-local"
@@ -530,7 +531,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
                 {period === 'custom' && (
                   <div className="min-w-0">
                     <TextField
-                      className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&_input]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&_input]:min-h-10"
+                      className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&_input]:min-h-10 [@media(max-width:900px)]:[&>span:first-child]:sr-only [@media(max-width:900px)]:[&_input]:min-h-10"
                       label={t('reportTo')}
                       size="small"
                       type="datetime-local"
@@ -545,7 +546,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
               <>
                 <div className="min-w-0">
                   <TextField
-                    className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&_input]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&_input]:min-h-10"
+                    className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&_input]:min-h-10 [@media(max-width:900px)]:[&>span:first-child]:sr-only [@media(max-width:900px)]:[&_input]:min-h-10"
                     value={description || ''}
                     onChange={(event) => setDescription(event.target.value)}
                     label={t('sharedDescription')}
@@ -555,7 +556,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
                 </div>
                 <div className="min-w-0">
                   <SelectField
-                    className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&>button]:min-h-10"
+                    className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:900px)]:[&>span:first-child]:sr-only [@media(max-width:900px)]:[&>button]:min-h-10"
                     value={calendarId}
                     onChange={(event) => setCalendarId(Number(event.target.value))}
                     endpoint="/api/calendars"
