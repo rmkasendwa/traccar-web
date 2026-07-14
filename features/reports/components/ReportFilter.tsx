@@ -23,6 +23,7 @@ import { ChevronsRight, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
 const FIELD_MIN_WIDTH = 224;
 const FIELD_GAP = 12;
 const OVERFLOW_BUTTON_WIDTH = 40;
+const COMPACT_LABEL_WIDTH = 40;
 
 const flattenChildren = (children) =>
   Children.toArray(children).flatMap((child) =>
@@ -47,14 +48,18 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
     const updateVisibleCount = () => {
       const width = container.clientWidth;
       const actionsWidth = actionsElement.getBoundingClientRect().width;
+      const compactLabelVisible =
+        compactLabel && window.matchMedia('(max-width: 700px), (max-height: 760px)').matches;
+      const compactLabelWidth = compactLabelVisible ? COMPACT_LABEL_WIDTH + FIELD_GAP : 0;
       const allFieldsWidth = fields.length * FIELD_MIN_WIDTH + fields.length * FIELD_GAP;
 
-      if (width >= actionsWidth + allFieldsWidth) {
+      if (width >= compactLabelWidth + actionsWidth + allFieldsWidth) {
         setVisibleCount(fields.length);
         return;
       }
 
-      const available = width - actionsWidth - OVERFLOW_BUTTON_WIDTH - FIELD_GAP * 2;
+      const available =
+        width - compactLabelWidth - actionsWidth - OVERFLOW_BUTTON_WIDTH - FIELD_GAP * 2;
       setVisibleCount(
         Math.max(
           0,
@@ -168,7 +173,10 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
           )}
         </div>
       )}
-      <div ref={actionsRef} className="min-w-44 shrink-0 sm:min-w-56">
+      <div
+        ref={actionsRef}
+        className="min-w-36 shrink-0 sm:min-w-56 [@media(max-height:760px)]:min-w-36 [@media(max-width:700px)]:min-w-36"
+      >
         {actions}
       </div>
     </div>
