@@ -31,7 +31,7 @@ const flattenChildren = (children) =>
       : [child],
   );
 
-const OverflowFilterRow = ({ children, actions }) => {
+const OverflowFilterRow = ({ children, actions, compactLabel }) => {
   const fields = flattenChildren(children);
   const containerRef = useRef(null);
   const actionsRef = useRef(null);
@@ -96,6 +96,11 @@ const OverflowFilterRow = ({ children, actions }) => {
 
   return (
     <div ref={containerRef} className="relative flex min-w-0 items-end gap-2 sm:gap-3">
+      {compactLabel && (
+        <div className="hidden shrink-0 [@media(max-height:760px)]:block [@media(max-width:700px)]:block">
+          {compactLabel}
+        </div>
+      )}
       {fields.slice(0, visibleCount).map((field, index) => (
         <div key={`visible-filter-${index}`} className="min-w-56 flex-1">
           {field}
@@ -407,7 +412,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
   );
 
   return (
-    <section className="relative isolate border-b border-(--color-divider) bg-(--color-paper) p-2 print:hidden sm:p-3 lg:p-4 [@media(max-height:760px)]:p-2">
+    <section className="relative isolate border-b border-(--color-divider) bg-(--color-paper) p-2 print:hidden sm:p-3 lg:p-4 [@media(max-height:760px)]:border-b-0 [@media(max-height:760px)]:p-2 [@media(max-width:700px)]:border-b-0">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 z-0 h-16 bg-linear-to-b from-sky-500/6 to-transparent sm:h-24"
@@ -431,7 +436,18 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
           </div>
         </div>
         <div className="min-w-0 flex-1 rounded-xl border border-(--color-divider) bg-(--color-background)/35 p-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] sm:rounded-2xl sm:p-3 [@media(max-height:760px)]:rounded-none [@media(max-height:760px)]:border-0 [@media(max-height:760px)]:bg-transparent [@media(max-height:760px)]:p-0 [@media(max-width:700px)]:rounded-none [@media(max-width:700px)]:border-0 [@media(max-width:700px)]:bg-transparent [@media(max-width:700px)]:p-0">
-          <OverflowFilterRow actions={reportActions}>
+          <OverflowFilterRow
+            actions={reportActions}
+            compactLabel={
+              <span
+                className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500/10 text-sky-600 ring-1 ring-sky-500/25 dark:text-sky-300"
+                aria-label="Report criteria"
+                title="Report criteria"
+              >
+                <SlidersHorizontal size={18} strokeWidth={2.25} aria-hidden="true" />
+              </span>
+            }
+          >
             {deviceType !== 'none' && (
               <div className="min-w-0">
                 <SelectField
