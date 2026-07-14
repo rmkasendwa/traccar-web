@@ -95,7 +95,7 @@ const OverflowFilterRow = ({ children, actions }) => {
   }, [overflowOpen]);
 
   return (
-    <div ref={containerRef} className="relative flex min-w-0 items-end gap-3">
+    <div ref={containerRef} className="relative flex min-w-0 items-end gap-2 sm:gap-3">
       {fields.slice(0, visibleCount).map((field, index) => (
         <div key={`visible-filter-${index}`} className="min-w-56 flex-1">
           {field}
@@ -110,7 +110,7 @@ const OverflowFilterRow = ({ children, actions }) => {
             aria-label="Show more report filters"
             aria-expanded={overflowOpen}
             title={`${overflowFields.length} more ${overflowFields.length === 1 ? 'filter' : 'filters'}`}
-            className="group relative h-11 min-w-11 rounded-xl border-sky-500/40 bg-sky-500/5 px-2 text-sky-600 shadow-sm transition-all hover:-translate-y-0.5 hover:border-sky-500 hover:bg-sky-500/10 hover:shadow-md dark:text-sky-300"
+            className="group relative h-10 min-w-10 rounded-xl border-sky-500/40 bg-sky-500/5 px-2 text-sky-600 shadow-sm transition-all hover:-translate-y-0.5 hover:border-sky-500 hover:bg-sky-500/10 hover:shadow-md dark:text-sky-300 [@media(max-height:760px)]:h-9 [@media(max-height:760px)]:min-w-9"
           >
             <ChevronsRight size={18} className="transition-transform group-hover:translate-x-0.5" />
             <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full border-2 border-(--color-paper) bg-sky-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm">
@@ -162,7 +162,7 @@ const OverflowFilterRow = ({ children, actions }) => {
           )}
         </div>
       )}
-      <div ref={actionsRef} className="min-w-56 shrink-0">
+      <div ref={actionsRef} className="min-w-44 shrink-0 sm:min-w-56">
         {actions}
       </div>
     </div>
@@ -359,16 +359,17 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
   };
 
   const reportActions = (
-    <div className="flex min-w-0 gap-2">
+    <div className="flex min-w-0 gap-1.5 sm:gap-2">
       <div className="min-w-0 flex-1">
         {Object.keys(options).length === 1 ? (
           <Button
             fullWidth
+            size="small"
             variant="contained"
             color="primary"
             disabled={disabled}
             onClick={onClick}
-            className="rounded-xl bg-sky-600 font-semibold shadow-sm hover:bg-sky-500"
+            className="rounded-xl bg-sky-600 font-semibold shadow-sm hover:bg-sky-500 sm:min-h-10"
           >
             <Typography variant="button" noWrap>
               {t(loading ? 'sharedLoading' : 'reportShow')}
@@ -384,18 +385,19 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
             selected={selectedOption}
             setSelected={onSelected}
             options={options}
-            className="[&>button]:bg-sky-600 [&>button]:font-semibold [&>button]:shadow-sm [&>button:hover]:bg-sky-500 [&>button:first-child]:rounded-l-xl [&>button:last-child]:rounded-r-xl"
+            className="[&>button]:min-h-9 [&>button]:bg-sky-600 [&>button]:font-semibold [&>button]:shadow-sm [&>button:hover]:bg-sky-500 [&>button:first-child]:rounded-l-xl [&>button:last-child]:rounded-r-xl sm:[&>button]:min-h-10"
           />
         )}
       </div>
       {searchParams.size > 0 && (
         <Button
+          size="small"
           variant="outlined"
           color="primary"
           onClick={resetFilters}
           aria-label="Reset report filters"
           title="Reset filters"
-          className="rounded-xl border-(--color-divider) px-3 text-(--color-muted) hover:border-sky-500 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-sky-950"
+          className="rounded-xl border-(--color-divider) px-2.5 text-(--color-muted) hover:border-sky-500 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-sky-950 sm:min-h-10 sm:px-3"
         >
           <RotateCcw size={16} />
         </Button>
@@ -404,30 +406,30 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
   );
 
   return (
-    <section className="relative isolate border-b border-(--color-divider) bg-(--color-paper) p-3 print:hidden sm:p-4">
+    <section className="relative isolate border-b border-(--color-divider) bg-(--color-paper) p-2 print:hidden sm:p-3 lg:p-4 [@media(max-height:760px)]:p-2">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-28 bg-linear-to-b from-sky-500/6 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-16 bg-linear-to-b from-sky-500/6 to-transparent sm:h-24"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-8 top-0 z-0 h-24 w-64 rounded-full bg-sky-400/5 blur-3xl"
+        className="pointer-events-none absolute left-8 top-0 z-0 hidden h-24 w-64 rounded-full bg-sky-400/5 blur-3xl sm:block"
       />
-      <div className="relative z-10 flex flex-col gap-3 xl:flex-row xl:items-end">
-        <div className="flex shrink-0 items-center gap-3 xl:w-64 xl:self-center">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/20 ring-1 ring-white/20">
+      <div className="relative z-10 flex flex-col gap-2 lg:flex-row lg:items-end xl:gap-3">
+        <div className="flex shrink-0 items-center gap-2.5 lg:w-56 lg:self-center xl:w-64">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/20 ring-1 ring-white/20 sm:h-10 sm:w-10">
             <SlidersHorizontal size={18} strokeWidth={2.25} aria-hidden="true" />
           </span>
           <div className="min-w-0">
             <h2 className="text-sm font-bold tracking-tight text-(--color-text)">
               Report criteria
             </h2>
-            <p className="truncate text-xs text-(--color-muted) xl:whitespace-normal">
+            <p className="hidden truncate text-xs text-(--color-muted) sm:block lg:hidden xl:block xl:whitespace-normal [@media(max-height:760px)]:hidden">
               Choose what to include, then generate your report.
             </p>
           </div>
         </div>
-        <div className="min-w-0 flex-1 rounded-2xl border border-(--color-divider) bg-(--color-background)/35 p-2.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] sm:p-3">
+        <div className="min-w-0 flex-1 rounded-xl border border-(--color-divider) bg-(--color-background)/35 p-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] sm:rounded-2xl sm:p-3 [@media(max-height:760px)]:rounded-none [@media(max-height:760px)]:border-0 [@media(max-height:760px)]:bg-transparent [@media(max-height:760px)]:p-0 [@media(max-width:700px)]:rounded-none [@media(max-width:700px)]:border-0 [@media(max-width:700px)]:bg-transparent [@media(max-width:700px)]:p-0">
           <OverflowFilterRow actions={reportActions}>
             {deviceType !== 'none' && (
               <div className="min-w-0">
