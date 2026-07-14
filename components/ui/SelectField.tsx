@@ -169,6 +169,7 @@ const SelectField = ({
             <div
               ref={refs.setFloating}
               style={floatingStyles}
+              data-select-field-popover
               className="z-100 overflow-hidden rounded-xl border border-(--color-divider) bg-(--color-paper) p-1.5 text-(--color-text) shadow-2xl shadow-slate-950/20"
               {...getFloatingProps()}
             >

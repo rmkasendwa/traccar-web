@@ -82,7 +82,13 @@ const OverflowFilterRow = ({ children, actions }) => {
   useEffect(() => {
     if (!overflowOpen) return undefined;
     const close = (event) => {
-      if (!overflowRef.current?.contains(event.target)) setOverflowOpen(false);
+      if (
+        event.target.closest('[data-select-field-popover]') ||
+        overflowRef.current?.contains(event.target)
+      ) {
+        return;
+      }
+      setOverflowOpen(false);
     };
     document.addEventListener('pointerdown', close);
     return () => document.removeEventListener('pointerdown', close);
