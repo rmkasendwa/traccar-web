@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 import ThemeModeControl from '@/components/ui/ThemeModeControl';
+import LanguageControl from '@/components/ui/LanguageControl';
 import { SectionShellProvider } from '@/components/layout/SectionShellContext';
 import AccountAvatarMenu from '@/components/layout/AccountAvatarMenu';
 
@@ -179,6 +180,7 @@ export default function SectionShell({
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
+              <LanguageControl />
               <ThemeModeControl compact popover />
               <AccountAvatarMenu />
             </div>
