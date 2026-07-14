@@ -60,9 +60,10 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
 
       const available =
         width - compactLabelWidth - actionsWidth - OVERFLOW_BUTTON_WIDTH - FIELD_GAP * 2;
+      const minimumVisibleFields = fields.length ? 1 : 0;
       setVisibleCount(
         Math.max(
-          0,
+          minimumVisibleFields,
           Math.min(
             fields.length - 1,
             Math.floor((available + FIELD_GAP) / (FIELD_MIN_WIDTH + FIELD_GAP)),
@@ -107,7 +108,10 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
         </div>
       )}
       {fields.slice(0, visibleCount).map((field, index) => (
-        <div key={`visible-filter-${index}`} className="min-w-56 flex-1">
+        <div
+          key={`visible-filter-${index}`}
+          className="min-w-0 flex-1 sm:min-w-56 [@media(min-width:701px)_and_(min-height:761px)]:min-w-56"
+        >
           {field}
         </div>
       ))}
