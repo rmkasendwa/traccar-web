@@ -104,13 +104,14 @@ const OverflowFilterRow = ({ children, actions }) => {
       {overflowFields.length > 0 && (
         <div ref={overflowRef} className="relative shrink-0">
           <Button
+            size="small"
             variant="outlined"
             color="primary"
             onClick={() => setOverflowOpen((open) => !open)}
             aria-label="Show more report filters"
             aria-expanded={overflowOpen}
             title={`${overflowFields.length} more ${overflowFields.length === 1 ? 'filter' : 'filters'}`}
-            className="group relative h-10 min-w-10 rounded-xl border-sky-500/40 bg-sky-500/5 px-2 text-sky-600 shadow-sm transition-all hover:-translate-y-0.5 hover:border-sky-500 hover:bg-sky-500/10 hover:shadow-md dark:text-sky-300 [@media(max-height:760px)]:h-9 [@media(max-height:760px)]:min-w-9"
+            className="group relative h-10 min-h-10 min-w-10 rounded-xl border-sky-500/40 bg-sky-500/5 px-2 text-sky-600 shadow-sm transition-all hover:-translate-y-0.5 hover:border-sky-500 hover:bg-sky-500/10 hover:shadow-md dark:text-sky-300"
           >
             <ChevronsRight size={18} className="transition-transform group-hover:translate-x-0.5" />
             <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full border-2 border-(--color-paper) bg-sky-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm">
@@ -369,7 +370,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
             color="primary"
             disabled={disabled}
             onClick={onClick}
-            className="rounded-xl bg-sky-600 font-semibold shadow-sm hover:bg-sky-500 sm:min-h-10"
+            className="min-h-10 rounded-xl bg-sky-600 font-semibold shadow-sm hover:bg-sky-500"
           >
             <Typography variant="button" noWrap>
               {t(loading ? 'sharedLoading' : 'reportShow')}
@@ -385,7 +386,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
             selected={selectedOption}
             setSelected={onSelected}
             options={options}
-            className="[&>button]:min-h-9 [&>button]:bg-sky-600 [&>button]:font-semibold [&>button]:shadow-sm [&>button:hover]:bg-sky-500 [&>button:first-child]:rounded-l-xl [&>button:last-child]:rounded-r-xl sm:[&>button]:min-h-10"
+            className="[&>button]:min-h-10 [&>button]:bg-sky-600 [&>button]:font-semibold [&>button]:shadow-sm [&>button:hover]:bg-sky-500 [&>button:first-child]:rounded-l-xl [&>button:last-child]:rounded-r-xl"
           />
         )}
       </div>
@@ -397,7 +398,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
           onClick={resetFilters}
           aria-label="Reset report filters"
           title="Reset filters"
-          className="rounded-xl border-(--color-divider) px-2.5 text-(--color-muted) hover:border-sky-500 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-sky-950 sm:min-h-10 sm:px-3"
+          className="min-h-10 rounded-xl border-(--color-divider) px-2.5 text-(--color-muted) hover:border-sky-500 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-sky-950 sm:px-3"
         >
           <RotateCcw size={16} />
         </Button>
@@ -416,7 +417,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
         className="pointer-events-none absolute left-8 top-0 z-0 hidden h-24 w-64 rounded-full bg-sky-400/5 blur-3xl sm:block"
       />
       <div className="relative z-10 flex flex-col gap-2 lg:flex-row lg:items-end xl:gap-3">
-        <div className="flex shrink-0 items-center gap-2.5 lg:w-56 lg:self-center xl:w-64">
+        <div className="flex shrink-0 items-center gap-2.5 lg:w-56 lg:self-center xl:w-64 [@media(max-height:760px)]:sr-only [@media(max-width:700px)]:sr-only">
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-linear-to-br from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/20 ring-1 ring-white/20 sm:h-10 sm:w-10">
             <SlidersHorizontal size={18} strokeWidth={2.25} aria-hidden="true" />
           </span>
@@ -434,6 +435,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
             {deviceType !== 'none' && (
               <div className="min-w-0">
                 <SelectField
+                  className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&>button]:min-h-10"
                   label={t(deviceType === 'multiple' ? 'deviceTitle' : 'reportDevice')}
                   data={
                     deviceType === 'multiple'
@@ -458,6 +460,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
             {deviceType === 'multiple' && (
               <div className="min-w-0">
                 <SelectField
+                  className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&>button]:min-h-10"
                   label={t('settingsGroups')}
                   data={groupList}
                   value={groupIds}
@@ -475,6 +478,7 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
               <>
                 <div className="min-w-0">
                   <SelectField
+                    className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&>button]:min-h-10"
                     label={t('reportPeriod')}
                     data={periodOptions}
                     value={period}
@@ -485,7 +489,9 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
                 {period === 'custom' && (
                   <div className="min-w-0">
                     <TextField
+                      className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&_input]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&_input]:min-h-10"
                       label={t('reportFrom')}
+                      size="small"
                       type="datetime-local"
                       value={customFrom}
                       onChange={(e) => setCustomFrom(e.target.value)}
@@ -496,7 +502,9 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
                 {period === 'custom' && (
                   <div className="min-w-0">
                     <TextField
+                      className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&_input]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&_input]:min-h-10"
                       label={t('reportTo')}
+                      size="small"
                       type="datetime-local"
                       value={customTo}
                       onChange={(e) => setCustomTo(e.target.value)}
@@ -509,14 +517,17 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
               <>
                 <div className="min-w-0">
                   <TextField
+                    className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&_input]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&_input]:min-h-10"
                     value={description || ''}
                     onChange={(event) => setDescription(event.target.value)}
                     label={t('sharedDescription')}
+                    size="small"
                     fullWidth
                   />
                 </div>
                 <div className="min-w-0">
                   <SelectField
+                    className="[@media(max-height:760px)]:[&>span:first-child]:sr-only [@media(max-height:760px)]:[&>button]:min-h-10 [@media(max-width:700px)]:[&>span:first-child]:sr-only [@media(max-width:700px)]:[&>button]:min-h-10"
                     value={calendarId}
                     onChange={(event) => setCalendarId(Number(event.target.value))}
                     endpoint="/api/calendars"
