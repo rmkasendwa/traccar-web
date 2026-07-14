@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, ChevronsUpDown } from 'lucide-react';
 import type { ReactNode } from 'react';
 import ThemeModeControl from '@/components/ui/ThemeModeControl';
+import LanguageControl from '@/components/ui/LanguageControl';
 
 type ReplayPanelProps = {
   hasReplay: boolean;
@@ -48,6 +49,7 @@ export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanel
                 <span className="sr-only">Replay loaded</span>
               </span>
             )}
+            <LanguageControl onDark />
             <ThemeModeControl compact onDark popover />
             <label
               htmlFor="replay-panel-expanded"

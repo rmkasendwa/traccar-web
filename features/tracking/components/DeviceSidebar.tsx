@@ -19,6 +19,7 @@ import { useNavigate } from '@/lib/router';
 import { devicesActions } from '@/store';
 import FloatingPanel from '@/features/tracking/components/FloatingPanel';
 import ThemeModeControl from '@/components/ui/ThemeModeControl';
+import LanguageControl from '@/components/ui/LanguageControl';
 
 dayjs.extend(relativeTime);
 
@@ -130,7 +131,10 @@ export default function DeviceSidebar({
               {socket === false ? 'Reconnecting' : 'Live tracking'}
             </p>
           </div>
-          <ThemeModeControl compact popover />
+          <div className="flex shrink-0 items-center gap-2">
+            <LanguageControl />
+            <ThemeModeControl compact popover />
+          </div>
         </div>
 
         <div className="flex gap-2">
