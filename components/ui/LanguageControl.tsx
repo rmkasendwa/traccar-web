@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import type { Placement } from '@floating-ui/react';
 import { Check, Languages, Search } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import FloatingPanel from '@/features/tracking/components/FloatingPanel';
@@ -18,6 +19,7 @@ type LanguageOption = Language & {
 type LanguageControlProps = {
   onDark?: boolean;
   hideWhenLoginLanguageDisabled?: boolean;
+  placement?: Placement;
 };
 
 type SessionState = {
@@ -34,6 +36,7 @@ const countryFlag = (country: string) =>
 export default function LanguageControl({
   onDark = false,
   hideWhenLoginLanguageDisabled = false,
+  placement = 'bottom-end',
 }: LanguageControlProps) {
   const t = useTranslation() as (key: string) => string;
   const { languages, language, setLocalLanguage } = useLocalization() as {
@@ -73,7 +76,7 @@ export default function LanguageControl({
     <FloatingPanel
       open={open}
       onOpenChange={setOpen}
-      placement="bottom-end"
+      placement={placement}
       className="w-64 p-1.5"
       trigger={(props, ref) => (
         <button

@@ -132,7 +132,7 @@ export default function DeviceSidebar({
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <LanguageControl />
+            <LanguageControl placement="bottom-start" />
             <ThemeModeControl compact popover />
           </div>
         </div>

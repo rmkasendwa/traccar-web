@@ -49,7 +49,7 @@ export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanel
                 <span className="sr-only">Replay loaded</span>
               </span>
             )}
-            <LanguageControl onDark />
+            <LanguageControl onDark placement="bottom-start" />
             <ThemeModeControl compact onDark popover />
             <label
               htmlFor="replay-panel-expanded"
