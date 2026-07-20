@@ -113,7 +113,7 @@ const NotificationsPage = () => {
           )}
         </TableBody>
       </Table>
-      <CollectionFab editPath="/settings/notification" label="Add notification" />
+      <CollectionFab editPath="/settings/notification" label={t('settingsAddNotification')} />
     </PageLayout>
   );
 };

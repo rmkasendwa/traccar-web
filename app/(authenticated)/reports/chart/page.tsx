@@ -214,8 +214,8 @@ const ChartReportPage = () => {
       {!loading && !error && !items.length && <ReportEmptyState />}
       {!loading && !error && items.length > 0 && !chartItems.length && (
         <ReportEmptyState
-          title="No valid timeline data"
-          description="The selected timestamp is missing or invalid for this report."
+          title={t('reportNoValidTimelineData')}
+          description={t('reportNoValidTimelineDataDescription')}
         />
       )}
       {!loading && !error && chartItems.length > 0 && (

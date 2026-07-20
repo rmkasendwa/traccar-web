@@ -103,7 +103,7 @@ export default function LanguageControl({
           autoFocus
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search..."
+          placeholder={t('sharedSearchPlaceholder')}
           className="min-h-9 min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
         />
       </label>
@@ -134,7 +134,9 @@ export default function LanguageControl({
           );
         })}
         {!filteredLanguages.length && (
-          <p className="px-3 py-5 text-center text-sm text-(--color-muted)">No matches</p>
+          <p className="px-3 py-5 text-center text-sm text-(--color-muted)">
+            {t('sharedNoMatches')}
+          </p>
         )}
       </div>
     </FloatingPanel>

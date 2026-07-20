@@ -20,6 +20,7 @@ import { devicesActions } from '@/store';
 import FloatingPanel from '@/features/tracking/components/FloatingPanel';
 import ThemeModeControl from '@/components/ui/ThemeModeControl';
 import LanguageControl from '@/components/ui/LanguageControl';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 dayjs.extend(relativeTime);
 
@@ -29,10 +30,12 @@ const statusStyles: Record<string, string> = {
   unknown: 'bg-amber-400 shadow-amber-400/40',
 };
 
-const statusLabel = (device: any) => {
-  if (device.status === 'online') return 'Online now';
-  if (device.lastUpdate) return `Updated ${dayjs(device.lastUpdate).fromNow()}`;
-  return device.status === 'offline' ? 'Offline' : 'No recent update';
+const statusLabel = (device: any, t: (key: string) => string) => {
+  if (device.status === 'online') return t('deviceOnlineNow');
+  if (device.lastUpdate) {
+    return t('deviceUpdatedRelative').replace('{time}', dayjs(device.lastUpdate).fromNow());
+  }
+  return device.status === 'offline' ? t('deviceStatusOffline') : t('deviceNoRecentUpdate');
 };
 
 type DeviceSidebarProps = {
@@ -46,6 +49,7 @@ type DeviceSidebarProps = {
 };
 
 const BatteryState = ({ deviceId, selected }: { deviceId: number; selected: boolean }) => {
+  const t = useTranslation();
   const position = useSelector((state: any) => state.session.positions[deviceId]);
   const batteryLevel = position?.attributes?.batteryLevel;
   const charging = position?.attributes?.charge;
@@ -69,11 +73,14 @@ const BatteryState = ({ deviceId, selected }: { deviceId: number; selected: bool
         ? 'text-amber-600 dark:text-amber-400'
         : 'text-emerald-600 dark:text-emerald-400';
 
+  const batteryTitle = t('deviceBatteryLevel').replace('{level}', String(Math.round(batteryLevel)));
+  const chargingText = t('deviceCharging');
+
   return (
     <span
       className={`flex shrink-0 items-center gap-1 text-[0.68rem] font-semibold tabular-nums ${color}`}
-      title={`Battery level: ${Math.round(batteryLevel)}%${charging ? ' · charging' : ''}`}
-      aria-label={`Battery level ${Math.round(batteryLevel)} percent${charging ? ', charging' : ''}`}
+      title={`${batteryTitle}${charging ? ` · ${chargingText}` : ''}`}
+      aria-label={`${t('deviceBatteryLevelA11y').replace('{level}', String(Math.round(batteryLevel)))}${charging ? `, ${chargingText}` : ''}`}
     >
       <Icon size={16} strokeWidth={2} />
       {Math.round(batteryLevel)}%
@@ -92,6 +99,7 @@ export default function DeviceSidebar({
 }: DeviceSidebarProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const t = useTranslation();
   const selectedId = useSelector((state: any) => state.devices.selectedId);
   const socket = useSelector((state: any) => state.session.socket);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -117,7 +125,7 @@ export default function DeviceSidebar({
       >
         <div className="mb-3 flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
-            <h1 className="text-lg font-semibold tracking-tight">Devices</h1>
+            <h1 className="text-lg font-semibold tracking-tight">{t('deviceDevices')}</h1>
             <p
               className={`flex items-center gap-1.5 whitespace-nowrap text-xs font-medium ${
                 socket === false ? 'text-rose-600 dark:text-rose-300' : 'text-(--color-muted)'
@@ -128,7 +136,7 @@ export default function DeviceSidebar({
                   socket === false ? 'bg-rose-400' : 'bg-emerald-400'
                 }`}
               />
-              {socket === false ? 'Reconnecting' : 'Live tracking'}
+              {socket === false ? t('deviceStatusReconnecting') : t('deviceLiveTracking')}
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -144,8 +152,8 @@ export default function DeviceSidebar({
               value={keyword}
               onChange={(event) => onKeywordChange(event.target.value)}
               className="h-10 min-w-0 flex-1 bg-transparent text-sm text-(--color-text) outline-none placeholder:text-(--color-muted)"
-              placeholder="Search devices"
-              aria-label="Search devices"
+              placeholder={t('deviceSearch')}
+              aria-label={t('deviceSearch')}
             />
           </label>
           <FloatingPanel
@@ -162,7 +170,7 @@ export default function DeviceSidebar({
                     ? 'border-sky-300 bg-sky-50 text-sky-700 dark:border-sky-400/50 dark:bg-sky-400/15 dark:text-sky-300'
                     : 'border-(--color-divider) bg-white text-(--color-muted) shadow-sm hover:bg-(--color-surface-hover) dark:bg-(--color-surface-subtle) dark:shadow-none'
                 }`}
-                aria-label="Filter devices"
+                aria-label={t('deviceFilter')}
               >
                 <SlidersHorizontal size={18} />
                 {statusFilter.length > 0 && (
@@ -172,8 +180,8 @@ export default function DeviceSidebar({
             )}
           >
             <div className="px-2 pb-2 pt-1">
-              <p className="text-sm font-semibold">Device status</p>
-              <p className="mt-0.5 text-xs text-(--color-muted)">Show one or more states</p>
+              <p className="text-sm font-semibold">{t('deviceStatus')}</p>
+              <p className="mt-0.5 text-xs text-(--color-muted)">{t('deviceStatusHint')}</p>
             </div>
             {['online', 'offline', 'unknown'].map((status) => {
               const count = allDevices.filter((device) => device.status === status).length;
@@ -189,7 +197,9 @@ export default function DeviceSidebar({
                     className="ui-checkbox h-4 w-4 cursor-pointer"
                   />
                   <span className={`h-2 w-2 rounded-full ${statusStyles[status]}`} />
-                  <span className="flex-1 capitalize">{status}</span>
+                  <span className="flex-1 capitalize">
+                    {t(`deviceStatus${status[0].toUpperCase()}${status.slice(1)}`)}
+                  </span>
                   <span className="text-xs text-(--color-muted)">{count}</span>
                 </label>
               );
@@ -200,7 +210,7 @@ export default function DeviceSidebar({
                 onClick={() => onStatusFilterChange([])}
                 className="mt-1 w-full rounded-lg px-2 py-2 text-sm font-medium text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-950"
               >
-                Clear filters
+                {t('deviceClearFilters')}
               </button>
             )}
           </FloatingPanel>
@@ -208,7 +218,7 @@ export default function DeviceSidebar({
             type="button"
             onClick={() => navigate('/settings/device')}
             className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500 text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-400"
-            aria-label="Add device"
+            aria-label={t('deviceAdd')}
           >
             <Plus size={19} />
           </button>
@@ -217,7 +227,7 @@ export default function DeviceSidebar({
 
       <div className="min-h-0 flex-1 overflow-y-auto bg-slate-50/60 px-2 py-3 [scrollbar-color:#cbd5e1_transparent] dark:bg-transparent dark:[scrollbar-color:#334155_transparent]">
         {devices.length > 0 ? (
-          <div role="listbox" aria-label="Devices" className="space-y-1">
+          <div role="listbox" aria-label={t('deviceDevices')} className="space-y-1">
             {devices.map((device) => {
               const selected = selectedId === device.id;
               return (
@@ -250,7 +260,7 @@ export default function DeviceSidebar({
                       className={`mt-0.5 block truncate text-xs ${selected ? 'text-sky-100' : 'text-(--color-muted)'}`}
                       suppressHydrationWarning
                     >
-                      {statusLabel(device)}
+                      {statusLabel(device, t)}
                       <time className="sr-only">{clock}</time>
                     </span>
                   </span>
@@ -272,19 +282,21 @@ export default function DeviceSidebar({
               <Filter size={22} />
             </span>
             <p className="mt-4 text-sm font-semibold text-(--color-text)">
-              {allDevices.length ? 'No matching devices' : 'No devices yet'}
+              {allDevices.length ? t('deviceNoMatching') : t('deviceNoDevices')}
             </p>
             <p className="mt-1 text-xs leading-5 text-(--color-muted)">
               {allDevices.length
-                ? 'Try another search or clear the active status filters.'
-                : 'Add your first tracker to see it here and on the map.'}
+                ? t('deviceNoMatchingDescription')
+                : t('deviceNoDevicesDescription')}
             </p>
           </div>
         )}
       </div>
 
       <div className="border-t border-(--color-divider) bg-white/70 px-5 py-3 text-xs font-medium text-(--color-muted) dark:bg-transparent">
-        {devices.length} of {allDevices.length} devices
+        {t('deviceCount')
+          .replace('{count}', String(devices.length))
+          .replace('{total}', String(allDevices.length))}
       </div>
     </>
   );

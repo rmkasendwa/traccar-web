@@ -150,7 +150,7 @@ const MapGeocoder = () => {
           ref={refs.setFloating}
           style={floatingStyles}
           className="z-100 flex w-80 max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white/98 text-slate-900 shadow-2xl shadow-slate-950/20 outline-none backdrop-blur"
-          aria-label="Search map"
+          aria-label={t('mapSearch')}
           {...getFloatingProps()}
         >
           <div className="flex items-center gap-2 border-b border-slate-100 p-2.5">
@@ -168,7 +168,7 @@ const MapGeocoder = () => {
                 type="button"
                 onClick={() => setQuery('')}
                 className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"
-                aria-label="Clear search"
+                aria-label={t('mapClearSearch')}
               >
                 <X size={16} />
               </button>
@@ -178,7 +178,7 @@ const MapGeocoder = () => {
           <div className="max-h-80 overflow-y-auto p-1.5">
             {loading ? (
               <div className="flex items-center justify-center gap-2 px-4 py-8 text-sm text-slate-500">
-                <LoaderCircle size={18} className="animate-spin" /> Searching map…
+                <LoaderCircle size={18} className="animate-spin" /> {t('mapSearching')}
               </div>
             ) : results.length ? (
               results.map((feature) => (
@@ -193,11 +193,11 @@ const MapGeocoder = () => {
                 </button>
               ))
             ) : query.trim() ? (
-              <p className="px-4 py-8 text-center text-sm text-slate-500">No places found</p>
+              <p className="px-4 py-8 text-center text-sm text-slate-500">{t('mapNoPlaces')}</p>
             ) : (
               <div className="px-4 py-8 text-center">
-                <p className="text-sm font-semibold text-slate-700">Find a place</p>
-                <p className="mt-1 text-xs text-slate-400">Search by address, landmark, or city</p>
+                <p className="text-sm font-semibold text-slate-700">{t('mapFindPlace')}</p>
+                <p className="mt-1 text-xs text-slate-400">{t('mapFindPlaceDescription')}</p>
               </div>
             )}
           </div>

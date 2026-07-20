@@ -15,6 +15,7 @@ import { toMapCoordinates } from '@/features/map/core/mapUtil';
 import { useMediaQuery, useTheme } from '@/components/ui';
 import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
 import type { ReplayPosition } from '@/features/replay/types';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type ReplayMapProps = {
   positions: ReplayPosition[];
@@ -88,6 +89,7 @@ function CurrentPositionMarker({
 }
 
 function ReplayMap({ positions, currentPosition, onSelectPosition }: ReplayMapProps) {
+  const t = useTranslation();
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const [mapVisible, setMapVisible] = useState(false);
@@ -152,9 +154,9 @@ function ReplayMap({ positions, currentPosition, onSelectPosition }: ReplayMapPr
               type="button"
               onClick={() => setShowDetails(false)}
               className="rounded-md px-2 py-1 font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-              aria-label="Close position details"
+              aria-label={t('positionCloseDetails')}
             >
-              Close
+              {t('sharedClose')}
             </button>
           </div>
         </div>

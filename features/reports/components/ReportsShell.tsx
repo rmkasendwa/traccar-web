@@ -42,84 +42,84 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
 
   const groups: SectionNavigationGroup[] = [
     {
-      title: 'Overview',
+      title: t('reportsOverview'),
       items: [
         {
           label: t('reportCombined'),
           href: buildLink('/reports/combined'),
           icon: <Sparkles size={18} />,
-          description: 'A unified timeline of device activity.',
+          description: t('reportsCombinedDescription'),
         },
         {
           label: t('reportSummary'),
           href: buildLink('/reports/summary'),
           icon: <ListChecks size={18} />,
-          description: 'High-level distance, speed, fuel, and usage totals.',
+          description: t('reportsSummaryDescription'),
         },
         {
           label: t('reportChart'),
           href: buildLink('/reports/chart'),
           icon: <TrendingUp size={18} />,
-          description: 'Visualize route metrics and device attributes over time.',
+          description: t('reportsChartDescription'),
         },
       ],
     },
     {
-      title: 'Movement',
+      title: t('reportsMovement'),
       items: [
         {
           label: t('reportTrips'),
           href: buildLink('/reports/trips'),
           icon: <Route size={18} />,
-          description: 'Review completed journeys and movement details.',
+          description: t('reportsTripsDescription'),
         },
         {
           label: t('reportStops'),
           href: buildLink('/reports/stops'),
           icon: <CirclePause size={18} />,
-          description: 'Inspect stop locations and dwell durations.',
+          description: t('reportsStopsDescription'),
         },
         {
           label: t('reportPositions'),
           href: buildLink('/reports/route'),
           icon: <MapPin size={18} />,
-          description: 'Explore every recorded position in a period.',
+          description: t('reportsPositionsDescription'),
         },
       ],
     },
     {
-      title: 'Activity',
+      title: t('reportsActivity'),
       collapsible: true,
       items: [
         {
           label: t('reportEvents'),
           href: buildLink('/reports/events'),
           icon: <Activity size={18} />,
-          description: 'Filter alarms, notifications, and device events.',
+          description: t('reportsEventsDescription'),
         },
         {
           label: t('sharedGeofences'),
           href: buildLink('/reports/geofences'),
           icon: <Flag size={18} />,
-          description: 'Review time spent entering and leaving geofences.',
+          description: t('reportsGeofencesDescription'),
         },
         {
           label: t('reportReplay'),
           href: buildLink('/replay'),
           icon: <ChartNoAxesCombined size={18} />,
-          description: 'Play back a recorded route on the map.',
+          description: t('reportsReplayDescription'),
         },
       ],
     },
     {
-      title: 'Operations',
+      title: t('reportsOperations'),
       collapsible: true,
       items: [
         {
           label: t('sharedLogs'),
           href: '/reports/logs',
           icon: <FileSearch size={18} />,
-          description: 'Inspect raw device communication logs.',
+          description: t('reportsLogsDescription'),
         },
         ...(!readonly
           ? [
@@ -127,7 +127,7 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
                 label: t('reportScheduled'),
                 href: '/reports/scheduled',
                 icon: <CalendarClock size={18} />,
-                description: 'Manage recurring report delivery.',
+                description: t('reportsScheduledDescription'),
               },
             ]
           : []),
@@ -137,13 +137,13 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
                 label: t('statisticsTitle'),
                 href: '/reports/statistics',
                 icon: <BarChart3 size={18} />,
-                description: 'Review platform-wide operational statistics.',
+                description: t('reportsStatisticsDescription'),
               },
               {
                 label: t('reportAudit'),
                 href: '/reports/audit',
                 icon: <ShieldCheck size={18} />,
-                description: 'Inspect administrative and user activity.',
+                description: t('reportsAuditDescription'),
               },
             ]
           : []),
@@ -152,11 +152,11 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
   ];
   return (
     <SectionShell
-      title="Reports"
-      description="Turn location history into clear operational insights."
+      title={t('reportsTitle')}
+      description={t('reportsDescription')}
       groups={groups}
       backHref="/"
-      backLabel="Back to map"
+      backLabel={t('sharedBackToMap')}
     >
       <div className="reports-workspace h-full min-h-0 overflow-auto bg-(--color-background) p-3 sm:p-4 lg:p-6">
         {children}

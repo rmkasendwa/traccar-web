@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type ReplayTimelineProps = {
   value: number;
@@ -17,6 +18,7 @@ export default function ReplayTimeline({
   valueText,
   onChange,
 }: ReplayTimelineProps) {
+  const t = useTranslation();
   const [draftValue, setDraftValue] = useState(value);
   const [focused, setFocused] = useState(false);
   const draggingRef = useRef(false);
@@ -80,7 +82,7 @@ export default function ReplayTimeline({
           setFocused(false);
         }}
         className="absolute inset-0 z-20 h-full w-full cursor-pointer opacity-0"
-        aria-label="Replay timeline"
+        aria-label={t('replayTimeline')}
         aria-valuetext={valueText}
         suppressHydrationWarning
       />

@@ -24,10 +24,13 @@ import ReplayPlayer, {
 import { calculateReplayStatistics, formatDuration } from '@/features/replay/lib/replay';
 import type { ReplayDevice, ReplayPosition } from '@/features/replay/types';
 import { fetchFromRequestOrigin } from '@/lib/serverFetch';
+import en from '@/providers/localization/messages/en.json';
+
+const t = (key: string) => en[key as keyof typeof en] ?? key;
 
 export const metadata: Metadata = {
-  title: 'Route replay · Traccar',
-  description: 'Review a device route and replay its recorded positions.',
+  title: t('replayMetadataTitle'),
+  description: t('replayMetadataDescription'),
 };
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -76,38 +79,38 @@ async function loadPositions(deviceId: string, from: string, to: string) {
 const stateContent = {
   setup: {
     icon: Search,
-    title: 'Ready when you are',
-    description: 'Choose a device and a quick period above to paint its route onto the map.',
+    titleKey: 'replayReadyTitle',
+    descriptionKey: 'replayReadyDescription',
   },
   invalid: {
     icon: CalendarRange,
-    title: 'Check the date range',
-    description: 'The end time must be later than the start time.',
+    titleKey: 'replayInvalidTitle',
+    descriptionKey: 'replayInvalidDescription',
   },
   empty: {
     icon: MapPinOff,
-    title: 'No recorded positions',
-    description: 'Try a wider period—this device has no history in the selected range.',
+    titleKey: 'replayEmptyTitle',
+    descriptionKey: 'replayEmptyDescription',
   },
   noDevices: {
     icon: Smartphone,
-    title: 'No devices available',
-    description: 'Add a device or ask an administrator for access.',
+    titleKey: 'replayNoDevicesTitle',
+    descriptionKey: 'replayNoDevicesDescription',
   },
   permission: {
     icon: ShieldAlert,
-    title: 'Replay access is restricted',
-    description: 'Choose another device or contact an administrator.',
+    titleKey: 'replayPermissionTitle',
+    descriptionKey: 'replayPermissionDescription',
   },
   offline: {
     icon: WifiOff,
-    title: 'The server is unreachable',
-    description: 'Check your connection and try again.',
+    titleKey: 'replayOfflineTitle',
+    descriptionKey: 'replayOfflineDescription',
   },
   request: {
     icon: AlertTriangle,
-    title: 'Replay could not be loaded',
-    description: 'Adjust the period or try the request again.',
+    titleKey: 'replayRequestTitle',
+    descriptionKey: 'replayRequestDescription',
   },
 };
 
@@ -119,14 +122,14 @@ function StateCard({ type }: { type: PageState }) {
       <span className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-(--color-paper) text-(--color-muted) shadow-sm">
         <Icon size={20} aria-hidden="true" />
       </span>
-      <h2 className="mt-3 text-sm font-semibold text-(--color-text)">{content.title}</h2>
-      <p className="mt-1.5 text-xs leading-5 text-(--color-muted)">{content.description}</p>
+      <h2 className="mt-3 text-sm font-semibold text-(--color-text)">{t(content.titleKey)}</h2>
+      <p className="mt-1.5 text-xs leading-5 text-(--color-muted)">{t(content.descriptionKey)}</p>
       {(type === 'offline' || type === 'request') && (
         <Link
           href="/replay"
           className="mt-3 inline-flex rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
         >
-          Start again
+          {t('replayStartAgain')}
         </Link>
       )}
     </div>
@@ -191,7 +194,7 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
           hasReplay={hasReplay}
           footer={
             hasReplay && selectedDevice ? (
-              <section aria-label="Replay controls" className="mx-auto max-w-lg">
+              <section aria-label={t('replayControls')} className="mx-auto max-w-lg">
                 <ReplayControls />
               </section>
             ) : undefined
@@ -210,25 +213,25 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
 
           {hasReplay && selectedDevice ? (
             <>
-              <section aria-label="Replay summary" className="grid grid-cols-2 gap-2">
+              <section aria-label={t('replaySummary')} className="grid grid-cols-2 gap-2">
                 {[
                   {
-                    label: 'Distance',
+                    label: t('replayDistance'),
                     value: `${statistics.distanceKm.toFixed(1)} km`,
                     icon: Route,
                   },
                   {
-                    label: 'Duration',
+                    label: t('replayDuration'),
                     value: formatDuration(statistics.durationMs),
                     icon: Clock3,
                   },
                   {
-                    label: 'Max speed',
+                    label: t('replayMaxSpeed'),
                     value: `${statistics.maxSpeedKph.toFixed(0)} km/h`,
                     icon: CircleGauge,
                   },
                   {
-                    label: 'GPS points',
+                    label: t('replayGpsPoints'),
                     value: statistics.positionCount.toLocaleString(),
                     icon: LocateFixed,
                   },
@@ -257,7 +260,7 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                       {selectedDevice.name}
                     </p>
                     <p className="text-[0.68rem] capitalize text-(--color-muted)">
-                      {selectedDevice.status || 'Status unavailable'}
+                      {selectedDevice.status || t('deviceStatusUnavailable')}
                       {selectedDevice.model ? ` · ${selectedDevice.model}` : ''}
                     </p>
                   </div>
@@ -273,7 +276,7 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                     href={`/api/positions/kml?${new URLSearchParams({ deviceId, from: normalizedFrom, to: normalizedTo })}`}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-(--color-divider) bg-(--color-paper) px-3 py-2 text-xs font-semibold text-(--color-text) transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
                   >
-                    <Download size={14} aria-hidden="true" /> Download route as KML
+                    <Download size={14} aria-hidden="true" /> {t('replayDownloadKml')}
                   </a>
                 </div>
               </section>

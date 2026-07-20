@@ -10,6 +10,7 @@ import EventsDrawer from '@/features/tracking/EventsDrawer';
 import DeviceSidebar from '@/features/tracking/components/DeviceSidebar';
 import HomeNavigation from '@/features/tracking/components/HomeNavigation';
 import SelectedDeviceCard from '@/features/tracking/components/SelectedDeviceCard';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 const MainMap = dynamic(() => import('@/features/tracking/MainMap'), {
   ssr: false,
@@ -24,6 +25,7 @@ type MainPageProps = {
 };
 
 const MainPageClient = ({ initialDevices, initialPositions }: MainPageProps) => {
+  const t = useTranslation();
   const dispatch = useDispatch();
   const deviceItems = useSelector((state: any) => state.devices.items);
   const positionItems = useSelector((state: any) => state.session.positions);
@@ -127,7 +129,7 @@ const MainPageClient = ({ initialDevices, initialPositions }: MainPageProps) => 
         type="button"
         onClick={() => setSidebarOpen(true)}
         className="absolute left-3 top-3 z-20 grid h-11 w-11 place-items-center rounded-xl border border-(--color-divider) bg-(--color-paper) text-(--color-text) shadow-lg backdrop-blur md:hidden"
-        aria-label="Open devices"
+        aria-label={t('mapOpenDevices')}
       >
         <Menu size={21} />
       </button>
@@ -148,7 +150,7 @@ const MainPageClient = ({ initialDevices, initialPositions }: MainPageProps) => 
           type="button"
           className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-lg text-(--color-muted) hover:bg-(--color-surface-hover) hover:text-(--color-text)"
           onClick={() => setSidebarOpen(false)}
-          aria-label="Close devices"
+          aria-label={t('mapCloseDevices')}
         >
           <X size={20} />
         </button>

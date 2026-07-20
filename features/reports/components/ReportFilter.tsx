@@ -34,6 +34,7 @@ const flattenChildren = (children) =>
   );
 
 const OverflowFilterRow = ({ children, actions, compactLabel }) => {
+  const t = useTranslation();
   const fields = flattenChildren(children);
   const containerRef = useRef(null);
   const actionsRef = useRef(null);
@@ -123,9 +124,9 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
             variant="outlined"
             color="primary"
             onClick={() => setOverflowOpen((open) => !open)}
-            aria-label="Show more report filters"
+            aria-label={t('reportMoreFilters')}
             aria-expanded={overflowOpen}
-            title={`${overflowFields.length} more ${overflowFields.length === 1 ? 'filter' : 'filters'}`}
+            title={t('reportMoreFilters')}
             className="group relative h-10 min-h-10 min-w-10 rounded-xl border-sky-500/40 bg-sky-500/5 px-2 text-sky-600 shadow-sm transition-all hover:-translate-y-0.5 hover:border-sky-500 hover:bg-sky-500/10 hover:shadow-md dark:text-sky-300"
           >
             <ChevronsRight size={18} className="transition-transform group-hover:translate-x-0.5" />
@@ -137,7 +138,7 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
             <div
               role="dialog"
               aria-modal="true"
-              aria-label="More report criteria"
+              aria-label={t('reportMoreCriteria')}
               className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-3 sm:block sm:bg-transparent sm:p-0 sm:backdrop-blur-none"
               onPointerDown={(event) => {
                 if (event.target === event.currentTarget) setOverflowOpen(false);
@@ -146,9 +147,11 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
               <div className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-hidden rounded-2xl border border-(--color-divider) bg-(--color-paper) shadow-2xl ring-1 ring-black/5 dark:ring-white/5 sm:w-[min(21rem,calc(100vw-2rem))]">
                 <div className="flex items-center justify-between gap-3 border-b border-(--color-divider) bg-sky-500/5 px-4 py-3">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-(--color-text)">More criteria</p>
+                    <p className="truncate text-sm font-bold text-(--color-text)">
+                      {t('reportMoreCriteriaTitle')}
+                    </p>
                     <p className="truncate text-xs text-(--color-muted)">
-                      Additional report filters
+                      {t('reportMoreCriteriaDescription')}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
@@ -159,7 +162,7 @@ const OverflowFilterRow = ({ children, actions, compactLabel }) => {
                       variant="text"
                       color="primary"
                       onClick={() => setOverflowOpen(false)}
-                      aria-label="Close more report filters"
+                      aria-label={t('reportCloseMoreFilters')}
                       className="h-8 min-w-8 rounded-lg px-2 text-(--color-muted) hover:bg-sky-500/10 hover:text-sky-700 dark:hover:text-sky-200 sm:hidden"
                     >
                       <X size={16} />
@@ -414,8 +417,8 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
           variant="outlined"
           color="primary"
           onClick={resetFilters}
-          aria-label="Reset report filters"
-          title="Reset filters"
+          aria-label={t('reportResetFilters')}
+          title={t('reportResetFilters')}
           className="min-h-10 rounded-xl border-(--color-divider) px-2.5 text-(--color-muted) hover:border-sky-500 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-sky-950 sm:px-3"
         >
           <RotateCcw size={16} />
@@ -441,10 +444,10 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
           </span>
           <div className="min-w-0">
             <h2 className="text-sm font-bold tracking-tight text-(--color-text)">
-              Report criteria
+              {t('reportCriteria')}
             </h2>
             <p className="hidden truncate text-xs text-(--color-muted) sm:block lg:hidden xl:block xl:whitespace-normal [@media(max-height:760px)]:hidden">
-              Choose what to include, then generate your report.
+              {t('reportCriteriaDescription')}
             </p>
           </div>
         </div>
@@ -454,8 +457,8 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
             compactLabel={
               <span
                 className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500/10 text-sky-600 ring-1 ring-sky-500/25 dark:text-sky-300"
-                aria-label="Report criteria"
-                title="Report criteria"
+                aria-label={t('reportCriteria')}
+                title={t('reportCriteria')}
               >
                 <SlidersHorizontal size={18} strokeWidth={2.25} aria-hidden="true" />
               </span>

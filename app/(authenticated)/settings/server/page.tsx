@@ -81,7 +81,7 @@ const ServerPage = () => {
     <PageLayout bare menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'settingsServer']}>
       <div className="settings-form-layout mx-auto w-full max-w-5xl">
         <SettingsFormActions
-          description="Configure global defaults and server capabilities."
+          description={t('settingsServerDescription')}
           dirty={JSON.stringify(item) !== JSON.stringify(original)}
           saving={saving}
           saved={saved}

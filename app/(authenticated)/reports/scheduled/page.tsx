@@ -65,8 +65,8 @@ const ScheduledPage = () => {
     <div className="report-page">
       {!loading && !items.length ? (
         <ReportEmptyState
-          title="No scheduled reports"
-          description="Schedule a report from any report page to have it delivered automatically."
+          title={t('reportNoScheduledReports')}
+          description={t('reportNoScheduledReportsDescription')}
         />
       ) : (
         <Table>

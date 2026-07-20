@@ -142,13 +142,13 @@ export default function LoginForm({
               name="code"
               required
               error={errors.code}
-              helper="Enter the current code from your authenticator app."
+              helper={t('authTotpHelper')}
             >
               <input
                 className={inputClass}
                 name="code"
                 inputMode="numeric"
-                placeholder="Enter your verification code"
+                placeholder={t('authTotpPlaceholder')}
                 aria-invalid={Boolean(errors.code)}
                 aria-describedby="code-helper"
                 {...fieldProps('code')}

@@ -48,8 +48,8 @@ const LogsPage = () => {
     <div className="report-page">
       {!items.length ? (
         <ReportEmptyState
-          title="Waiting for device logs"
-          description="Incoming device communication will appear here in real time."
+          title={t('reportWaitingForLogs')}
+          description={t('reportWaitingForLogsDescription')}
         />
       ) : (
         <Table>

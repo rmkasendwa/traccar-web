@@ -15,6 +15,7 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type ReplayDateTimePickerProps = {
   label: string;
@@ -39,6 +40,7 @@ export default function ReplayDateTimePicker({
   onChange,
   dateOnly = false,
 }: ReplayDateTimePickerProps) {
+  const t = useTranslation();
   const [date = '', time = '00:00'] = value.split('T');
   const selectedDate = useMemo(() => parseDate(date), [date]);
   const [visibleMonth, setVisibleMonth] = useState(
@@ -110,7 +112,7 @@ export default function ReplayDateTimePicker({
         </button>
         {!dateOnly && (
           <label className="relative min-w-0">
-            <span className="sr-only">{label} time in UTC</span>
+            <span className="sr-only">{t('calendarTimeInUtc').replace('{label}', label)}</span>
             <Clock3
               size={14}
               className="pointer-events-none absolute top-1/2 left-2 -translate-y-1/2 text-slate-400"
@@ -127,7 +129,7 @@ export default function ReplayDateTimePicker({
         )}
       </div>
       <p className="mt-1.5 px-1 text-[0.62rem] font-medium text-(--color-muted)">
-        {dateOnly ? 'Full local day' : 'UTC timezone'}
+        {dateOnly ? t('calendarFullLocalDay') : t('calendarUtcTimezone')}
       </p>
 
       {open && (
@@ -145,7 +147,7 @@ export default function ReplayDateTimePicker({
                   type="button"
                   onClick={() => moveMonth(-1)}
                   className="grid h-8 w-8 place-items-center rounded-lg text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-sky-500"
-                  aria-label="Previous month"
+                  aria-label={t('calendarPreviousMonth')}
                 >
                   <ChevronLeft size={17} aria-hidden="true" />
                 </button>
@@ -160,7 +162,7 @@ export default function ReplayDateTimePicker({
                   type="button"
                   onClick={() => moveMonth(1)}
                   className="grid h-8 w-8 place-items-center rounded-lg text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-sky-500"
-                  aria-label="Next month"
+                  aria-label={t('calendarNextMonth')}
                 >
                   <ChevronRight size={17} aria-hidden="true" />
                 </button>

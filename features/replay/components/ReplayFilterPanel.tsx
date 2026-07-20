@@ -6,6 +6,7 @@ import { CalendarDays, Search } from 'lucide-react';
 import SelectField from '@/components/ui/SelectField';
 import ReplayDateTimePicker from '@/features/replay/components/ReplayDateTimePicker';
 import type { ReplayDevice } from '@/features/replay/types';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type Period =
   | 'today'
@@ -17,15 +18,15 @@ type Period =
   | 'specificDay'
   | 'custom';
 
-const periods: { value: Period; label: string }[] = [
-  { value: 'today', label: 'Today' },
-  { value: 'yesterday', label: 'Yesterday' },
-  { value: 'thisWeek', label: 'This week' },
-  { value: 'previousWeek', label: 'Previous week' },
-  { value: 'thisMonth', label: 'This month' },
-  { value: 'previousMonth', label: 'Previous month' },
-  { value: 'specificDay', label: 'Choose a day' },
-  { value: 'custom', label: 'Custom range' },
+const periods: { value: Period; labelKey: string }[] = [
+  { value: 'today', labelKey: 'replayToday' },
+  { value: 'yesterday', labelKey: 'replayYesterday' },
+  { value: 'thisWeek', labelKey: 'replayThisWeek' },
+  { value: 'previousWeek', labelKey: 'replayPreviousWeek' },
+  { value: 'thisMonth', labelKey: 'replayThisMonth' },
+  { value: 'previousMonth', labelKey: 'replayPreviousMonth' },
+  { value: 'specificDay', labelKey: 'replayChooseDay' },
+  { value: 'custom', labelKey: 'replayCustomRange' },
 ];
 
 const endOfDay = (date: Date) => {
@@ -85,6 +86,7 @@ export default function ReplayFilterPanel({
   initialCustomFrom,
   initialCustomTo,
 }: ReplayFilterPanelProps) {
+  const t = useTranslation();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [selectedDevice, setSelectedDevice] = useState(deviceId);
@@ -150,7 +152,7 @@ export default function ReplayFilterPanel({
     <form onSubmit={submit} className="space-y-4">
       <div className="grid gap-1.5">
         <span className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-(--color-muted)">
-          Device
+          {t('replayDevice')}
         </span>
         <SelectField
           fullWidth
@@ -158,7 +160,7 @@ export default function ReplayFilterPanel({
           value={selectedDevice}
           keyGetter={(device: ReplayDevice) => String(device.id)}
           titleGetter={(device: ReplayDevice) => device.name}
-          placeholder="Select a device"
+          placeholder={t('replaySelectDevice')}
           onChange={(event: { target: { value: string } }) => {
             setSelectedDevice(event.target.value);
             setDirty(true);
@@ -168,7 +170,7 @@ export default function ReplayFilterPanel({
 
       <fieldset>
         <legend className="flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-(--color-muted)">
-          <CalendarDays size={14} aria-hidden="true" /> Replay period
+          <CalendarDays size={14} aria-hidden="true" /> {t('replayPeriod')}
         </legend>
         <div className="mt-2 grid grid-cols-2 gap-1.5">
           {periods.map((item) => (
@@ -186,7 +188,7 @@ export default function ReplayFilterPanel({
               } ${item.value === 'custom' || item.value === 'specificDay' ? 'col-span-2 text-center' : ''}`}
               aria-pressed={period === item.value}
             >
-              {item.label}
+              {t(item.labelKey)}
             </button>
           ))}
         </div>
@@ -194,7 +196,7 @@ export default function ReplayFilterPanel({
 
       {period === 'specificDay' && (
         <ReplayDateTimePicker
-          label="Replay date"
+          label={t('replayDate')}
           value={`${selectedDay}T00:00`}
           dateOnly
           onChange={(value) => {
@@ -207,7 +209,7 @@ export default function ReplayFilterPanel({
       {period === 'custom' && (
         <div className="grid gap-2">
           <ReplayDateTimePicker
-            label="From"
+            label={t('reportFrom')}
             value={customFrom}
             onChange={(value) => {
               setCustomFrom(value);
@@ -215,7 +217,7 @@ export default function ReplayFilterPanel({
             }}
           />
           <ReplayDateTimePicker
-            label="To"
+            label={t('reportTo')}
             value={customTo}
             onChange={(value) => {
               setCustomTo(value);
@@ -235,7 +237,7 @@ export default function ReplayFilterPanel({
         }`}
       >
         <Search size={16} aria-hidden="true" />
-        {pending ? 'Loading route…' : 'Load replay'}
+        {pending ? t('replayLoadingRoute') : t('replayLoad')}
       </button>
     </form>
   );

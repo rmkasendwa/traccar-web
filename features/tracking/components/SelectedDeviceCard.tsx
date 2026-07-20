@@ -156,7 +156,7 @@ export default function SelectedDeviceCard({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: 'Geofence',
+        name: t('sharedGeofence'),
         area: `CIRCLE (${position.latitude} ${position.longitude}, 50)`,
       }),
     });
@@ -183,12 +183,14 @@ export default function SelectedDeviceCard({
             <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[0.7rem] text-(--color-muted)">
               <span className="flex items-center gap-1.5 capitalize">
                 <span className={`h-2 w-2 rounded-full shadow-md ${statusColor}`} />
-                {device.status || 'Unknown'}
+                {device.status
+                  ? t(`deviceStatus${device.status[0].toUpperCase()}${device.status.slice(1)}`)
+                  : t('deviceUnknownStatus')}
               </span>
               {batteryLevel != null && (
                 <span className="flex items-center gap-1 rounded-full bg-(--color-surface-subtle) px-2 py-0.5 text-(--color-muted)">
                   <BatteryIcon size={13} />
-                  {Math.round(batteryLevel)}%{charging ? ' · charging' : ''}
+                  {Math.round(batteryLevel)}%{charging ? ` · ${t('deviceCharging')}` : ''}
                 </span>
               )}
             </div>
@@ -197,7 +199,7 @@ export default function SelectedDeviceCard({
             type="button"
             onClick={onClose}
             className="grid h-9 w-9 place-items-center rounded-xl text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text)"
-            aria-label="Close device details"
+            aria-label={t('deviceCloseDetails')}
           >
             <X size={18} />
           </button>
@@ -208,13 +210,13 @@ export default function SelectedDeviceCard({
         <div className="grid grid-cols-3 gap-2">
           <Metric
             icon={<Clock3 size={12} />}
-            label="Updated"
-            value={device.lastUpdate ? dayjs(device.lastUpdate).fromNow() : 'No update'}
+            label={t('deviceUpdated')}
+            value={device.lastUpdate ? dayjs(device.lastUpdate).fromNow() : t('deviceNoUpdate')}
             accent={statusOnline}
           />
           <Metric
             icon={<Gauge size={12} />}
-            label="Speed"
+            label={t('positionSpeed')}
             value={
               position?.speed != null
                 ? `${Math.round(speedFromKnots(position.speed, speedUnit))} ${speedUnitString(speedUnit, t)}`
@@ -223,7 +225,7 @@ export default function SelectedDeviceCard({
           />
           <Metric
             icon={<BatteryIcon size={12} />}
-            label="Battery"
+            label={t('positionBattery')}
             value={batteryLevel != null ? `${Math.round(batteryLevel)}%` : '—'}
           />
         </div>
@@ -243,7 +245,7 @@ export default function SelectedDeviceCard({
             onClick={() => navigate(`/position/${position.id}`)}
             className="group mt-2.5 flex w-full items-center justify-between rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) px-3 py-2 text-xs font-semibold text-(--color-primary) shadow-sm transition hover:border-(--color-primary) hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)"
           >
-            View position details
+            {t('deviceViewPositionDetails')}
             <span className="grid h-6 w-6 place-items-center rounded-lg bg-(--color-primary) text-white shadow-sm transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
               <ArrowUpRight size={14} />
             </span>
@@ -256,16 +258,16 @@ export default function SelectedDeviceCard({
         <div className="pointer-events-none absolute -right-8 -top-10 h-24 w-24 rounded-full bg-violet-500/15 blur-3xl" />
         <div className="relative mb-2 flex items-center justify-between px-1">
           <span className="text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-(--color-muted)">
-            Quick actions
+            {t('deviceQuickActions')}
           </span>
           <span className="flex items-center gap-1.5 text-[0.6rem] text-(--color-muted)">
             <span className="h-1 w-1 rounded-full bg-sky-400" />
-            Device controls
+            {t('deviceControls')}
           </span>
         </div>
         <div className="relative grid grid-cols-4 gap-2">
           <ActionButton
-            label="Replay"
+            label={t('reportReplay')}
             tone="violet"
             onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
             disabled={!position}
@@ -273,14 +275,14 @@ export default function SelectedDeviceCard({
             <Route size={18} />
           </ActionButton>
           <ActionButton
-            label="Command"
+            label={t('deviceCommand')}
             tone="sky"
             onClick={() => navigate(`/settings/device/${deviceId}/command`)}
           >
             <Send size={18} />
           </ActionButton>
           <ActionButton
-            label="Edit"
+            label={t('sharedEdit')}
             tone="amber"
             onClick={() => navigate(`/settings/device/${deviceId}`)}
             disabled={deviceReadonly}
@@ -298,13 +300,13 @@ export default function SelectedDeviceCard({
                 ref={ref as any}
                 type="button"
                 className="group flex min-w-0 flex-col items-center gap-2 rounded-2xl border border-(--color-divider) bg-(--color-surface-subtle) px-1.5 py-2.5 text-[0.68rem] font-semibold text-(--color-muted) transition duration-200 hover:-translate-y-0.5 hover:border-slate-500/50 hover:bg-(--color-surface-hover) hover:text-(--color-text) hover:shadow-lg"
-                aria-label="More device actions"
-                title="More"
+                aria-label={t('deviceMoreActions')}
+                title={t('sharedMore')}
               >
                 <span className="grid h-9 w-9 place-items-center rounded-xl bg-linear-to-br from-slate-500 to-slate-700 text-white shadow-lg shadow-slate-950/30 transition duration-200 group-hover:scale-105">
                   <Ellipsis size={19} />
                 </span>
-                <span className="w-full truncate text-center">More</span>
+                <span className="w-full truncate text-center">{t('sharedMore')}</span>
               </button>
             )}
           >
@@ -317,7 +319,7 @@ export default function SelectedDeviceCard({
               }}
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-(--color-surface-hover) disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <Video size={17} /> Live Video
+              <Video size={17} /> {t('deviceLiveVideo')}
             </button>
             {!readonly && (
               <button
@@ -326,7 +328,7 @@ export default function SelectedDeviceCard({
                 onClick={createGeofence}
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-(--color-surface-hover) disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <MapPinned size={17} /> Create Geofence
+                <MapPinned size={17} /> {t('sharedCreateGeofence')}
               </button>
             )}
             {position && (
@@ -337,7 +339,7 @@ export default function SelectedDeviceCard({
                 onClick={() => setMoreOpen(false)}
                 className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm hover:bg-(--color-surface-hover)"
               >
-                <ExternalLink size={17} /> Google Maps
+                <ExternalLink size={17} /> {t('deviceGoogleMaps')}
               </a>
             )}
             {!shareDisabled && !user.temporary && (
@@ -349,7 +351,7 @@ export default function SelectedDeviceCard({
                 }}
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-950"
               >
-                <Share2 size={17} /> Share
+                <Share2 size={17} /> {t('sharedShare')}
               </button>
             )}
           </FloatingPanel>

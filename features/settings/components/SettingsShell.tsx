@@ -36,13 +36,13 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
 
   const groups: SectionNavigationGroup[] = [
     {
-      title: 'Personal',
+      title: t('settingsPersonal'),
       items: [
         {
           label: t('sharedPreferences'),
           href: '/settings/preferences',
           icon: <SlidersHorizontal size={18} />,
-          description: 'Customize maps, display units, and application behavior.',
+          description: t('settingsPreferencesDescription'),
         },
         ...(!readonly
           ? [
@@ -50,13 +50,13 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 label: t('sharedNotifications'),
                 href: '/settings/notifications',
                 icon: <Bell size={18} />,
-                description: 'Choose which events should notify you and how.',
+                description: t('settingsNotificationsDescription'),
               },
               {
                 label: t('settingsUser'),
                 href: `/settings/user/${userId}`,
                 icon: <UserRound size={18} />,
-                description: 'Manage your profile, password, and account details.',
+                description: t('settingsUserDescription'),
               },
             ]
           : []),
@@ -65,19 +65,19 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
     ...(!readonly
       ? [
           {
-            title: 'Fleet',
+            title: t('settingsFleet'),
             items: [
               {
                 label: t('deviceTitle'),
                 href: '/settings/devices',
                 icon: <Server size={18} />,
-                description: 'Add, organize, and configure tracked devices.',
+                description: t('settingsDevicesDescription'),
               },
               {
                 label: t('sharedGeofences'),
                 href: '/geofences',
                 icon: <MapPinned size={18} />,
-                description: 'Create and manage geographic boundaries.',
+                description: t('settingsGeofencesDescription'),
               },
               ...(!features.disableGroups
                 ? [
@@ -85,7 +85,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                       label: t('settingsGroups'),
                       href: '/settings/groups',
                       icon: <Folder size={18} />,
-                      description: 'Organize devices into reusable groups.',
+                      description: t('settingsGroupsDescription'),
                     },
                   ]
                 : []),
@@ -95,14 +95,14 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                       label: t('sharedDrivers'),
                       href: '/settings/drivers',
                       icon: <UserRound size={18} />,
-                      description: 'Manage drivers and their identifiers.',
+                      description: t('settingsDriversDescription'),
                     },
                   ]
                 : []),
             ],
           },
           {
-            title: 'Automation',
+            title: t('settingsAutomation'),
             collapsible: true,
             items: [
               ...(!features.disableCalendars
@@ -111,7 +111,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                       label: t('sharedCalendars'),
                       href: '/settings/calendars',
                       icon: <CalendarDays size={18} />,
-                      description: 'Define schedules used by rules and notifications.',
+                      description: t('settingsCalendarsDescription'),
                     },
                   ]
                 : []),
@@ -121,7 +121,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                       label: t('sharedComputedAttributes'),
                       href: '/settings/attributes',
                       icon: <Calculator size={18} />,
-                      description: 'Derive useful values from incoming device data.',
+                      description: t('settingsComputedAttributesDescription'),
                     },
                   ]
                 : []),
@@ -131,7 +131,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                       label: t('sharedMaintenance'),
                       href: '/settings/maintenances',
                       icon: <Wrench size={18} />,
-                      description: 'Track service intervals and maintenance tasks.',
+                      description: t('settingsMaintenanceDescription'),
                     },
                   ]
                 : []),
@@ -141,7 +141,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                       label: t('sharedSavedCommands'),
                       href: '/settings/commands',
                       icon: <Send size={18} />,
-                      description: 'Prepare commands for quick, repeatable use.',
+                      description: t('settingsSavedCommandsDescription'),
                     },
                   ]
                 : []),
@@ -152,14 +152,14 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
     ...(manager
       ? [
           {
-            title: 'Administration',
+            title: t('settingsAdministration'),
             collapsible: true,
             items: [
               {
                 label: t('serverAnnouncement'),
                 href: '/settings/announcement',
                 icon: <Megaphone size={18} />,
-                description: 'Publish a message to platform users.',
+                description: t('settingsAnnouncementDescription'),
               },
               ...(admin
                 ? [
@@ -167,7 +167,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                       label: t('settingsServer'),
                       href: '/settings/server',
                       icon: <Settings size={18} />,
-                      description: 'Configure global server defaults and capabilities.',
+                      description: t('settingsServerDescription'),
                     },
                   ]
                 : []),
@@ -175,7 +175,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 label: t('settingsUsers'),
                 href: '/settings/users',
                 icon: <Users size={18} />,
-                description: 'Create and administer platform users.',
+                description: t('settingsUsersDescription'),
               },
             ],
           },
@@ -184,7 +184,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
     ...(billingLink || supportLink
       ? [
           {
-            title: 'Resources',
+            title: t('settingsResources'),
             collapsible: true,
             items: [
               ...(billingLink
@@ -207,11 +207,11 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
 
   return (
     <SectionShell
-      title="Settings"
-      description="Configure your account, fleet, and platform."
+      title={t('settingsTitle')}
+      description={t('settingsDescription')}
       groups={groups}
       backHref="/"
-      backLabel="Back to map"
+      backLabel={t('sharedBackToMap')}
     >
       <div className="h-full min-h-0 overflow-auto bg-(--color-background) p-3 sm:p-4 lg:p-6">
         {children}

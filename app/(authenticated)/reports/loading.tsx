@@ -1,8 +1,12 @@
+import en from '@/providers/localization/messages/en.json';
+
+const t = (key: string) => en[key as keyof typeof en] ?? key;
+
 export default function ReportsLoading() {
   return (
     <div
       className="h-full overflow-hidden bg-(--color-background) p-3 sm:p-4 lg:p-6"
-      aria-label="Loading reports"
+      aria-label={t('sharedLoadingReports')}
     >
       <div className="h-full rounded-2xl border border-(--color-divider) bg-(--color-paper) shadow-sm">
         <div className="border-b border-(--color-divider) p-5">

@@ -8,6 +8,7 @@ import ThemeModeControl from '@/components/ui/ThemeModeControl';
 import LanguageControl from '@/components/ui/LanguageControl';
 import { SectionShellProvider } from '@/components/layout/SectionShellContext';
 import AccountAvatarMenu from '@/components/layout/AccountAvatarMenu';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 export type SectionNavigationItem = {
   label: string;
@@ -39,6 +40,7 @@ function Navigation({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const t = useTranslation();
 
   const items = (group: SectionNavigationGroup) => (
     <div className="mt-1.5 space-y-1">
@@ -69,7 +71,7 @@ function Navigation({
   );
 
   return (
-    <nav aria-label="Section navigation" className="space-y-5 px-3 pb-5">
+    <nav aria-label={t('sharedSectionNavigation')} className="space-y-5 px-3 pb-5">
       {groups.map((group) =>
         group.collapsible ? (
           <details key={group.title} open className="group/navigation">
@@ -98,9 +100,10 @@ export default function SectionShell({
   groups,
   children,
   backHref,
-  backLabel = 'Back to home',
+  backLabel,
 }: SectionShellProps) {
   const pathname = usePathname();
+  const t = useTranslation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const currentItem = groups
     .flatMap((group) => group.items)
@@ -123,7 +126,7 @@ export default function SectionShell({
             className="mb-5 flex w-fit items-center gap-2 rounded-lg text-sm font-medium text-(--color-sidebar-muted) transition hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-400"
           >
             <ArrowLeft size={17} aria-hidden="true" />
-            {backLabel}
+            {backLabel || t('sharedBackToMap')}
           </Link>
         )}
         <p className="mt-1 text-xl font-bold tracking-tight">{title}</p>
@@ -151,7 +154,7 @@ export default function SectionShell({
             type="button"
             onClick={() => setDrawerOpen(false)}
             className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white"
-            aria-label="Close navigation"
+            aria-label={t('sharedCloseNavigation')}
           >
             <X size={20} />
           </button>
@@ -166,7 +169,7 @@ export default function SectionShell({
                 type="button"
                 onClick={() => setDrawerOpen(true)}
                 className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-(--color-divider) text-(--color-muted) transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 lg:hidden"
-                aria-label={`Open ${title.toLocaleLowerCase()} navigation`}
+                aria-label={`${t('sharedSectionNavigation')}: ${title}`}
               >
                 <Menu size={19} />
               </button>

@@ -147,7 +147,7 @@ const PreferencesPage = () => {
       <div className="preferences-layout mx-auto w-full max-w-5xl">
         {!readonly && (
           <SettingsFormActions
-            description="Personalize how tracking information appears across the application."
+            description={t('settingsPreferencesActionDescription')}
             dirty={JSON.stringify(attributes) !== JSON.stringify(user.attributes)}
             saving={saving}
             saved={saved}
@@ -169,7 +169,7 @@ const PreferencesPage = () => {
                   value={attributes.activeMapStyles?.split(',') || ['openFreeMap', 'osm']}
                   data={mapStyles}
                   titleGetter={(style) =>
-                    style.available ? style.title : `${style.title} · Configure`
+                    style.available ? style.title : `${style.title} · ${t('settingsConfigure')}`
                   }
                   onChange={(event) => {
                     const previous = attributes.activeMapStyles?.split(',') || [
@@ -196,7 +196,9 @@ const PreferencesPage = () => {
                   value={selectedMapOverlays}
                   data={mapOverlays}
                   titleGetter={(overlay) =>
-                    overlay.available ? overlay.title : `${overlay.title} · Configure`
+                    overlay.available
+                      ? overlay.title
+                      : `${overlay.title} · ${t('settingsConfigure')}`
                   }
                   onChange={(event) => {
                     const added = event.target.value.find(
@@ -216,7 +218,9 @@ const PreferencesPage = () => {
                 />
                 {orderedMapOverlays.length > 1 && (
                   <div className="space-y-2">
-                    <span className="block text-sm text-(--color-muted)">Layer order</span>
+                    <span className="block text-sm text-(--color-muted)">
+                      {t('settingsLayerOrder')}
+                    </span>
                     <div className="space-y-1.5">
                       {orderedMapOverlays.map((overlay, displayIndex) => (
                         <div
@@ -226,13 +230,13 @@ const PreferencesPage = () => {
                           <span className="min-w-0 flex-1 truncate text-sm">{overlay.title}</span>
                           {displayIndex === 0 && (
                             <span className="rounded-full bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-950 dark:text-sky-200">
-                              Top
+                              {t('settingsLayerTop')}
                             </span>
                           )}
                           <IconButton
                             size="small"
-                            title="Move layer up"
-                            aria-label="Move layer up"
+                            title={t('settingsMoveLayerUp')}
+                            aria-label={t('settingsMoveLayerUp')}
                             disabled={displayIndex === 0}
                             onClick={() => moveSelectedMapOverlay(overlay.id, 'up')}
                           >
@@ -240,8 +244,8 @@ const PreferencesPage = () => {
                           </IconButton>
                           <IconButton
                             size="small"
-                            title="Move layer down"
-                            aria-label="Move layer down"
+                            title={t('settingsMoveLayerDown')}
+                            aria-label={t('settingsMoveLayerDown')}
                             disabled={displayIndex === orderedMapOverlays.length - 1}
                             onClick={() => moveSelectedMapOverlay(overlay.id, 'down')}
                           >

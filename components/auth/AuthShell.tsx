@@ -8,11 +8,13 @@ import { useTranslation } from '@/providers/localization/LocalizationProvider';
 type AuthShellProps = {
   titleKey: string;
   subtitle?: string;
+  subtitleKey?: string;
   children: ReactNode;
 };
 
-export default function AuthShell({ titleKey, subtitle, children }: AuthShellProps) {
+export default function AuthShell({ titleKey, subtitle, subtitleKey, children }: AuthShellProps) {
   const t = useTranslation();
+  const resolvedSubtitle = subtitleKey ? t(subtitleKey) : subtitle;
   return (
     <main className="h-dvh overflow-hidden bg-(--color-background) text-(--color-text)">
       <div className="flex h-full w-full flex-col overflow-hidden lg:flex-row">
@@ -37,8 +39,8 @@ export default function AuthShell({ titleKey, subtitle, children }: AuthShellPro
             <div className="w-full max-w-116 rounded-lg border border-(--color-divider) bg-(--color-paper) p-6 shadow-xl shadow-slate-900/10 dark:shadow-black/25 sm:p-10">
               <div className="mb-6">
                 <h2 className="text-2xl font-semibold">{t(titleKey)}</h2>
-                {subtitle && (
-                  <p className="mt-1 text-sm leading-6 text-(--color-muted)">{subtitle}</p>
+                {resolvedSubtitle && (
+                  <p className="mt-1 text-sm leading-6 text-(--color-muted)">{resolvedSubtitle}</p>
                 )}
               </div>
               {children}

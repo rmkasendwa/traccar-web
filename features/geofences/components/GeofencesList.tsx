@@ -13,6 +13,7 @@ import BaseCollectionActions from '@/features/settings/components/CollectionActi
 import { useCatchCallback } from '@/lib/react';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import type { ApiId, Geofence } from '@/types/traccar';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 const CollectionActions = BaseCollectionActions as ComponentType<{
   customActions?: unknown[];
@@ -64,6 +65,7 @@ const stopPropagation = (event: MouseEvent) => event.stopPropagation();
 const GeofencesList = ({ selectedGeofenceId, onGeofenceSelected }: GeofencesListProps) => {
   const { classes } = useStyles({});
   const dispatch = useDispatch<AppDispatch>();
+  const t = useTranslation();
 
   const items = useSelector<RootState, Record<ApiId, Geofence>>(selectGeofences);
   const geofences = Object.values(items).sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
@@ -75,7 +77,7 @@ const GeofencesList = ({ selectedGeofenceId, onGeofenceSelected }: GeofencesList
 
   return (
     <List className={classes.list}>
-      {geofences.length === 0 && <div className={classes.empty}>No geofences yet</div>}
+      {geofences.length === 0 && <div className={classes.empty}>{t('geofenceNoGeofences')}</div>}
       {geofences.map((item, index, list) => (
         <Fragment key={item.id}>
           <ListItemButton

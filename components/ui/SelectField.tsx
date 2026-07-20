@@ -17,6 +17,7 @@ import {
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { useAsyncTask } from '@/lib/react';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type SelectFieldProps = {
   className?: string;
@@ -63,6 +64,7 @@ const SelectField = ({
   allValue,
   disabled = false,
 }: SelectFieldProps) => {
+  const t = useTranslation();
   const [items, setItems] = useState(data);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -117,7 +119,7 @@ const SelectField = ({
       ? multiple && selectedItems.length > 1
         ? `${titleGetter(selectedItems[0])} +${selectedItems.length - 1}`
         : summaryGetter(selectedItems[0])
-      : placeholder || emptyTitle || 'Select…';
+      : placeholder || emptyTitle || t('sharedSelect');
     const filteredItems = items.filter((item) =>
       titleGetter(item).toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
     );
@@ -179,7 +181,7 @@ const SelectField = ({
                   autoFocus
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search…"
+                  placeholder={t('sharedSearchPlaceholder')}
                   className="min-h-9 min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
                 />
               </label>
@@ -206,7 +208,9 @@ const SelectField = ({
                   );
                 })}
                 {!filteredItems.length && (
-                  <p className="px-3 py-5 text-center text-sm text-(--color-muted)">No matches</p>
+                  <p className="px-3 py-5 text-center text-sm text-(--color-muted)">
+                    {t('sharedNoMatches')}
+                  </p>
                 )}
               </div>
             </div>

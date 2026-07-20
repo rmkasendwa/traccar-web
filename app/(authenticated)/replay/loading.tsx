@@ -1,5 +1,8 @@
 import { ArrowLeft, CalendarDays } from 'lucide-react';
 import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
+import en from '@/providers/localization/messages/en.json';
+
+const t = (key: string) => en[key as keyof typeof en] ?? key;
 
 export default function ReplayLoading() {
   return (
@@ -16,20 +19,20 @@ export default function ReplayLoading() {
             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400">
               <ArrowLeft size={18} aria-hidden="true" />
             </span>
-            <h1 className="text-lg font-bold tracking-tight">Route replay</h1>
+            <h1 className="text-lg font-bold tracking-tight">{t('replayTitle')}</h1>
           </div>
         </header>
 
         <div className="space-y-4 p-4">
           <div>
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-(--color-muted)">
-              Device
+              {t('replayDevice')}
             </p>
             <div className="mt-1.5 h-11 animate-pulse rounded-xl border border-(--color-divider) bg-(--color-surface-subtle)" />
           </div>
           <div>
             <p className="flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-(--color-muted)">
-              <CalendarDays size={14} aria-hidden="true" /> Replay period
+              <CalendarDays size={14} aria-hidden="true" /> {t('replayPeriod')}
             </p>
             <div className="mt-2 grid grid-cols-2 gap-1.5">
               {[0, 1, 2, 3, 4, 5].map((item) => (
@@ -49,7 +52,7 @@ export default function ReplayLoading() {
           </div>
         </div>
       </aside>
-      <span className="sr-only">Loading route replay</span>
+      <span className="sr-only">{t('replayLoadingPage')}</span>
     </main>
   );
 }

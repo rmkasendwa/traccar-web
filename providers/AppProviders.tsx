@@ -38,9 +38,9 @@ export default function AppProviders({
   }, []);
 
   return (
-    <ErrorBoundary>
-      <Provider store={store}>
-        <LocalizationProvider initialLanguage={initialLanguage} initialMessages={initialMessages}>
+    <Provider store={store}>
+      <LocalizationProvider initialLanguage={initialLanguage} initialMessages={initialMessages}>
+        <ErrorBoundary>
           <AppThemeProvider initialMode={initialThemeMode}>
             <ServerProvider>
               <QueryParameterController>{children}</QueryParameterController>
@@ -48,8 +48,8 @@ export default function AppProviders({
               <NativeInterface />
             </ServerProvider>
           </AppThemeProvider>
-        </LocalizationProvider>
-      </Provider>
-    </ErrorBoundary>
+        </ErrorBoundary>
+      </LocalizationProvider>
+    </Provider>
   );
 }

@@ -18,6 +18,7 @@ import {
 import { Check, Map as MapIcon } from 'lucide-react';
 import { useTheme } from '@/components/ui';
 import { map } from '@/features/map/core/MapView';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type MapSwitcherProps = {
   styles: any[];
@@ -45,6 +46,7 @@ const focusNextItem = (event: KeyboardEvent<HTMLElement>) => {
 
 const MapSwitcher = ({ styles, selectedId, onSelect }: MapSwitcherProps) => {
   const theme = useTheme();
+  const t = useTranslation();
   const [open, setOpen] = useState(false);
 
   const { refs, floatingStyles, context } = useFloating({
@@ -122,7 +124,7 @@ const MapSwitcher = ({ styles, selectedId, onSelect }: MapSwitcherProps) => {
           {...getFloatingProps({ onKeyDown: focusNextItem })}
         >
           <p className="px-3 pb-1.5 pt-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-slate-400">
-            Map style
+            {t('mapStyle')}
           </p>
           {styles.map((style) => {
             const selected = style.id === selectedId;

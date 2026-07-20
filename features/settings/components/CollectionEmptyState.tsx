@@ -5,6 +5,7 @@ import { Button, TableCell, TableRow } from '@/components/ui';
 import { useNavigate } from '@/lib/router';
 import { useRestriction } from '@/lib/permissions';
 import { Inbox, Plus, SearchX } from 'lucide-react';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type CollectionEmptyStateProps = {
   colSpan: number;
@@ -21,10 +22,13 @@ export default function CollectionEmptyState({
   searchKeyword,
   disabled,
 }: CollectionEmptyStateProps) {
+  const t = useTranslation();
   const navigate = useNavigate();
   const readonly = useRestriction('readonly');
   const searching = Boolean(searchKeyword?.trim());
   const canCreate = !readonly && !disabled;
+  const singularItemName = itemName.replace(/s$/, '');
+  const capitalizedItemName = `${itemName[0].toUpperCase()}${itemName.slice(1)}`;
 
   return (
     <TableRow className="collection-empty-state">
@@ -34,14 +38,16 @@ export default function CollectionEmptyState({
             {searching ? <SearchX size={28} /> : <Inbox size={28} />}
           </div>
           <h2 className="text-base font-semibold text-(--color-text)">
-            {searching ? `No ${itemName} found` : `No ${itemName} yet`}
+            {searching
+              ? t('collectionNoItemsFound').replace('{itemName}', itemName)
+              : t('collectionNoItemsYet').replace('{itemName}', itemName)}
           </h2>
           <p className="mt-1 text-sm text-(--color-muted)">
             {searching
-              ? 'Try a different search term.'
+              ? t('collectionTryDifferentSearch')
               : canCreate
-                ? `Add your first ${itemName.replace(/s$/, '')} to get started.`
-                : `${itemName[0].toUpperCase()}${itemName.slice(1)} will appear here when available.`}
+                ? t('collectionAddFirstItem').replace('{itemName}', singularItemName)
+                : t('collectionItemsAppear').replace('{itemName}', capitalizedItemName)}
           </p>
           {!searching && canCreate && (
             <Button
@@ -50,7 +56,7 @@ export default function CollectionEmptyState({
               startIcon={<Plus size={17} />}
               onClick={() => navigate(editPath)}
             >
-              Add {itemName.replace(/s$/, '')}
+              {t('collectionAddItem').replace('{itemName}', singularItemName)}
             </Button>
           )}
         </div>

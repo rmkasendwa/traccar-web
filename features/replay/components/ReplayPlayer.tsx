@@ -15,14 +15,20 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
+
+const ReplayMapLoading = () => {
+  const t = useTranslation();
+  return (
+    <div className="h-full" aria-label={t('replayLoadingMap')}>
+      <ReplayMapPlaceholder />
+    </div>
+  );
+};
 
 const ReplayMap = dynamic(() => import('@/features/replay/components/ReplayMap'), {
   ssr: false,
-  loading: () => (
-    <div className="h-full" aria-label="Loading replay map">
-      <ReplayMapPlaceholder />
-    </div>
-  ),
+  loading: ReplayMapLoading,
 });
 
 type ReplayState = {
@@ -129,6 +135,7 @@ export function ReplayMapView() {
 }
 
 export function ReplayControls() {
+  const t = useTranslation();
   const {
     positions,
     index,
@@ -161,7 +168,10 @@ export function ReplayControls() {
         max={lastIndex}
         playing={playing}
         onChange={selectPosition}
-        valueText={`Position ${index + 1} of ${positions.length}, ${new Date(currentPosition.fixTime).toLocaleString()}`}
+        valueText={t('replayPositionValue')
+          .replace('{position}', String(index + 1))
+          .replace('{total}', String(positions.length))
+          .replace('{time}', new Date(currentPosition.fixTime).toLocaleString())}
       />
 
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
@@ -171,7 +181,7 @@ export function ReplayControls() {
             onClick={() => selectPosition(index - 1)}
             disabled={index === 0 || playing}
             className="replay-control rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-600 transition hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
-            aria-label="Previous position"
+            aria-label={t('replayPreviousPosition')}
           >
             <RotateCcw size={18} />
           </button>
@@ -179,7 +189,7 @@ export function ReplayControls() {
             type="button"
             onClick={togglePlayback}
             className="grid h-11 w-11 place-items-center rounded-full bg-slate-900 text-white shadow-sm transition hover:bg-sky-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-            aria-label={playing ? 'Pause replay' : 'Play replay'}
+            aria-label={playing ? t('replayPause') : t('replayPlay')}
             aria-pressed={playing}
           >
             {playing ? (
@@ -193,13 +203,13 @@ export function ReplayControls() {
             onClick={() => selectPosition(index + 1)}
             disabled={index === lastIndex || playing}
             className="replay-control rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-600 transition hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
-            aria-label="Next position"
+            aria-label={t('replayNextPosition')}
           >
             <RotateCw size={18} />
           </button>
         </div>
 
-        <div className="flex items-center gap-2" aria-label="Playback speed">
+        <div className="flex items-center gap-2" aria-label={t('replayPlaybackSpeed')}>
           <Gauge size={16} className="text-slate-400" aria-hidden="true" />
           {speeds.map((value) => (
             <button
@@ -212,7 +222,7 @@ export function ReplayControls() {
                   : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
               }`}
               aria-pressed={speed === value}
-              aria-label={`${value} times playback speed`}
+              aria-label={t('replayPlaybackSpeedValue').replace('{value}', String(value))}
             >
               {value}×
             </button>

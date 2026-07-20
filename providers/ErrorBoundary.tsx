@@ -2,16 +2,18 @@
 
 import React, { type ErrorInfo, type ReactNode } from 'react';
 import { AlertTriangle, ChevronDown, RefreshCw, RotateCcw } from 'lucide-react';
+import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type ErrorBoundaryProps = {
   children: ReactNode;
+  labels: Record<string, string>;
 };
 
 type ErrorBoundaryState = {
   error: Error | null;
 };
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+class ErrorBoundaryInner extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = {
     error: null,
   };
@@ -34,6 +36,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   render() {
     const { error } = this.state;
+    const { labels } = this.props;
 
     if (!error) {
       return this.props.children;
@@ -55,17 +58,16 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
           </div>
 
           <p className="mb-2 text-sm font-semibold tracking-wide text-(--color-primary)">
-            Something went wrong
+            {labels.errorSomethingWrong}
           </p>
           <h1
             id="app-error-title"
             className="m-0 text-2xl font-semibold tracking-tight sm:text-3xl"
           >
-            We hit an unexpected snag
+            {labels.errorUnexpectedSnag}
           </h1>
           <p className="mt-3 max-w-md text-sm leading-6 text-(--color-muted) sm:text-base">
-            The app couldn&apos;t finish that action. You can try again, or reload to start with a
-            fresh connection.
+            {labels.errorActionFailed}
           </p>
 
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -75,7 +77,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
               className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-(--color-primary) px-5 font-semibold text-white shadow-sm shadow-sky-950/15 transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)"
             >
               <RotateCcw aria-hidden="true" size={18} />
-              Try again
+              {labels.sharedTryAgain}
             </button>
             <button
               type="button"
@@ -83,13 +85,13 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
               className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) px-5 font-semibold transition hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)"
             >
               <RefreshCw aria-hidden="true" size={18} />
-              Reload app
+              {labels.sharedReloadApp}
             </button>
           </div>
 
           <details className="group mt-8 border-t border-(--color-divider) pt-5 text-sm text-(--color-muted)">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-lg py-1 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)">
-              Technical details
+              {labels.errorTechnicalDetails}
               <ChevronDown
                 aria-hidden="true"
                 size={17}
@@ -97,7 +99,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
               />
             </summary>
             <pre className="mt-3 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-xl bg-(--color-surface-subtle) p-4 font-mono text-xs leading-5">
-              {error.message || 'An unknown error occurred.'}
+              {error.message || labels.errorUnknown}
             </pre>
           </details>
         </section>
@@ -106,4 +108,21 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
-export default ErrorBoundary;
+export default function ErrorBoundary({ children }: { children: ReactNode }) {
+  const t = useTranslation();
+  return (
+    <ErrorBoundaryInner
+      labels={{
+        errorSomethingWrong: t('errorSomethingWrong'),
+        errorUnexpectedSnag: t('errorUnexpectedSnag'),
+        errorActionFailed: t('errorActionFailed'),
+        sharedTryAgain: t('sharedTryAgain'),
+        sharedReloadApp: t('sharedReloadApp'),
+        errorTechnicalDetails: t('errorTechnicalDetails'),
+        errorUnknown: t('errorUnknown'),
+      }}
+    >
+      {children}
+    </ErrorBoundaryInner>
+  );
+}
