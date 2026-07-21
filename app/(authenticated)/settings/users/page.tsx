@@ -2,6 +2,7 @@
 'use client';
 import { useCallback, useReducer, useState } from 'react';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import {
   Table,
   TableRow,
@@ -58,7 +59,7 @@ const UsersPage = () => {
     key: 'connections',
     title: t('sharedConnections'),
     icon: <LinkIcon fontSize="small" />,
-    handler: (userId) => navigate(`/settings/user/${userId}/connections`),
+    handler: (userId) => navigate(routes.settings.user.connections(userId)),
   };
 
   const loadItems = useCallback(
@@ -91,7 +92,7 @@ const UsersPage = () => {
       <SearchHeader
         keyword={searchKeyword}
         setKeyword={setSearchKeyword}
-        editPath="/settings/user"
+        editPath={routes.settings.user.base}
         addLabel="Add user"
       />
       <Table className={classes.table}>
@@ -110,7 +111,7 @@ const UsersPage = () => {
           {!hasMore && items.filter((u) => temporary || !u.temporary).length === 0 && (
             <CollectionEmptyState
               colSpan={7}
-              editPath="/settings/user"
+              editPath={routes.settings.user.base}
               itemName="users"
               searchKeyword={searchKeyword}
             />
@@ -130,7 +131,7 @@ const UsersPage = () => {
                 <TableCell className={classes.columnAction} padding="none">
                   <CollectionActions
                     itemId={item.id}
-                    editPath="/settings/user"
+                    editPath={routes.settings.user.base}
                     endpoint="users"
                     onReload={reload}
                     customActions={manager ? [actionLogin, actionConnections] : [actionConnections]}
@@ -160,7 +161,7 @@ const UsersPage = () => {
           </TableRow>
         </TableFooter>
       </Table>
-      <CollectionFab editPath="/settings/user" />
+      <CollectionFab editPath={routes.settings.user.base} />
     </PageLayout>
   );
 };

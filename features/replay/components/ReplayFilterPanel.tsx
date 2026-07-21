@@ -6,6 +6,7 @@ import { CalendarDays, Search } from 'lucide-react';
 import SelectField from '@/components/ui/SelectField';
 import ReplayDateTimePicker from '@/features/replay/components/ReplayDateTimePicker';
 import type { ReplayDevice } from '@/features/replay/types';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type Period =
@@ -145,7 +146,7 @@ export default function ReplayFilterPanel({
       period,
     });
     if (period === 'specificDay') query.set('day', selectedDay);
-    startTransition(() => router.push(`/replay?${query}`));
+    startTransition(() => router.push(`${routes.replay.index}?${query}`));
   };
 
   return (

@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import {
   Toolbar,
   IconButton,
@@ -213,7 +214,11 @@ const MainToolbar = ({
           </FormGroup>
         </div>
       </Popover>
-      <IconButton edge="end" onClick={() => navigate('/settings/device')} disabled={deviceReadonly}>
+      <IconButton
+        edge="end"
+        onClick={() => navigate(routes.settings.device.base)}
+        disabled={deviceReadonly}
+      >
         <Tooltip
           open={!deviceReadonly && Object.keys(devices).length === 0}
           title={t('deviceRegisterFirst')}

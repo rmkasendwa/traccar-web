@@ -3,6 +3,7 @@
 import { useCallback, useReducer, useState } from 'react';
 import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { useAsyncTask, useScrollToLoad, pageSize } from '@/lib/react';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import PageLayout from '@/components/layout/PageLayout';
 import SettingsMenu from '@/features/settings/components/SettingsMenu';
@@ -53,7 +54,7 @@ const CalendarsPage = () => {
       <SearchHeader
         keyword={searchKeyword}
         setKeyword={setSearchKeyword}
-        editPath="/settings/calendar"
+        editPath={routes.settings.calendar.base}
         addLabel="Add calendar"
       />
       <Table className={classes.table}>
@@ -67,7 +68,7 @@ const CalendarsPage = () => {
           {!hasMore && items.length === 0 && (
             <CollectionEmptyState
               colSpan={2}
-              editPath="/settings/calendar"
+              editPath={routes.settings.calendar.base}
               itemName="calendars"
               searchKeyword={searchKeyword}
             />
@@ -78,7 +79,7 @@ const CalendarsPage = () => {
               <TableCell className={classes.columnAction} padding="none">
                 <CollectionActions
                   itemId={item.id}
-                  editPath="/settings/calendar"
+                  editPath={routes.settings.calendar.base}
                   endpoint="calendars"
                   onReload={reload}
                 />
@@ -90,7 +91,7 @@ const CalendarsPage = () => {
           )}
         </TableBody>
       </Table>
-      <CollectionFab editPath="/settings/calendar" />
+      <CollectionFab editPath={routes.settings.calendar.base} />
     </PageLayout>
   );
 };

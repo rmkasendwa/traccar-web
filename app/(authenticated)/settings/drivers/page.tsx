@@ -3,6 +3,7 @@
 import { useCallback, useReducer, useState } from 'react';
 import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { useAsyncTask, useScrollToLoad, pageSize } from '@/lib/react';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import PageLayout from '@/components/layout/PageLayout';
 import SettingsMenu from '@/features/settings/components/SettingsMenu';
@@ -53,7 +54,7 @@ const DriversPage = () => {
       <SearchHeader
         keyword={searchKeyword}
         setKeyword={setSearchKeyword}
-        editPath="/settings/driver"
+        editPath={routes.settings.driver.base}
         addLabel="Add driver"
       />
       <Table className={classes.table}>
@@ -68,7 +69,7 @@ const DriversPage = () => {
           {!hasMore && items.length === 0 && (
             <CollectionEmptyState
               colSpan={3}
-              editPath="/settings/driver"
+              editPath={routes.settings.driver.base}
               itemName="drivers"
               searchKeyword={searchKeyword}
             />
@@ -80,7 +81,7 @@ const DriversPage = () => {
               <TableCell className={classes.columnAction} padding="none">
                 <CollectionActions
                   itemId={item.id}
-                  editPath="/settings/driver"
+                  editPath={routes.settings.driver.base}
                   endpoint="drivers"
                   onReload={reload}
                 />
@@ -92,7 +93,7 @@ const DriversPage = () => {
           )}
         </TableBody>
       </Table>
-      <CollectionFab editPath="/settings/driver" />
+      <CollectionFab editPath={routes.settings.driver.base} />
     </PageLayout>
   );
 };

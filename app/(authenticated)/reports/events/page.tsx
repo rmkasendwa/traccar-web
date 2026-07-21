@@ -2,6 +2,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import {
   Table,
   TableHead,
@@ -179,7 +180,7 @@ const EventReportPage = () => {
       report.attributes.types = eventTypes.join(',');
     }
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate(routes.reports.scheduled);
   });
 
   const formatValue = (item, key) => {

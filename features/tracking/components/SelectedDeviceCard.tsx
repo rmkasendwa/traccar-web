@@ -25,6 +25,7 @@ import {
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import { useDeviceReadonly, useRestriction } from '@/lib/permissions';
 import { speedFromKnots, speedUnitString } from '@/lib/converter';
@@ -167,7 +168,9 @@ export default function SelectedDeviceCard({
       body: JSON.stringify({ deviceId, geofenceId: geofence.id }),
     });
     setMoreOpen(false);
-    navigate(`/settings/geofence/${geofence.id}`);
+    if (geofence.id != null) {
+      navigate(routes.settings.geofence.detail(geofence.id));
+    }
   };
 
   return (
@@ -242,7 +245,7 @@ export default function SelectedDeviceCard({
         {position && (
           <button
             type="button"
-            onClick={() => navigate(`/position/${position.id}`)}
+            onClick={() => navigate(routes.position(position.id))}
             className="group mt-2.5 flex w-full items-center justify-between rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) px-3 py-2 text-xs font-semibold text-(--color-primary) shadow-sm transition hover:border-(--color-primary) hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)"
           >
             {t('deviceViewPositionDetails')}
@@ -269,7 +272,7 @@ export default function SelectedDeviceCard({
           <ActionButton
             label={t('reportReplay')}
             tone="violet"
-            onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
+            onClick={() => navigate(routes.replay.forDevice(deviceId))}
             disabled={!position}
           >
             <Route size={18} />
@@ -277,14 +280,14 @@ export default function SelectedDeviceCard({
           <ActionButton
             label={t('deviceCommand')}
             tone="sky"
-            onClick={() => navigate(`/settings/device/${deviceId}/command`)}
+            onClick={() => navigate(routes.settings.device.command(deviceId))}
           >
             <Send size={18} />
           </ActionButton>
           <ActionButton
             label={t('sharedEdit')}
             tone="amber"
-            onClick={() => navigate(`/settings/device/${deviceId}`)}
+            onClick={() => navigate(routes.settings.device.detail(deviceId))}
             disabled={deviceReadonly}
           >
             <Pencil size={18} />
@@ -315,7 +318,7 @@ export default function SelectedDeviceCard({
               disabled={!position || position.protocol !== 'jt808'}
               onClick={() => {
                 setMoreOpen(false);
-                navigate(`/stream?deviceId=${deviceId}`);
+                navigate(routes.stream.forDevice(deviceId));
               }}
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-(--color-surface-hover) disabled:cursor-not-allowed disabled:opacity-40"
             >
@@ -347,7 +350,7 @@ export default function SelectedDeviceCard({
                 type="button"
                 onClick={() => {
                   setMoreOpen(false);
-                  navigate(`/settings/device/${deviceId}/share`);
+                  navigate(routes.settings.device.share(deviceId));
                 }}
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-950"
               >

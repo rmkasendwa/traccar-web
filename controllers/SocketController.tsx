@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { Snackbar } from '@/components/ui';
 import { devicesActions, sessionActions } from '@/store';
 import { useCatchCallback, useAsyncTask } from '@/lib/react';
@@ -108,7 +109,7 @@ const SocketController = () => {
           dispatch(sessionActions.updatePositions(await positionsResponse.json()));
         }
         if (devicesResponse.status === 401 || positionsResponse.status === 401) {
-          navigate('/login');
+          navigate(routes.login);
         }
       } catch {
         // ignore errors

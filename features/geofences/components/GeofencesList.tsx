@@ -10,6 +10,7 @@ import {
 
 import { geofencesActions, type AppDispatch, type RootState } from '@/store';
 import BaseCollectionActions from '@/features/settings/components/CollectionActions';
+import { routes } from '@/lib/routes';
 import { useCatchCallback } from '@/lib/react';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import type { ApiId, Geofence } from '@/types/traccar';
@@ -90,7 +91,7 @@ const GeofencesList = ({ selectedGeofenceId, onGeofenceSelected }: GeofencesList
               <div onClick={stopPropagation}>
                 <CollectionActions
                   itemId={item.id}
-                  editPath="/settings/geofence"
+                  editPath={routes.settings.geofence.base}
                   endpoint="geofences"
                   onReload={refreshGeofences}
                 />

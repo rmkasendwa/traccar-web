@@ -4,6 +4,7 @@ import { useCallback, useReducer, useState } from 'react';
 import dayjs from 'dayjs';
 import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { useAsyncTask, useScrollToLoad, pageSize } from '@/lib/react';
+import { routes } from '@/lib/routes';
 import usePositionAttributes from '@/features/positions/hooks/usePositionAttributes';
 import { formatDistance, formatSpeed } from '@/lib/formatter';
 import { useAttributePreference } from '@/lib/preferences';
@@ -85,7 +86,7 @@ const MaintenacesPage = () => {
       <SearchHeader
         keyword={searchKeyword}
         setKeyword={setSearchKeyword}
-        editPath="/settings/maintenance"
+        editPath={routes.settings.maintenance.base}
         addLabel="Add maintenance"
       />
       <Table className={classes.table}>
@@ -102,7 +103,7 @@ const MaintenacesPage = () => {
           {!hasMore && items.length === 0 && (
             <CollectionEmptyState
               colSpan={5}
-              editPath="/settings/maintenance"
+              editPath={routes.settings.maintenance.base}
               itemName="maintenance tasks"
               searchKeyword={searchKeyword}
             />
@@ -116,7 +117,7 @@ const MaintenacesPage = () => {
               <TableCell className={classes.columnAction} padding="none">
                 <CollectionActions
                   itemId={item.id}
-                  editPath="/settings/maintenance"
+                  editPath={routes.settings.maintenance.base}
                   endpoint="maintenance"
                   onReload={reload}
                 />
@@ -128,7 +129,7 @@ const MaintenacesPage = () => {
           )}
         </TableBody>
       </Table>
-      <CollectionFab editPath="/settings/maintenance" />
+      <CollectionFab editPath={routes.settings.maintenance.base} />
     </PageLayout>
   );
 };

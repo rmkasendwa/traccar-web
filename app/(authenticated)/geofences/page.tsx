@@ -25,6 +25,7 @@ import { makeStyles } from '@/components/ui/styles';
 import GeofencesList from '@/features/geofences/components/GeofencesList';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import { errorsActions, type AppDispatch } from '@/store';
 import type { ApiId } from '@/types/traccar';
@@ -197,7 +198,7 @@ export default function Page() {
           });
           const item = (await response.json()) as { id?: ApiId };
           if (item.id) {
-            navigate(`/settings/geofence/${item.id}`);
+            navigate(routes.settings.geofence.detail(item.id));
           }
         } catch (error) {
           dispatch(errorsActions.push(errorMessage(error)));

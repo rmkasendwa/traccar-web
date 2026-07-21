@@ -3,6 +3,7 @@
 import { useCallback, useReducer, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import {
   Table,
   TableRow,
@@ -104,7 +105,7 @@ const DevicesPage = () => {
     key: 'connections',
     title: t('sharedConnections'),
     icon: <LinkIcon fontSize="small" />,
-    handler: (deviceId) => navigate(`/settings/device/${deviceId}/connections`),
+    handler: (deviceId) => navigate(routes.settings.device.connections(deviceId)),
   };
 
   return (
@@ -112,7 +113,7 @@ const DevicesPage = () => {
       <SearchHeader
         keyword={searchKeyword}
         setKeyword={setSearchKeyword}
-        editPath="/settings/device"
+        editPath={routes.settings.device.base}
         addLabel="Add device"
       />
       <Table className={classes.table}>
@@ -134,7 +135,7 @@ const DevicesPage = () => {
           {!hasMore && items.length === 0 && (
             <CollectionEmptyState
               colSpan={manager ? 10 : 9}
-              editPath="/settings/device"
+              editPath={routes.settings.device.base}
               itemName="devices"
               searchKeyword={searchKeyword}
               disabled={deviceReadonly}
@@ -166,7 +167,7 @@ const DevicesPage = () => {
               <TableCell className={classes.columnAction} padding="none">
                 <CollectionActions
                   itemId={item.id}
-                  editPath="/settings/device"
+                  editPath={routes.settings.device.base}
                   endpoint="devices"
                   onReload={reload}
                   customActions={[actionConnections]}
@@ -207,7 +208,7 @@ const DevicesPage = () => {
           </TableRow>
         </TableFooter>
       </Table>
-      <CollectionFab editPath="/settings/device" />
+      <CollectionFab editPath={routes.settings.device.base} />
     </PageLayout>
   );
 };

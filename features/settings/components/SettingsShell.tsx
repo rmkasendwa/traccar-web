@@ -2,6 +2,7 @@
 
 import SectionShell, { type SectionNavigationGroup } from '@/components/layout/SectionShell';
 import { useAdministrator, useManager, useRestriction } from '@/lib/permissions';
+import { routes } from '@/lib/routes';
 import useFeatures from '@/lib/useFeatures';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import { useSelector } from 'react-redux';
@@ -40,7 +41,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
       items: [
         {
           label: t('sharedPreferences'),
-          href: '/settings/preferences',
+          href: routes.settings.preferences,
           icon: <SlidersHorizontal size={18} />,
           description: t('settingsPreferencesDescription'),
         },
@@ -48,13 +49,13 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
           ? [
               {
                 label: t('sharedNotifications'),
-                href: '/settings/notifications',
+                href: routes.settings.notifications,
                 icon: <Bell size={18} />,
                 description: t('settingsNotificationsDescription'),
               },
               {
                 label: t('settingsUser'),
-                href: `/settings/user/${userId}`,
+                href: routes.settings.user.detail(userId),
                 icon: <UserRound size={18} />,
                 description: t('settingsUserDescription'),
               },
@@ -69,13 +70,13 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
             items: [
               {
                 label: t('deviceTitle'),
-                href: '/settings/devices',
+                href: routes.settings.devices,
                 icon: <Server size={18} />,
                 description: t('settingsDevicesDescription'),
               },
               {
                 label: t('sharedGeofences'),
-                href: '/geofences',
+                href: routes.geofences,
                 icon: <MapPinned size={18} />,
                 description: t('settingsGeofencesDescription'),
               },
@@ -83,7 +84,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 ? [
                     {
                       label: t('settingsGroups'),
-                      href: '/settings/groups',
+                      href: routes.settings.groups,
                       icon: <Folder size={18} />,
                       description: t('settingsGroupsDescription'),
                     },
@@ -93,7 +94,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 ? [
                     {
                       label: t('sharedDrivers'),
-                      href: '/settings/drivers',
+                      href: routes.settings.drivers,
                       icon: <UserRound size={18} />,
                       description: t('settingsDriversDescription'),
                     },
@@ -109,7 +110,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 ? [
                     {
                       label: t('sharedCalendars'),
-                      href: '/settings/calendars',
+                      href: routes.settings.calendars,
                       icon: <CalendarDays size={18} />,
                       description: t('settingsCalendarsDescription'),
                     },
@@ -119,7 +120,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 ? [
                     {
                       label: t('sharedComputedAttributes'),
-                      href: '/settings/attributes',
+                      href: routes.settings.attributes,
                       icon: <Calculator size={18} />,
                       description: t('settingsComputedAttributesDescription'),
                     },
@@ -129,7 +130,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 ? [
                     {
                       label: t('sharedMaintenance'),
-                      href: '/settings/maintenances',
+                      href: routes.settings.maintenances,
                       icon: <Wrench size={18} />,
                       description: t('settingsMaintenanceDescription'),
                     },
@@ -139,7 +140,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 ? [
                     {
                       label: t('sharedSavedCommands'),
-                      href: '/settings/commands',
+                      href: routes.settings.commands,
                       icon: <Send size={18} />,
                       description: t('settingsSavedCommandsDescription'),
                     },
@@ -157,7 +158,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
             items: [
               {
                 label: t('serverAnnouncement'),
-                href: '/settings/announcement',
+                href: routes.settings.announcement,
                 icon: <Megaphone size={18} />,
                 description: t('settingsAnnouncementDescription'),
               },
@@ -165,7 +166,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 ? [
                     {
                       label: t('settingsServer'),
-                      href: '/settings/server',
+                      href: routes.settings.server,
                       icon: <Settings size={18} />,
                       description: t('settingsServerDescription'),
                     },
@@ -173,7 +174,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
                 : []),
               {
                 label: t('settingsUsers'),
-                href: '/settings/users',
+                href: routes.settings.users,
                 icon: <Users size={18} />,
                 description: t('settingsUsersDescription'),
               },
@@ -210,7 +211,7 @@ export default function SettingsShell({ children }: { children: ReactNode }) {
       title={t('settingsTitle')}
       description={t('settingsDescription')}
       groups={groups}
-      backHref="/"
+      backHref={routes.home}
       backLabel={t('sharedBackToMap')}
     >
       <div className="h-full min-h-0 overflow-auto bg-(--color-background) p-3 sm:p-4 lg:p-6">

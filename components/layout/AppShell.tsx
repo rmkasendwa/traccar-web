@@ -3,6 +3,7 @@
 
 import { useEffect, type ReactNode } from 'react';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import SocketController from '@/controllers/SocketController';
 import CachingController from '@/controllers/CachingController';
@@ -53,7 +54,7 @@ const App = ({ children, initialUser }: AppProps) => {
             'postLogin',
             window.location.pathname + window.location.search,
           );
-          navigate(newServer ? '/register' : '/login', { replace: true });
+          navigate(newServer ? routes.register : routes.login, { replace: true });
         }
       }
       return null;
@@ -65,7 +66,9 @@ const App = ({ children, initialUser }: AppProps) => {
     return <Loader />;
   }
   if (termsUrl && !user.attributes.termsAccepted) {
-    return <TermsDialog open onCancel={() => navigate('/login')} onAccept={() => acceptTerms()} />;
+    return (
+      <TermsDialog open onCancel={() => navigate(routes.login)} onAccept={() => acceptTerms()} />
+    );
   }
   return (
     <div className="flex h-dvh min-h-0 flex-col">

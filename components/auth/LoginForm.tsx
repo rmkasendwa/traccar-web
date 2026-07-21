@@ -8,6 +8,7 @@ import { emptyAuthFormState } from '@/components/auth/formState';
 import useLiveFormErrors from '@/components/auth/useLiveFormErrors';
 import Link from 'next/link';
 import { useActionState, useState, type ChangeEvent } from 'react';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type LoginFormProps = {
@@ -114,7 +115,7 @@ export default function LoginForm({
             labelEnd={
               <Link
                 className="text-xs font-semibold text-(--color-primary) hover:underline"
-                href="/reset-password"
+                href={routes.resetPassword}
               >
                 {t('loginReset')}
               </Link>
@@ -171,7 +172,10 @@ export default function LoginForm({
 
       {!openIdForced && (
         <p className="text-center text-sm text-(--color-muted)">
-          <Link className="font-semibold text-(--color-primary) hover:underline" href="/register">
+          <Link
+            className="font-semibold text-(--color-primary) hover:underline"
+            href={routes.register}
+          >
             {t('loginRegister')}
           </Link>
         </p>

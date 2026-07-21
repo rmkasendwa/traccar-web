@@ -2,6 +2,7 @@
 'use client';
 import { useState } from 'react';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@/components/ui';
 import { IconButton, Table, TableBody, TableCell, TableHead, TableRow } from '@/components/ui';
@@ -107,7 +108,7 @@ const StopReportPage = () => {
   const onSchedule = useCatch(async (deviceIds, groupIds, report) => {
     report.type = 'stops';
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate(routes.reports.scheduled);
   });
 
   const formatValue = (item, key) => {

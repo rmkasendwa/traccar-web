@@ -2,6 +2,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import {
   Accordion,
   AccordionSummary,
@@ -75,7 +76,7 @@ const UserPage = () => {
     if (deleteEmail === currentUser.email) {
       setDeleteFailed(false);
       await fetchOrThrow(`/api/users/${currentUser.id}`, { method: 'DELETE' });
-      navigate('/login');
+      navigate(routes.login);
       dispatch(sessionActions.updateUser(null));
     } else {
       setDeleteFailed(true);

@@ -2,6 +2,7 @@
 'use client';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { IconButton, Table, TableBody, TableCell, TableHead, TableRow } from '@/components/ui';
 import { GpsFixedIcon } from '@/components/ui/icons';
 import { LocationSearchingIcon } from '@/components/ui/icons';
@@ -114,7 +115,7 @@ const PositionsReportPage = () => {
   const onSchedule = useCatch(async (deviceIds, groupIds, report) => {
     report.type = 'route';
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate(routes.reports.scheduled);
   });
 
   return (

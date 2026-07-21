@@ -2,6 +2,7 @@
 import { useSelector } from 'react-redux';
 import { Link } from '@/components/ui';
 import { Link as RouterLink } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import {
   formatAlarm,
   formatAltitude,
@@ -126,7 +127,7 @@ const PositionValue = ({ position, property, attribute }) => {
             <Link
               component={RouterLink}
               underline="none"
-              to={`/settings/accumulators/${position.deviceId}`}
+              to={routes.settings.accumulators(position.deviceId)}
             >
               &#9881;
             </Link>
@@ -135,7 +136,7 @@ const PositionValue = ({ position, property, attribute }) => {
       );
     case 'network':
       return (
-        <Link component={RouterLink} underline="none" to={`/network/${position.id}`}>
+        <Link component={RouterLink} underline="none" to={routes.network(position.id)}>
           {t('sharedInfoTitle')}
         </Link>
       );

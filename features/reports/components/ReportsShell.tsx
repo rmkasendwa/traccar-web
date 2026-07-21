@@ -2,6 +2,7 @@
 
 import SectionShell, { type SectionNavigationGroup } from '@/components/layout/SectionShell';
 import { useAdministrator, useRestriction } from '@/lib/permissions';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import {
   Activity,
@@ -31,7 +32,11 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
     const params = new URLSearchParams();
     const deviceIds = searchParams.getAll('deviceId');
     const groupIds = searchParams.getAll('groupId');
-    if (path === '/reports/chart' || path === '/reports/route' || path === '/replay') {
+    if (
+      path === routes.reports.chart ||
+      path === routes.reports.route ||
+      path === routes.replay.index
+    ) {
       if (deviceIds[0]) params.set('deviceId', deviceIds[0]);
     } else {
       deviceIds.forEach((id) => params.append('deviceId', id));
@@ -46,19 +51,19 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
       items: [
         {
           label: t('reportCombined'),
-          href: buildLink('/reports/combined'),
+          href: buildLink(routes.reports.combined),
           icon: <Sparkles size={18} />,
           description: t('reportsCombinedDescription'),
         },
         {
           label: t('reportSummary'),
-          href: buildLink('/reports/summary'),
+          href: buildLink(routes.reports.summary),
           icon: <ListChecks size={18} />,
           description: t('reportsSummaryDescription'),
         },
         {
           label: t('reportChart'),
-          href: buildLink('/reports/chart'),
+          href: buildLink(routes.reports.chart),
           icon: <TrendingUp size={18} />,
           description: t('reportsChartDescription'),
         },
@@ -69,19 +74,19 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
       items: [
         {
           label: t('reportTrips'),
-          href: buildLink('/reports/trips'),
+          href: buildLink(routes.reports.trips),
           icon: <Route size={18} />,
           description: t('reportsTripsDescription'),
         },
         {
           label: t('reportStops'),
-          href: buildLink('/reports/stops'),
+          href: buildLink(routes.reports.stops),
           icon: <CirclePause size={18} />,
           description: t('reportsStopsDescription'),
         },
         {
           label: t('reportPositions'),
-          href: buildLink('/reports/route'),
+          href: buildLink(routes.reports.route),
           icon: <MapPin size={18} />,
           description: t('reportsPositionsDescription'),
         },
@@ -93,19 +98,19 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
       items: [
         {
           label: t('reportEvents'),
-          href: buildLink('/reports/events'),
+          href: buildLink(routes.reports.events),
           icon: <Activity size={18} />,
           description: t('reportsEventsDescription'),
         },
         {
           label: t('sharedGeofences'),
-          href: buildLink('/reports/geofences'),
+          href: buildLink(routes.reports.geofences),
           icon: <Flag size={18} />,
           description: t('reportsGeofencesDescription'),
         },
         {
           label: t('reportReplay'),
-          href: buildLink('/replay'),
+          href: buildLink(routes.replay.index),
           icon: <ChartNoAxesCombined size={18} />,
           description: t('reportsReplayDescription'),
         },
@@ -117,7 +122,7 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
       items: [
         {
           label: t('sharedLogs'),
-          href: '/reports/logs',
+          href: routes.reports.logs,
           icon: <FileSearch size={18} />,
           description: t('reportsLogsDescription'),
         },
@@ -125,7 +130,7 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
           ? [
               {
                 label: t('reportScheduled'),
-                href: '/reports/scheduled',
+                href: routes.reports.scheduled,
                 icon: <CalendarClock size={18} />,
                 description: t('reportsScheduledDescription'),
               },
@@ -135,13 +140,13 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
           ? [
               {
                 label: t('statisticsTitle'),
-                href: '/reports/statistics',
+                href: routes.reports.statistics,
                 icon: <BarChart3 size={18} />,
                 description: t('reportsStatisticsDescription'),
               },
               {
                 label: t('reportAudit'),
-                href: '/reports/audit',
+                href: routes.reports.audit,
                 icon: <ShieldCheck size={18} />,
                 description: t('reportsAuditDescription'),
               },
@@ -155,7 +160,7 @@ export default function ReportsShell({ children }: { children: ReactNode }) {
       title={t('reportsTitle')}
       description={t('reportsDescription')}
       groups={groups}
-      backHref="/"
+      backHref={routes.home}
       backLabel={t('sharedBackToMap')}
     >
       <div className="reports-workspace h-full min-h-0 overflow-auto bg-(--color-background) p-3 sm:p-4 lg:p-6">

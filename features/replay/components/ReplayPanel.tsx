@@ -5,6 +5,7 @@ import { ArrowLeft, ChevronsUpDown } from 'lucide-react';
 import type { ReactNode } from 'react';
 import ThemeModeControl from '@/components/ui/ThemeModeControl';
 import LanguageControl from '@/components/ui/LanguageControl';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 type ReplayPanelProps = {
@@ -35,7 +36,7 @@ export default function ReplayPanel({ hasReplay, children, footer }: ReplayPanel
         <div className="relative flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
             <Link
-              href="/"
+              href={routes.home}
               aria-label={t('replayBackToTracking')}
               className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
             >

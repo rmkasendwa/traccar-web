@@ -2,6 +2,7 @@
 'use client';
 import { useEffect } from 'react';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Table,
@@ -41,7 +42,7 @@ const LogsPage = () => {
 
   const registerDevice = (uniqueId) => {
     const query = new URLSearchParams({ uniqueId });
-    navigate(`/settings/device?${query.toString()}`);
+    navigate(routes.settings.device.withQuery(query));
   };
 
   return (

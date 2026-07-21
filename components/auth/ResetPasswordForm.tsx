@@ -8,6 +8,7 @@ import { emptyAuthFormState } from '@/components/auth/formState';
 import useLiveFormErrors from '@/components/auth/useLiveFormErrors';
 import Link from 'next/link';
 import { useActionState, useState, type ChangeEvent } from 'react';
+import { routes } from '@/lib/routes';
 import PasswordStrengthMeter from './PasswordStrengthMeter';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
@@ -183,7 +184,7 @@ export default function ResetPasswordForm({
       <SubmitButton pendingText={t('sharedLoading')}>{t('loginReset')}</SubmitButton>
 
       <p className="text-center text-sm">
-        <Link className="font-semibold text-(--color-primary) hover:underline" href="/login">
+        <Link className="font-semibold text-(--color-primary) hover:underline" href={routes.login}>
           {t('loginLogin')}
         </Link>
       </p>

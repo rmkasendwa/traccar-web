@@ -3,6 +3,7 @@
 import { useSelector } from 'react-redux';
 import { BarChart3, Map, Settings } from 'lucide-react';
 import { Link } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import AccountAvatarMenu from '@/components/layout/AccountAvatarMenu';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
@@ -13,9 +14,7 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
 
   const ids = Object.keys(devices);
   const reportDeviceId = selectedId || (ids.length === 1 ? ids[0] : null);
-  const reportsHref = reportDeviceId
-    ? `/reports/combined?deviceId=${reportDeviceId}`
-    : '/reports/combined';
+  const reportsHref = routes.reports.combinedForDevice(reportDeviceId);
 
   const itemClass = mobile
     ? 'flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[0.65rem] font-medium text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text)'
@@ -32,7 +31,7 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
       aria-label={t('mapMainNavigation')}
     >
       <Link
-        href="/"
+        href={routes.home}
         className={`${itemClass} bg-(--color-surface-hover) text-sky-600 dark:text-sky-400`}
       >
         <Map size={19} />
@@ -42,7 +41,7 @@ export default function HomeNavigation({ mobile = false }: { mobile?: boolean })
         <BarChart3 size={19} />
         {t('reportsTitle')}
       </Link>
-      <Link href="/settings/preferences?menu=true" className={itemClass}>
+      <Link href={routes.settings.preferencesMenu} className={itemClass}>
         <Settings size={19} />
         {t('settingsTitle')}
       </Link>

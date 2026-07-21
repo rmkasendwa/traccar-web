@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import {
   Accordion,
   AccordionSummary,
@@ -180,7 +181,7 @@ const PreferencesPage = () => {
                     const clicked = mapStyles.find((style) => style.id === added);
                     if (clicked && !clicked.available && clicked.id !== 'custom') {
                       const query = new URLSearchParams({ attribute: clicked.attribute });
-                      navigate(`/settings/user/${user.id}?${query.toString()}`);
+                      navigate(routes.settings.user.withQuery(user.id, query));
                     } else {
                       setAttributes({
                         ...attributes,
@@ -207,7 +208,7 @@ const PreferencesPage = () => {
                     const clicked = mapOverlays.find((overlay) => overlay.id === added);
                     if (clicked && !clicked.available && clicked.id !== 'custom') {
                       const query = new URLSearchParams({ attribute: clicked.attribute });
-                      navigate(`/settings/user/${user.id}?${query.toString()}`);
+                      navigate(routes.settings.user.withQuery(user.id, query));
                     } else if (!clicked || clicked.available) {
                       setAttributes({
                         ...attributes,
@@ -475,7 +476,11 @@ const PreferencesPage = () => {
                     label={t('settingsConnection')}
                     disabled
                   />
-                  <Button variant="outlined" color="primary" onClick={() => navigate('/emulator')}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => navigate(routes.emulator)}
+                  >
                     {t('sharedEmulator')}
                   </Button>
                   {admin && (

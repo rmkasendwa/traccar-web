@@ -2,6 +2,7 @@
 'use client';
 import { useState } from 'react';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@/components/ui';
 import { IconButton, Table, TableBody, TableCell, TableHead, TableRow } from '@/components/ui';
@@ -166,18 +167,17 @@ const TripReportPage = () => {
   const onSchedule = useCatch(async (deviceIds, groupIds, report) => {
     report.type = 'trips';
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate(routes.reports.scheduled);
   });
 
   const navigateToReplay = (item) => {
-    navigate({
-      pathname: '/replay',
-      search: new URLSearchParams({
+    navigate(
+      `${routes.replay.index}?${new URLSearchParams({
         from: item.startTime,
         to: item.endTime,
         deviceId: item.deviceId,
-      }).toString(),
-    });
+      })}`,
+    );
   };
 
   const formatValue = (item, key) => {

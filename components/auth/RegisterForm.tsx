@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useActionState, useState, type ChangeEvent } from 'react';
+import { routes } from '@/lib/routes';
 import Field from '@/components/auth/Field';
 import PasswordInput from '@/components/auth/PasswordInput';
 import PasswordStrengthMeter from '@/components/auth/PasswordStrengthMeter';
@@ -194,7 +195,7 @@ export default function RegisterForm({
       <SubmitButton pendingText={t('sharedLoading')}>{t('loginRegister')}</SubmitButton>
 
       <p className="text-center text-sm text-(--color-muted)">
-        <Link className="font-semibold text-(--color-primary) hover:underline" href="/login">
+        <Link className="font-semibold text-(--color-primary) hover:underline" href={routes.login}>
           {t('loginLogin')}
         </Link>
       </p>

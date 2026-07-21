@@ -16,6 +16,7 @@ import { PaymentIcon } from '@/components/ui/icons';
 import { CampaignIcon } from '@/components/ui/icons';
 import { CalculateIcon } from '@/components/ui/icons';
 import { useLocation } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { useSelector } from 'react-redux';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import { useAdministrator, useManager, useRestriction } from '@/lib/permissions';
@@ -40,82 +41,82 @@ const SettingsMenu = () => {
       <List>
         <MenuItem
           title={t('sharedPreferences')}
-          link="/settings/preferences"
+          link={routes.settings.preferences}
           icon={<TuneIcon />}
-          selected={location.pathname === '/settings/preferences'}
+          selected={location.pathname === routes.settings.preferences}
         />
         {!readonly && (
           <>
             <MenuItem
               title={t('sharedNotifications')}
-              link="/settings/notifications"
+              link={routes.settings.notifications}
               icon={<NotificationsIcon />}
-              selected={location.pathname.startsWith('/settings/notification')}
+              selected={location.pathname.startsWith(routes.settings.notification.base)}
             />
             <MenuItem
               title={t('settingsUser')}
-              link={`/settings/user/${userId}`}
+              link={routes.settings.user.detail(userId)}
               icon={<PersonIcon />}
-              selected={location.pathname === `/settings/user/${userId}`}
+              selected={location.pathname === routes.settings.user.detail(userId)}
             />
             <MenuItem
               title={t('deviceTitle')}
-              link="/settings/devices"
+              link={routes.settings.devices}
               icon={<DnsIcon />}
-              selected={location.pathname.startsWith('/settings/device')}
+              selected={location.pathname.startsWith(routes.settings.device.base)}
             />
             <MenuItem
               title={t('sharedGeofences')}
-              link="/geofences"
+              link={routes.geofences}
               icon={<DrawIcon />}
-              selected={location.pathname.startsWith('/settings/geofence')}
+              selected={location.pathname.startsWith(routes.settings.geofence.base)}
             />
             {!features.disableGroups && (
               <MenuItem
                 title={t('settingsGroups')}
-                link="/settings/groups"
+                link={routes.settings.groups}
                 icon={<FolderIcon />}
-                selected={location.pathname.startsWith('/settings/group')}
+                selected={location.pathname.startsWith(routes.settings.group.base)}
               />
             )}
             {!features.disableDrivers && (
               <MenuItem
                 title={t('sharedDrivers')}
-                link="/settings/drivers"
+                link={routes.settings.drivers}
                 icon={<PersonIcon />}
-                selected={location.pathname.startsWith('/settings/driver')}
+                selected={location.pathname.startsWith(routes.settings.driver.base)}
               />
             )}
             {!features.disableCalendars && (
               <MenuItem
                 title={t('sharedCalendars')}
-                link="/settings/calendars"
+                link={routes.settings.calendars}
                 icon={<TodayIcon />}
-                selected={location.pathname.startsWith('/settings/calendar')}
+                selected={location.pathname.startsWith(routes.settings.calendar.base)}
               />
             )}
             {!features.disableComputedAttributes && (
               <MenuItem
                 title={t('sharedComputedAttributes')}
-                link="/settings/attributes"
+                link={routes.settings.attributes}
                 icon={<CalculateIcon />}
-                selected={location.pathname.startsWith('/settings/attribute')}
+                selected={location.pathname.startsWith(routes.settings.attribute.base)}
               />
             )}
             {!features.disableMaintenance && (
               <MenuItem
                 title={t('sharedMaintenance')}
-                link="/settings/maintenances"
+                link={routes.settings.maintenances}
                 icon={<BuildIcon />}
-                selected={location.pathname.startsWith('/settings/maintenance')}
+                selected={location.pathname.startsWith(routes.settings.maintenance.base)}
               />
             )}
             {!features.disableSavedCommands && (
               <MenuItem
                 title={t('sharedSavedCommands')}
-                link="/settings/commands"
+                link={routes.settings.commands}
                 icon={<SendIcon />}
-                selected={location.pathname.startsWith('/settings/command')}
+                selected={location.pathname.startsWith(routes.settings.command.base)}
               />
             )}
           </>
@@ -133,25 +134,25 @@ const SettingsMenu = () => {
           <List>
             <MenuItem
               title={t('serverAnnouncement')}
-              link="/settings/announcement"
+              link={routes.settings.announcement}
               icon={<CampaignIcon />}
-              selected={location.pathname === '/settings/announcement'}
+              selected={location.pathname === routes.settings.announcement}
             />
             {admin && (
               <MenuItem
                 title={t('settingsServer')}
-                link="/settings/server"
+                link={routes.settings.server}
                 icon={<SettingsIcon />}
-                selected={location.pathname === '/settings/server'}
+                selected={location.pathname === routes.settings.server}
               />
             )}
             <MenuItem
               title={t('settingsUsers')}
-              link="/settings/users"
+              link={routes.settings.users}
               icon={<PeopleIcon />}
               selected={
-                location.pathname.startsWith('/settings/user') &&
-                location.pathname !== `/settings/user/${userId}`
+                location.pathname.startsWith(routes.settings.user.base) &&
+                location.pathname !== routes.settings.user.detail(userId)
               }
             />
           </List>

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import {
   Paper,
   BottomNavigation,
@@ -46,20 +47,20 @@ const BottomMenu = () => {
         [id] = deviceIds;
       }
     }
-    return id != null ? `/reports/combined?deviceId=${id}` : '/reports/combined';
+    return routes.reports.combinedForDevice(id);
   };
 
   const currentSelection = () => {
-    if (location.pathname === `/settings/user/${user.id}`) {
+    if (location.pathname === routes.settings.user.detail(user.id)) {
       return 'account';
     }
-    if (location.pathname.startsWith('/settings')) {
+    if (location.pathname.startsWith(routes.settings.index)) {
       return 'settings';
     }
-    if (location.pathname.startsWith('/reports')) {
+    if (location.pathname.startsWith(routes.reports.index)) {
       return 'reports';
     }
-    if (location.pathname === '/') {
+    if (location.pathname === routes.home) {
       return 'map';
     }
     return null;
@@ -67,7 +68,7 @@ const BottomMenu = () => {
 
   const handleAccount = () => {
     setAnchorEl(null);
-    navigate(`/settings/user/${user.id}`);
+    navigate(routes.settings.user.detail(user.id));
   };
 
   const handleLogout = async () => {
@@ -98,7 +99,7 @@ const BottomMenu = () => {
 
     await fetch('/api/session', { method: 'DELETE' });
     nativePostMessage('logout');
-    navigate('/login');
+    navigate(routes.login);
     dispatch(sessionActions.updateUser(null));
   };
 
@@ -121,7 +122,7 @@ const BottomMenu = () => {
       <BottomNavigation value={currentSelection()} onChange={handleSelection} showLabels>
         <BottomNavigationAction
           component={Link}
-          to="/"
+          to={routes.home}
           label={t('mapTitle')}
           icon={
             <Badge color="error" variant="dot" overlap="circular" invisible={socket !== false}>
@@ -142,7 +143,7 @@ const BottomMenu = () => {
         {!readonly && (
           <BottomNavigationAction
             component={Link}
-            to="/settings/preferences?menu=true"
+            to={routes.settings.preferencesMenu}
             label={t('settingsTitle')}
             icon={<SettingsIcon />}
             value="settings"
@@ -157,7 +158,7 @@ const BottomMenu = () => {
         ) : (
           <BottomNavigationAction
             component={Link}
-            to={`/settings/user/${user.id}`}
+            to={routes.settings.user.detail(user.id)}
             label={t('settingsUser')}
             icon={<PersonIcon />}
             value="account"

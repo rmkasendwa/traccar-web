@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { Table, TableHead, TableRow, TableBody, TableCell } from '@/components/ui';
 import SelectField from '@/components/ui/SelectField';
 import { useTheme } from '@/components/ui';
@@ -106,7 +107,7 @@ const SummaryReportPage = () => {
     report.type = 'summary';
     report.attributes.daily = daily;
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate(routes.reports.scheduled);
   });
 
   const formatValue = (item, key) => {

@@ -23,6 +23,7 @@ import ReplayPlayer, {
 } from '@/features/replay/components/ReplayPlayer';
 import { calculateReplayStatistics, formatDuration } from '@/features/replay/lib/replay';
 import type { ReplayDevice, ReplayPosition } from '@/features/replay/types';
+import { routes } from '@/lib/routes';
 import { fetchFromRequestOrigin } from '@/lib/serverFetch';
 import en from '@/providers/localization/messages/en.json';
 
@@ -126,7 +127,7 @@ function StateCard({ type }: { type: PageState }) {
       <p className="mt-1.5 text-xs leading-5 text-(--color-muted)">{t(content.descriptionKey)}</p>
       {(type === 'offline' || type === 'request') && (
         <Link
-          href="/replay"
+          href={routes.replay.index}
           className="mt-3 inline-flex rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
         >
           {t('replayStartAgain')}

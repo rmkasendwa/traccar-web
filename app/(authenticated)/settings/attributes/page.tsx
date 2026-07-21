@@ -3,6 +3,7 @@
 import { useCallback, useReducer, useState } from 'react';
 import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { useAsyncTask, useScrollToLoad, pageSize } from '@/lib/react';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import { useAdministrator } from '@/lib/permissions';
 import PageLayout from '@/components/layout/PageLayout';
@@ -57,7 +58,7 @@ const ComputedAttributesPage = () => {
       <SearchHeader
         keyword={searchKeyword}
         setKeyword={setSearchKeyword}
-        editPath="/settings/attribute"
+        editPath={routes.settings.attribute.base}
         addLabel="Add attribute"
         disabled={!administrator}
       />
@@ -75,7 +76,7 @@ const ComputedAttributesPage = () => {
           {!hasMore && items.length === 0 && (
             <CollectionEmptyState
               colSpan={administrator ? 5 : 4}
-              editPath="/settings/attribute"
+              editPath={routes.settings.attribute.base}
               itemName="computed attributes"
               searchKeyword={searchKeyword}
               disabled={!administrator}
@@ -91,7 +92,7 @@ const ComputedAttributesPage = () => {
                 <TableCell className={classes.columnAction} padding="none">
                   <CollectionActions
                     itemId={item.id}
-                    editPath="/settings/attribute"
+                    editPath={routes.settings.attribute.base}
                     endpoint="attributes/computed"
                     onReload={reload}
                   />
@@ -108,7 +109,7 @@ const ComputedAttributesPage = () => {
           )}
         </TableBody>
       </Table>
-      <CollectionFab editPath="/settings/attribute" disabled={!administrator} />
+      <CollectionFab editPath={routes.settings.attribute.base} disabled={!administrator} />
     </PageLayout>
   );
 };

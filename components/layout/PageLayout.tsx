@@ -17,6 +17,7 @@ import { ChevronLeftIcon } from '@/components/ui/icons';
 import { ChevronRightIcon } from '@/components/ui/icons';
 import { MenuIcon } from '@/components/ui/icons';
 import { useNavigate, useSearchParams } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import BackIcon from '@/components/ui/BackIcon';
 import { useSectionShell } from '@/components/layout/SectionShellContext';
@@ -138,7 +139,7 @@ const PageLayout = ({ menu, breadcrumbs, children, bare = false }) => {
                   color="inherit"
                   edge="start"
                   sx={{ mr: 2 }}
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate(routes.home)}
                 >
                   <BackIcon />
                 </IconButton>

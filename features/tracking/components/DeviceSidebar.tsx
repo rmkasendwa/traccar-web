@@ -16,6 +16,7 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { devicesActions } from '@/store';
 import FloatingPanel from '@/features/tracking/components/FloatingPanel';
 import ThemeModeControl from '@/components/ui/ThemeModeControl';
@@ -216,7 +217,7 @@ export default function DeviceSidebar({
           </FloatingPanel>
           <button
             type="button"
-            onClick={() => navigate('/settings/device')}
+            onClick={() => navigate(routes.settings.device.base)}
             className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500 text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-400"
             aria-label={t('deviceAdd')}
           >

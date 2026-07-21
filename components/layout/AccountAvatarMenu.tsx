@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { LogOut, Mail, UserRound } from 'lucide-react';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { sessionActions } from '@/store';
 import { nativePostMessage } from '@/controllers/NativeInterface';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
@@ -257,12 +258,12 @@ export default function AccountAvatarMenu({
     await fetch('/api/session', { method: 'DELETE' });
     nativePostMessage('logout');
     dispatch(sessionActions.updateUser(null));
-    navigate('/login');
+    navigate(routes.login);
   };
 
   if (!user) return null;
 
-  const profileHref = `/settings/user/${user.id}`;
+  const profileHref = routes.settings.user.detail(user.id);
   const accessibleName = label || user.name || user.email || t('settingsUser');
 
   return (

@@ -20,6 +20,7 @@ import { makeStyles } from '@/components/ui/styles';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import { formatNotificationTitle } from '@/lib/formatter';
 import { useNavigate, useParams } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import { errorsActions, type AppDispatch } from '@/store';
 import type { ApiId, Event, Position } from '@/types/traccar';
@@ -220,7 +221,12 @@ export default function Page() {
     <div className={classes.root}>
       <AppBar color="inherit" position="static" className={classes.toolbar}>
         <Toolbar>
-          <IconButton color="inherit" edge="start" sx={{ mr: 2 }} onClick={() => navigate('/')}>
+          <IconButton
+            color="inherit"
+            edge="start"
+            sx={{ mr: 2 }}
+            onClick={() => navigate(routes.home)}
+          >
             <BackIcon />
           </IconButton>
           <Typography variant="h6">{event && getEventTitle(t, event)}</Typography>

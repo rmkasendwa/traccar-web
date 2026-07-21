@@ -2,6 +2,7 @@ import AuthShell from '@/components/auth/AuthShell';
 import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
 import type { AuthFormState } from '@/components/auth/formState';
 import { fetchFromRequestOrigin } from '@/lib/serverFetch';
+import { routes } from '@/lib/routes';
 import { redirect } from 'next/navigation';
 
 type ResetPasswordPageProps = {
@@ -46,7 +47,7 @@ const resetPassword = async (_state: AuthFormState, formData: FormData): Promise
   });
 
   if (response?.ok) {
-    redirect('/login?updated=1');
+    redirect(`${routes.login}?updated=1`);
   }
 
   return {

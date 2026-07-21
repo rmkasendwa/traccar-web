@@ -3,6 +3,7 @@
 import { useCallback, useReducer, useState } from 'react';
 import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { useAsyncTask, useScrollToLoad, pageSize } from '@/lib/react';
+import { routes } from '@/lib/routes';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 import { formatBoolean } from '@/lib/formatter';
 import { prefixString } from '@/lib/stringUtils';
@@ -57,7 +58,7 @@ const CommandsPage = () => {
       <SearchHeader
         keyword={searchKeyword}
         setKeyword={setSearchKeyword}
-        editPath="/settings/command"
+        editPath={routes.settings.command.base}
         addLabel="Add command"
         disabled={limitCommands}
       />
@@ -74,7 +75,7 @@ const CommandsPage = () => {
           {!hasMore && items.length === 0 && (
             <CollectionEmptyState
               colSpan={limitCommands ? 3 : 4}
-              editPath="/settings/command"
+              editPath={routes.settings.command.base}
               itemName="saved commands"
               searchKeyword={searchKeyword}
               disabled={limitCommands}
@@ -89,7 +90,7 @@ const CommandsPage = () => {
                 <TableCell className={classes.columnAction} padding="none">
                   <CollectionActions
                     itemId={item.id}
-                    editPath="/settings/command"
+                    editPath={routes.settings.command.base}
                     endpoint="commands"
                     onReload={reload}
                   />
@@ -106,7 +107,7 @@ const CommandsPage = () => {
           )}
         </TableBody>
       </Table>
-      <CollectionFab editPath="/settings/command" disabled={limitCommands} />
+      <CollectionFab editPath={routes.settings.command.base} disabled={limitCommands} />
     </PageLayout>
   );
 };

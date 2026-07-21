@@ -6,6 +6,7 @@ import { useEffect, useMemo } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { useTheme } from '@/components/ui';
 import { useAttributePreference } from '@/lib/preferences';
 import { map } from '@/features/map/core/MapView';
@@ -85,7 +86,7 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
           body: JSON.stringify(newItem),
         });
         const item = await response.json();
-        navigate(`/settings/geofence/${item.id}`);
+        navigate(routes.settings.geofence.detail(item.id));
       } catch (error) {
         dispatch(errorsActions.push(error.message));
       }

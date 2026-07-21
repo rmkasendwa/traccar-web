@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link as RouterLink } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { Rnd } from 'react-rnd';
 import {
   Card,
@@ -169,7 +170,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ deviceId: position.deviceId, geofenceId: item.id }),
     });
-    navigate(`/settings/geofence/${item.id}`);
+    navigate(routes.settings.geofence.detail(item.id));
   }, [navigate, position, t]);
 
   return (
@@ -224,7 +225,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                       <TableRow>
                         <TableCell colSpan={2} className={classes.cell}>
                           <Typography variant="body2">
-                            <Link component={RouterLink} to={`/position/${position.id}`}>
+                            <Link component={RouterLink} to={routes.position(position.id)}>
                               {t('sharedShowDetails')}
                             </Link>
                           </Typography>
@@ -246,7 +247,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('reportReplay')}>
                   <IconButton
-                    onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
+                    onClick={() => navigate(routes.replay.forDevice(deviceId))}
                     disabled={disableActions || !position}
                   >
                     <RouteIcon />
@@ -254,7 +255,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('commandTitle')}>
                   <IconButton
-                    onClick={() => navigate(`/settings/device/${deviceId}/command`)}
+                    onClick={() => navigate(routes.settings.device.command(deviceId))}
                     disabled={disableActions}
                   >
                     <SendIcon />
@@ -262,7 +263,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('sharedEdit')}>
                   <IconButton
-                    onClick={() => navigate(`/settings/device/${deviceId}`)}
+                    onClick={() => navigate(routes.settings.device.detail(deviceId))}
                     disabled={disableActions || deviceReadonly}
                   >
                     <EditIcon />
@@ -285,7 +286,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
       {position && (
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
           <MenuItem
-            onClick={() => navigate(`/stream?deviceId=${deviceId}`)}
+            onClick={() => navigate(routes.stream.forDevice(deviceId))}
             disabled={position.protocol !== 'jt808'}
           >
             {t('linkLiveVideo')}
@@ -324,7 +325,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
             </MenuItem>
           )}
           {!shareDisabled && !user.temporary && (
-            <MenuItem onClick={() => navigate(`/settings/device/${deviceId}/share`)}>
+            <MenuItem onClick={() => navigate(routes.settings.device.share(deviceId))}>
               <Typography color="secondary">{t('sharedShare')}</Typography>
             </MenuItem>
           )}

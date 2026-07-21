@@ -3,6 +3,7 @@
 import { useCallback, useReducer, useState } from 'react';
 import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { useAsyncTask, useScrollToLoad, pageSize } from '@/lib/react';
+import { routes } from '@/lib/routes';
 import { prefixString } from '@/lib/stringUtils';
 import { formatBoolean } from '@/lib/formatter';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
@@ -68,7 +69,7 @@ const NotificationsPage = () => {
       <SearchHeader
         keyword={searchKeyword}
         setKeyword={setSearchKeyword}
-        editPath="/settings/notification"
+        editPath={routes.settings.notification.base}
         addLabel="Add notification"
       />
       <Table className={classes.table}>
@@ -86,7 +87,7 @@ const NotificationsPage = () => {
           {empty && (
             <CollectionEmptyState
               colSpan={6}
-              editPath="/settings/notification"
+              editPath={routes.settings.notification.base}
               itemName="notifications"
               searchKeyword={searchKeyword}
             />
@@ -101,7 +102,7 @@ const NotificationsPage = () => {
               <TableCell className={classes.columnAction} padding="none">
                 <CollectionActions
                   itemId={item.id}
-                  editPath="/settings/notification"
+                  editPath={routes.settings.notification.base}
                   endpoint="notifications"
                   onReload={reload}
                 />
@@ -113,7 +114,10 @@ const NotificationsPage = () => {
           )}
         </TableBody>
       </Table>
-      <CollectionFab editPath="/settings/notification" label={t('settingsAddNotification')} />
+      <CollectionFab
+        editPath={routes.settings.notification.base}
+        label={t('settingsAddNotification')}
+      />
     </PageLayout>
   );
 };

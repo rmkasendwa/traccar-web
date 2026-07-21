@@ -2,6 +2,7 @@ import AuthShell from '@/components/auth/AuthShell';
 import RegisterForm from '@/components/auth/RegisterForm';
 import type { AuthFormState } from '@/components/auth/formState';
 import { fetchFromRequestOrigin } from '@/lib/serverFetch';
+import { routes } from '@/lib/routes';
 import { redirect } from 'next/navigation';
 
 const register = async (_state: AuthFormState, formData: FormData): Promise<AuthFormState> => {
@@ -44,7 +45,7 @@ const register = async (_state: AuthFormState, formData: FormData): Promise<Auth
     };
   }
 
-  redirect('/login?created=1');
+  redirect(`${routes.login}?created=1`);
 };
 
 export default function Page() {

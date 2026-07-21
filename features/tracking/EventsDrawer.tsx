@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import {
   Drawer,
   IconButton,
@@ -65,7 +66,7 @@ const EventsDrawer = ({ open, onClose }) => {
         {events.map((event) => (
           <ListItemButton
             key={event.id}
-            onClick={() => navigate(`/event/${event.id}`)}
+            onClick={() => navigate(routes.event(event.id))}
             disabled={!event.id}
           >
             <ListItemText

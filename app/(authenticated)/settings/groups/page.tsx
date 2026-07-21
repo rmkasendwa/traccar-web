@@ -3,6 +3,7 @@
 import { useCallback, useReducer, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from '@/lib/router';
+import { routes } from '@/lib/routes';
 import { Table, TableRow, TableCell, TableHead, TableBody } from '@/components/ui';
 import { LinkIcon } from '@/components/ui/icons';
 import { PublishIcon } from '@/components/ui/icons';
@@ -63,21 +64,21 @@ const GroupsPage = () => {
     key: 'command',
     title: t('deviceCommand'),
     icon: <PublishIcon fontSize="small" />,
-    handler: (groupId) => navigate(`/settings/group/${groupId}/command`),
+    handler: (groupId) => navigate(routes.settings.group.command(groupId)),
   };
 
   const actionShare = {
     key: 'share',
     title: t('sharedShare'),
     icon: <ShareIcon fontSize="small" />,
-    handler: (groupId) => navigate(`/settings/group/${groupId}/share`),
+    handler: (groupId) => navigate(routes.settings.group.share(groupId)),
   };
 
   const actionConnections = {
     key: 'connections',
     title: t('sharedConnections'),
     icon: <LinkIcon fontSize="small" />,
-    handler: (groupId) => navigate(`/settings/group/${groupId}/connections`),
+    handler: (groupId) => navigate(routes.settings.group.connections(groupId)),
   };
 
   return (
@@ -85,7 +86,7 @@ const GroupsPage = () => {
       <SearchHeader
         keyword={searchKeyword}
         setKeyword={setSearchKeyword}
-        editPath="/settings/group"
+        editPath={routes.settings.group.base}
         addLabel="Add group"
       />
       <Table className={classes.table}>
@@ -99,7 +100,7 @@ const GroupsPage = () => {
           {!hasMore && items.length === 0 && (
             <CollectionEmptyState
               colSpan={2}
-              editPath="/settings/group"
+              editPath={routes.settings.group.base}
               itemName="groups"
               searchKeyword={searchKeyword}
             />
@@ -110,7 +111,7 @@ const GroupsPage = () => {
               <TableCell className={classes.columnAction} padding="none">
                 <CollectionActions
                   itemId={item.id}
-                  editPath="/settings/group"
+                  editPath={routes.settings.group.base}
                   endpoint="groups"
                   onReload={reload}
                   customActions={[
@@ -127,7 +128,7 @@ const GroupsPage = () => {
           )}
         </TableBody>
       </Table>
-      <CollectionFab editPath="/settings/group" />
+      <CollectionFab editPath={routes.settings.group.base} />
     </PageLayout>
   );
 };
