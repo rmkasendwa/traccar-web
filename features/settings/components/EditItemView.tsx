@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from 'react';
+import { Children, Fragment, isValidElement, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from '@/lib/router';
 import {
   Accordion,
@@ -13,6 +13,13 @@ import { useCatch, useAsyncTask } from '@/lib/react';
 import PageLayout from '@/components/layout/PageLayout';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import SettingsFormActions from '@/features/settings/components/SettingsFormActions';
+
+const flattenChildren = (children) =>
+  Children.toArray(children).flatMap((child) =>
+    isValidElement(child) && child.type === Fragment
+      ? flattenChildren(child.props.children)
+      : [child],
+  );
 
 const EditItemView = ({
   children,
@@ -82,6 +89,43 @@ const EditItemView = ({
     }
   });
 
+  const renderGridContent = () => {
+    if (!item) {
+      return (
+        <div className="settings-form-column">
+          <Accordion defaultExpanded>
+            <AccordionSummary>
+              <Typography variant="subtitle1">
+                <Skeleton width="10em" />
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={-i} width="100%">
+                  <TextField />
+                </Skeleton>
+              ))}
+            </AccordionDetails>
+          </Accordion>
+        </div>
+      );
+    }
+
+    const formChildren = flattenChildren(children);
+    const columns = [[], []];
+    formChildren.forEach((child, index) => {
+      columns[index % 2].push(child);
+    });
+
+    return columns
+      .filter((column) => column.length)
+      .map((column, index) => (
+        <div className="settings-form-column" key={index}>
+          {column}
+        </div>
+      ));
+  };
+
   return (
     <PageLayout bare menu={menu} breadcrumbs={breadcrumbs}>
       <div className="settings-form-layout mx-auto w-full max-w-5xl">
@@ -93,26 +137,7 @@ const EditItemView = ({
           onCancel={() => navigate(-1)}
           onSave={handleSave}
         />
-        <div className="settings-form-grid">
-          {item ? (
-            children
-          ) : (
-            <Accordion defaultExpanded>
-              <AccordionSummary>
-                <Typography variant="subtitle1">
-                  <Skeleton width="10em" />
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {[...Array(3)].map((_, i) => (
-                  <Skeleton key={-i} width="100%">
-                    <TextField />
-                  </Skeleton>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-          )}
-        </div>
+        <div className="settings-form-grid">{renderGridContent()}</div>
       </div>
     </PageLayout>
   );

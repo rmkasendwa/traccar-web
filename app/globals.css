@@ -326,8 +326,19 @@ textarea {
     gap: 1.25rem;
   }
 
-  .settings-form-grid > div {
-    align-self: start;
+  .settings-form-column {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .settings-form-grid:has(.settings-form-column:only-child) {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-form-column > div {
+    width: 100%;
     overflow: hidden;
     border: 1px solid var(--color-divider);
     border-radius: 1rem;
@@ -335,13 +346,13 @@ textarea {
     box-shadow: 0 8px 28px rgb(15 23 42 / 0.06);
   }
 
-  .settings-form-grid > div > button {
+  .settings-form-column > div > button {
     min-height: 4rem;
     padding-inline: 1.25rem;
     background: var(--color-surface-subtle);
   }
 
-  .settings-form-grid > div > div {
+  .settings-form-column > div > div {
     padding: 1.25rem;
   }
 
