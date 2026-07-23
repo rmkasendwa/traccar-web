@@ -35,8 +35,7 @@ const FileInput = ({ placeholder, value, onChange, slotProps }) => {
         onClick={openPicker}
         slotProps={{
           input: {
-            readOnly: true,
-            sx: { cursor: 'pointer' },
+            className: 'cursor-pointer',
             endAdornment: value && (
               <InputAdornment position="end">
                 <IconButton size="small" edge="end" onClick={handleClear}>
@@ -45,7 +44,7 @@ const FileInput = ({ placeholder, value, onChange, slotProps }) => {
               </InputAdornment>
             ),
           },
-          htmlInput: { sx: { cursor: 'pointer' } },
+          htmlInput: { readOnly: true, style: { cursor: 'pointer' } },
         }}
       />
     </>
