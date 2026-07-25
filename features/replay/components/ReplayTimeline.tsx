@@ -50,13 +50,16 @@ export default function ReplayTimeline({
   };
 
   return (
-    <div className="relative h-8 w-full px-1">
-      <div className="absolute inset-x-1 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 shadow-inner">
-        <div className="h-full rounded-full bg-sky-600" style={{ width: `${progress}%` }} />
+    <div className="group relative h-8 w-full px-1">
+      <div className="absolute inset-x-1 top-1/2 h-1 -translate-y-1/2 overflow-hidden rounded-full bg-slate-300/80 transition-all group-hover:h-1.5 group-hover:bg-slate-300 group-focus-within:h-1.5 group-focus-within:bg-slate-300">
+        <div
+          className="h-full rounded-full bg-slate-400 transition-colors group-hover:bg-sky-600 group-focus-within:bg-sky-600"
+          style={{ width: `${progress}%` }}
+        />
       </div>
       <div
-        className={`pointer-events-none absolute top-1/2 z-10 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-sky-600 shadow-[0_2px_8px_rgba(2,132,199,0.35)] ${
-          focused ? 'scale-110 ring-4 ring-sky-200/80' : ''
+        className={`pointer-events-none absolute top-1/2 z-10 h-4 w-4 -translate-x-1/2 -translate-y-1/2 scale-75 rounded-full border-2 border-white bg-sky-600 opacity-0 shadow-[0_2px_8px_rgba(2,132,199,0.35)] transition group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100 ${
+          focused ? 'ring-4 ring-sky-200/80' : ''
         } ${playing ? 'ring-2 ring-sky-200/70' : ''}`}
         style={{ left: `calc(0.25rem + (100% - 0.5rem) * ${progress / 100})` }}
       />
