@@ -1,5 +1,13 @@
 // @ts-nocheck
-import { Children, Fragment, isValidElement, useEffect, useRef, useState } from 'react';
+import {
+  Children,
+  cloneElement,
+  Fragment,
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useNavigate, useParams } from '@/lib/router';
 import {
   Accordion,
@@ -14,12 +22,22 @@ import PageLayout from '@/components/layout/PageLayout';
 import fetchOrThrow from '@/lib/api/fetchOrThrow';
 import SettingsFormActions from '@/features/settings/components/SettingsFormActions';
 
-const flattenChildren = (children) =>
-  Children.toArray(children).flatMap((child) =>
-    isValidElement(child) && child.type === Fragment
-      ? flattenChildren(child.props.children)
-      : [child],
-  );
+const flattenChildren = (children, parentPath = 'root') => {
+  const flattened = [];
+
+  Children.forEach(children, (child, index) => {
+    const path = `${parentPath}.${index}`;
+    if (isValidElement(child) && child.type === Fragment) {
+      flattened.push(...flattenChildren(child.props.children, path));
+    } else if (isValidElement(child)) {
+      flattened.push(cloneElement(child, { key: `${path}.${child.key ?? 'child'}` }));
+    } else {
+      flattened.push(child);
+    }
+  });
+
+  return flattened;
+};
 
 const EditItemView = ({
   children,
