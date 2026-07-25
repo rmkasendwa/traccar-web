@@ -314,7 +314,6 @@ export function ReplayControls() {
           <ReplayTimeline
             value={index}
             max={lastIndex}
-            playing={playing}
             onChange={selectPosition}
             valueText={t('replayPositionValue')
               .replace('{position}', String(index + 1))

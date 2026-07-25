@@ -6,7 +6,6 @@ import { useTranslation } from '@/providers/localization/LocalizationProvider';
 type ReplayTimelineProps = {
   value: number;
   max: number;
-  playing: boolean;
   valueText: string;
   getTooltipText: (value: number) => string;
   onChange: (value: number) => void;
@@ -15,7 +14,6 @@ type ReplayTimelineProps = {
 export default function ReplayTimeline({
   value,
   max,
-  playing,
   valueText,
   getTooltipText,
   onChange,
@@ -58,9 +56,7 @@ export default function ReplayTimeline({
         />
       </div>
       <div
-        className={`pointer-events-none absolute top-1/2 z-10 h-4 w-4 -translate-x-1/2 -translate-y-1/2 scale-75 rounded-full border-2 border-white bg-sky-600 opacity-0 shadow-[0_2px_8px_rgba(2,132,199,0.35)] transition group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100 dark:border-slate-900 dark:bg-sky-400 ${
-          focused ? 'ring-4 ring-sky-200/80' : ''
-        } ${playing ? 'ring-2 ring-sky-200/70' : ''}`}
+        className="pointer-events-none absolute top-1/2 z-10 h-4 w-4 -translate-x-1/2 -translate-y-1/2 scale-75 rounded-full border-2 border-white bg-sky-600 opacity-0 shadow-[0_2px_8px_rgba(2,132,199,0.35)] transition group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100 dark:border-slate-900 dark:bg-sky-400"
         style={{ left: `calc(0.25rem + (100% - 0.5rem) * ${progress / 100})` }}
       />
       <span
