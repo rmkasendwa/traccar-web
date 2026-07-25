@@ -47,7 +47,7 @@ export default function ReplayTimeline({
   };
 
   return (
-    <div className="relative mt-2 h-8 px-2">
+    <div className="relative h-8 w-full px-2">
       <div className="absolute inset-x-2 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 shadow-inner">
         <div className="h-full rounded-full bg-sky-600" style={{ width: `${progress}%` }} />
       </div>
