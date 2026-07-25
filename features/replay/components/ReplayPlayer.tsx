@@ -213,108 +213,114 @@ export function ReplayControls() {
         </span>
       </div>
 
-      <div className="mt-2 flex items-center gap-1 rounded-2xl border border-slate-200/80 bg-slate-50/85 p-1.5 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm">
-        <ControlTooltip label={t('replayPreviousPosition')}>
-          <button
-            type="button"
-            onClick={() => selectPosition(index - 1)}
-            disabled={index === 0 || playing}
-            className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
-            aria-label={t('replayPreviousPosition')}
-          >
-            <SkipBack size={16} fill="currentColor" />
-          </button>
-        </ControlTooltip>
-        <ControlTooltip label={playbackLabel}>
-          <button
-            type="button"
-            onClick={togglePlayback}
-            className="grid h-10 w-10 place-items-center rounded-full bg-slate-900 text-white shadow-md transition hover:scale-105 hover:bg-sky-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:scale-95"
-            aria-label={playbackLabel}
-            aria-pressed={playing}
-          >
-            {playing ? (
-              <Pause size={17} fill="currentColor" />
-            ) : (
-              <Play size={17} fill="currentColor" className="translate-x-px" />
-            )}
-          </button>
-        </ControlTooltip>
-        <ControlTooltip label={t('replayNextPosition')}>
-          <button
-            type="button"
-            onClick={() => selectPosition(index + 1)}
-            disabled={index === lastIndex || playing}
-            className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
-            aria-label={t('replayNextPosition')}
-          >
-            <SkipForward size={16} fill="currentColor" />
-          </button>
-        </ControlTooltip>
-
-        <span className="ml-1 text-[10px] font-semibold tabular-nums text-slate-600">
-          {formatReplayDuration(elapsedTime)}
-        </span>
-        <div className="min-w-12 flex-1">
-          <ReplayTimeline
-            value={index}
-            max={lastIndex}
-            playing={playing}
-            onChange={selectPosition}
-            valueText={t('replayPositionValue')
-              .replace('{position}', String(index + 1))
-              .replace('{total}', String(positions.length))
-              .replace('{time}', new Date(currentPosition.fixTime).toLocaleString())}
-            getTooltipText={(nextIndex) =>
-              formatReplayDuration(new Date(positions[nextIndex].fixTime).getTime() - startTime)
-            }
-          />
-        </div>
-        <span className="text-[10px] font-semibold tabular-nums text-slate-400">
-          {formatReplayDuration(totalTime)}
-        </span>
-
-        <details ref={speedMenuRef} className="group relative ml-0.5 shrink-0">
-          <summary
-            className="peer grid h-8 min-w-10 cursor-pointer list-none place-items-center rounded-lg px-2 text-xs font-bold tabular-nums text-slate-600 transition hover:bg-white hover:text-slate-900 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 [&::-webkit-details-marker]:hidden"
-            aria-label={`${t('replayPlaybackSpeed')}: ${speed}×`}
-          >
-            {speed}×
-          </summary>
-          <span
-            role="tooltip"
-            className="pointer-events-none absolute right-0 bottom-full z-40 mb-2 translate-y-1 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white opacity-0 shadow-lg transition peer-hover:translate-y-0 peer-hover:opacity-100 peer-focus-visible:translate-y-0 peer-focus-visible:opacity-100 group-open:hidden"
-          >
-            {t('replayPlaybackSpeed')}
+      <div className="mt-2 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-2.5 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+        <div className="flex items-center gap-1.5">
+          <span className="w-14 shrink-0 text-left text-[10px] font-semibold tabular-nums text-slate-600">
+            {formatReplayDuration(elapsedTime)}
           </span>
-          <div
-            className="absolute right-0 bottom-full z-30 mb-2 w-32 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl"
-            role="menu"
-            aria-label={t('replayPlaybackSpeed')}
-          >
-            {speeds.map((value) => (
-              <button
-                key={value}
-                type="button"
-                role="menuitemradio"
-                aria-checked={speed === value}
-                onClick={() => {
-                  setSpeed(value);
-                  speedMenuRef.current?.removeAttribute('open');
-                }}
-                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-semibold transition ${
-                  speed === value
-                    ? 'bg-sky-50 text-sky-800'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-                aria-label={t('replayPlaybackSpeedValue').replace('{value}', String(value))}
-              >
-                <span>{value}×</span>
-                {speed === value && <Check size={14} aria-hidden="true" />}
-              </button>
-            ))}
+          <div className="min-w-0 flex-1">
+            <ReplayTimeline
+              value={index}
+              max={lastIndex}
+              playing={playing}
+              onChange={selectPosition}
+              valueText={t('replayPositionValue')
+                .replace('{position}', String(index + 1))
+                .replace('{total}', String(positions.length))
+                .replace('{time}', new Date(currentPosition.fixTime).toLocaleString())}
+              getTooltipText={(nextIndex) =>
+                formatReplayDuration(new Date(positions[nextIndex].fixTime).getTime() - startTime)
+              }
+            />
           </div>
-        </details>
+          <span className="w-14 shrink-0 text-right text-[10px] font-semibold tabular-nums text-slate-400">
+            {formatReplayDuration(totalTime)}
+          </span>
+        </div>
+
+        <div className="flex h-10 items-center justify-between">
+          <div className="flex items-center gap-1">
+            <ControlTooltip label={t('replayPreviousPosition')}>
+              <button
+                type="button"
+                onClick={() => selectPosition(index - 1)}
+                disabled={index === 0 || playing}
+                className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
+                aria-label={t('replayPreviousPosition')}
+              >
+                <SkipBack size={16} fill="currentColor" />
+              </button>
+            </ControlTooltip>
+            <ControlTooltip label={playbackLabel}>
+              <button
+                type="button"
+                onClick={togglePlayback}
+                className="grid h-10 w-10 place-items-center rounded-full bg-slate-900 text-white shadow-md transition hover:scale-105 hover:bg-sky-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:scale-95"
+                aria-label={playbackLabel}
+                aria-pressed={playing}
+              >
+                {playing ? (
+                  <Pause size={17} fill="currentColor" />
+                ) : (
+                  <Play size={17} fill="currentColor" className="translate-x-px" />
+                )}
+              </button>
+            </ControlTooltip>
+            <ControlTooltip label={t('replayNextPosition')}>
+              <button
+                type="button"
+                onClick={() => selectPosition(index + 1)}
+                disabled={index === lastIndex || playing}
+                className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
+                aria-label={t('replayNextPosition')}
+              >
+                <SkipForward size={16} fill="currentColor" />
+              </button>
+            </ControlTooltip>
+          </div>
+
+          <details ref={speedMenuRef} className="group relative shrink-0">
+            <summary
+              className="peer grid h-8 min-w-10 cursor-pointer list-none place-items-center rounded-lg px-2 text-xs font-bold tabular-nums text-slate-600 transition hover:bg-white hover:text-slate-900 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 [&::-webkit-details-marker]:hidden"
+              aria-label={`${t('replayPlaybackSpeed')}: ${speed}×`}
+            >
+              {speed}×
+            </summary>
+            <span
+              role="tooltip"
+              className="pointer-events-none absolute right-0 bottom-full z-40 mb-2 translate-y-1 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white opacity-0 shadow-lg transition peer-hover:translate-y-0 peer-hover:opacity-100 peer-focus-visible:translate-y-0 peer-focus-visible:opacity-100 group-open:hidden"
+            >
+              {t('replayPlaybackSpeed')}
+            </span>
+            <div
+              className="absolute right-0 bottom-full z-30 mb-2 w-32 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl"
+              role="menu"
+              aria-label={t('replayPlaybackSpeed')}
+            >
+              {speeds.map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={speed === value}
+                  onClick={() => {
+                    setSpeed(value);
+                    speedMenuRef.current?.removeAttribute('open');
+                  }}
+                  className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-semibold transition ${
+                    speed === value
+                      ? 'bg-sky-50 text-sky-800'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                  aria-label={t('replayPlaybackSpeedValue').replace('{value}', String(value))}
+                >
+                  <span>{value}×</span>
+                  {speed === value && <Check size={14} aria-hidden="true" />}
+                </button>
+              ))}
+            </div>
+          </details>
+        </div>
       </div>
     </div>
   );
