@@ -214,31 +214,23 @@ export function ReplayControls() {
       </div>
 
       <div className="mt-2 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-2.5 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm">
-        <div className="flex items-center gap-1.5">
-          <span className="w-14 shrink-0 text-left text-[10px] font-semibold tabular-nums text-slate-600">
-            {formatReplayDuration(elapsedTime)}
-          </span>
-          <div className="min-w-0 flex-1">
-            <ReplayTimeline
-              value={index}
-              max={lastIndex}
-              playing={playing}
-              onChange={selectPosition}
-              valueText={t('replayPositionValue')
-                .replace('{position}', String(index + 1))
-                .replace('{total}', String(positions.length))
-                .replace('{time}', new Date(currentPosition.fixTime).toLocaleString())}
-              getTooltipText={(nextIndex) =>
-                formatReplayDuration(new Date(positions[nextIndex].fixTime).getTime() - startTime)
-              }
-            />
-          </div>
-          <span className="w-14 shrink-0 text-right text-[10px] font-semibold tabular-nums text-slate-400">
-            {formatReplayDuration(totalTime)}
-          </span>
+        <div className="w-full">
+          <ReplayTimeline
+            value={index}
+            max={lastIndex}
+            playing={playing}
+            onChange={selectPosition}
+            valueText={t('replayPositionValue')
+              .replace('{position}', String(index + 1))
+              .replace('{total}', String(positions.length))
+              .replace('{time}', new Date(currentPosition.fixTime).toLocaleString())}
+            getTooltipText={(nextIndex) =>
+              formatReplayDuration(new Date(positions[nextIndex].fixTime).getTime() - startTime)
+            }
+          />
         </div>
 
-        <div className="flex h-10 items-center justify-between">
+        <div className="flex h-10 items-center justify-center gap-1">
           <div className="flex items-center gap-1">
             <ControlTooltip label={t('replayPreviousPosition')}>
               <button
@@ -279,7 +271,21 @@ export function ReplayControls() {
             </ControlTooltip>
           </div>
 
-          <details ref={speedMenuRef} className="group relative shrink-0">
+          <span
+            className="mx-1 w-28 shrink-0 text-center text-[10px] font-semibold tabular-nums text-slate-500"
+            aria-label={`${formatReplayDuration(elapsedTime)} / ${formatReplayDuration(totalTime)}`}
+          >
+            <span className="text-slate-700">{formatReplayDuration(elapsedTime)}</span>
+            <span className="px-1 text-slate-300" aria-hidden="true">
+              /
+            </span>
+            <span>{formatReplayDuration(totalTime)}</span>
+          </span>
+
+          <details
+            ref={speedMenuRef}
+            className="group relative shrink-0 border-l border-slate-200 pl-1"
+          >
             <summary
               className="peer grid h-8 min-w-10 cursor-pointer list-none place-items-center rounded-lg px-2 text-xs font-bold tabular-nums text-slate-600 transition hover:bg-white hover:text-slate-900 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 [&::-webkit-details-marker]:hidden"
               aria-label={`${t('replayPlaybackSpeed')}: ${speed}×`}
