@@ -200,6 +200,9 @@ export function ReplayControls() {
   const startTime = new Date(positions[0].fixTime).getTime();
   const elapsedTime = new Date(currentPosition.fixTime).getTime() - startTime;
   const totalTime = new Date(positions[lastIndex].fixTime).getTime() - startTime;
+  const elapsedLabel = formatReplayDuration(elapsedTime);
+  const totalLabel = formatReplayDuration(totalTime);
+  const timeColumnWidth = `${Math.max(totalLabel.length, 4)}ch`;
   const playbackLabel = playing ? t('replayPause') : t('replayPlay');
 
   return (
@@ -221,7 +224,7 @@ export function ReplayControls() {
                 type="button"
                 onClick={() => selectPosition(index - 1)}
                 disabled={index === 0 || playing}
-                className="replay-control grid h-8 w-8 place-items-center text-slate-500 transition-colors hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-35 dark:text-slate-500 dark:hover:text-slate-100"
+                className="grid h-8 w-8 place-items-center text-slate-500 transition-colors hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 disabled:cursor-not-allowed disabled:opacity-35 dark:text-slate-500 dark:hover:text-slate-100"
                 aria-label={t('replayPreviousPosition')}
               >
                 <SkipBack size={17} fill="currentColor" />
@@ -247,7 +250,7 @@ export function ReplayControls() {
                 type="button"
                 onClick={() => selectPosition(index + 1)}
                 disabled={index === lastIndex || playing}
-                className="replay-control grid h-8 w-8 place-items-center text-slate-500 transition-colors hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-35 dark:text-slate-500 dark:hover:text-slate-100"
+                className="grid h-8 w-8 place-items-center text-slate-500 transition-colors hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 disabled:cursor-not-allowed disabled:opacity-35 dark:text-slate-500 dark:hover:text-slate-100"
                 aria-label={t('replayNextPosition')}
               >
                 <SkipForward size={17} fill="currentColor" />
@@ -301,9 +304,14 @@ export function ReplayControls() {
           </details>
         </div>
 
-        <div className="grid grid-cols-[4rem_minmax(0,1fr)_4rem] items-center">
+        <div
+          className="grid items-center"
+          style={{
+            gridTemplateColumns: `${timeColumnWidth} minmax(0, 1fr) ${timeColumnWidth}`,
+          }}
+        >
           <span className="pr-1 text-right text-[10px] font-semibold tabular-nums text-slate-600 dark:text-slate-300">
-            {formatReplayDuration(elapsedTime)}
+            {elapsedLabel}
           </span>
           <ReplayTimeline
             value={index}
@@ -319,7 +327,7 @@ export function ReplayControls() {
             }
           />
           <span className="pl-1 text-left text-[10px] font-semibold tabular-nums text-slate-400 dark:text-slate-500">
-            {formatReplayDuration(totalTime)}
+            {totalLabel}
           </span>
         </div>
       </div>
