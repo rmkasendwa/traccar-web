@@ -77,7 +77,7 @@ function ControlTooltip({ label, children }: { label: string; children: ReactNod
       {children}
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-40 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white opacity-0 shadow-lg transition group-hover/tooltip:translate-y-0 group-hover/tooltip:opacity-100 group-focus-within/tooltip:translate-y-0 group-focus-within/tooltip:opacity-100"
+        className="pointer-events-none absolute bottom-full left-1/2 z-40 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white opacity-0 shadow-lg transition group-hover/tooltip:translate-y-0 group-hover/tooltip:opacity-100 group-focus-within/tooltip:translate-y-0 group-focus-within/tooltip:opacity-100 dark:bg-slate-100 dark:text-slate-900"
       >
         {label}
       </span>
@@ -204,7 +204,7 @@ export function ReplayControls() {
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-3 text-xs font-medium text-slate-500">
+      <div className="flex items-center justify-between gap-3 text-xs font-medium text-slate-500 dark:text-slate-400">
         <time dateTime={currentPosition.fixTime} className="tabular-nums" suppressHydrationWarning>
           {new Date(currentPosition.fixTime).toLocaleString()}
         </time>
@@ -213,7 +213,7 @@ export function ReplayControls() {
         </span>
       </div>
 
-      <div className="mt-2 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-2.5 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+      <div className="mt-2 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-2.5 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-900/85 dark:shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
         <div className="relative flex h-10 items-center justify-center">
           <div className="flex items-center gap-1">
             <ControlTooltip label={t('replayPreviousPosition')}>
@@ -221,7 +221,7 @@ export function ReplayControls() {
                 type="button"
                 onClick={() => selectPosition(index - 1)}
                 disabled={index === 0 || playing}
-                className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
+                className="replay-control grid h-8 w-8 place-items-center text-slate-500 transition-colors hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-35 dark:text-slate-500 dark:hover:text-slate-100"
                 aria-label={t('replayPreviousPosition')}
               >
                 <SkipBack size={17} fill="currentColor" />
@@ -231,7 +231,7 @@ export function ReplayControls() {
               <button
                 type="button"
                 onClick={togglePlayback}
-                className="mx-1 grid h-10 w-10 place-items-center rounded-full bg-slate-900 text-white shadow-md transition hover:scale-105 hover:bg-sky-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:scale-95"
+                className="mx-1 grid h-10 w-10 place-items-center rounded-full bg-slate-900 text-white shadow-md transition hover:scale-105 hover:bg-sky-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:scale-95 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-sky-400"
                 aria-label={playbackLabel}
                 aria-pressed={playing}
               >
@@ -247,7 +247,7 @@ export function ReplayControls() {
                 type="button"
                 onClick={() => selectPosition(index + 1)}
                 disabled={index === lastIndex || playing}
-                className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
+                className="replay-control grid h-8 w-8 place-items-center text-slate-500 transition-colors hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-35 dark:text-slate-500 dark:hover:text-slate-100"
                 aria-label={t('replayNextPosition')}
               >
                 <SkipForward size={17} fill="currentColor" />
@@ -257,22 +257,22 @@ export function ReplayControls() {
 
           <details
             ref={speedMenuRef}
-            className="group absolute top-1 right-0 shrink-0 border-l border-slate-200 pl-2"
+            className="group absolute top-1 right-0 shrink-0 border-l border-slate-200 pl-2 dark:border-slate-700"
           >
             <summary
-              className="peer grid h-8 min-w-10 cursor-pointer list-none place-items-center rounded-lg px-2 text-xs font-bold tabular-nums text-slate-600 transition hover:bg-white hover:text-slate-900 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 [&::-webkit-details-marker]:hidden"
+              className="peer grid h-8 min-w-10 cursor-pointer list-none place-items-center rounded-lg px-2 text-xs font-bold tabular-nums text-slate-600 transition hover:bg-white hover:text-slate-900 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white [&::-webkit-details-marker]:hidden"
               aria-label={`${t('replayPlaybackSpeed')}: ${speed}×`}
             >
               {speed}×
             </summary>
             <span
               role="tooltip"
-              className="pointer-events-none absolute right-0 bottom-full z-40 mb-2 translate-y-1 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white opacity-0 shadow-lg transition peer-hover:translate-y-0 peer-hover:opacity-100 peer-focus-visible:translate-y-0 peer-focus-visible:opacity-100 group-open:hidden"
+              className="pointer-events-none absolute right-0 bottom-full z-40 mb-2 translate-y-1 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white opacity-0 shadow-lg transition peer-hover:translate-y-0 peer-hover:opacity-100 peer-focus-visible:translate-y-0 peer-focus-visible:opacity-100 group-open:hidden dark:bg-slate-100 dark:text-slate-900"
             >
               {t('replayPlaybackSpeed')}
             </span>
             <div
-              className="absolute right-0 bottom-full z-30 mb-2 w-32 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl"
+              className="absolute right-0 bottom-full z-30 mb-2 w-32 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-slate-700 dark:bg-slate-900"
               role="menu"
               aria-label={t('replayPlaybackSpeed')}
             >
@@ -288,8 +288,8 @@ export function ReplayControls() {
                   }}
                   className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-semibold transition ${
                     speed === value
-                      ? 'bg-sky-50 text-sky-800'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      ? 'bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
                   }`}
                   aria-label={t('replayPlaybackSpeedValue').replace('{value}', String(value))}
                 >
@@ -302,7 +302,7 @@ export function ReplayControls() {
         </div>
 
         <div className="grid grid-cols-[4rem_minmax(0,1fr)_4rem] items-center">
-          <span className="pr-1 text-right text-[10px] font-semibold tabular-nums text-slate-600">
+          <span className="pr-1 text-right text-[10px] font-semibold tabular-nums text-slate-600 dark:text-slate-300">
             {formatReplayDuration(elapsedTime)}
           </span>
           <ReplayTimeline
@@ -318,7 +318,7 @@ export function ReplayControls() {
               formatReplayDuration(new Date(positions[nextIndex].fixTime).getTime() - startTime)
             }
           />
-          <span className="pl-1 text-left text-[10px] font-semibold tabular-nums text-slate-400">
+          <span className="pl-1 text-left text-[10px] font-semibold tabular-nums text-slate-400 dark:text-slate-500">
             {formatReplayDuration(totalTime)}
           </span>
         </div>
