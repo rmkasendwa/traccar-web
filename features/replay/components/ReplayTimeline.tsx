@@ -8,6 +8,7 @@ type ReplayTimelineProps = {
   max: number;
   playing: boolean;
   valueText: string;
+  getTooltipText: (value: number) => string;
   onChange: (value: number) => void;
 };
 
@@ -16,11 +17,13 @@ export default function ReplayTimeline({
   max,
   playing,
   valueText,
+  getTooltipText,
   onChange,
 }: ReplayTimelineProps) {
   const t = useTranslation();
   const [draftValue, setDraftValue] = useState(value);
   const [focused, setFocused] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const draggingRef = useRef(false);
   const frameRef = useRef<number | null>(null);
   const displayValue = draggingRef.current ? draftValue : value;
@@ -57,6 +60,15 @@ export default function ReplayTimeline({
         } ${playing ? 'ring-2 ring-sky-200/70' : ''}`}
         style={{ left: `calc(0.5rem + (100% - 1rem) * ${progress / 100})` }}
       />
+      <span
+        className={`pointer-events-none absolute bottom-full z-30 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold tabular-nums text-white shadow-lg transition ${
+          dragging || focused ? 'translate-y-0 opacity-100' : 'translate-y-1 opacity-0'
+        }`}
+        style={{ left: `calc(0.5rem + (100% - 1rem) * ${progress / 100})` }}
+        role="tooltip"
+      >
+        {getTooltipText(displayValue)}
+      </span>
       <input
         type="range"
         min={0}
@@ -64,6 +76,7 @@ export default function ReplayTimeline({
         value={displayValue}
         onPointerDown={() => {
           draggingRef.current = true;
+          setDragging(true);
           setDraftValue(value);
         }}
         onPointerUp={(event) => {
@@ -71,6 +84,7 @@ export default function ReplayTimeline({
           if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
           frameRef.current = null;
           draggingRef.current = false;
+          setDragging(false);
           setDraftValue(nextValue);
           onChange(nextValue);
         }}
@@ -79,6 +93,7 @@ export default function ReplayTimeline({
         onFocus={() => setFocused(true)}
         onBlur={() => {
           draggingRef.current = false;
+          setDragging(false);
           setFocused(false);
         }}
         className="absolute inset-0 z-20 h-full w-full cursor-pointer opacity-0"
