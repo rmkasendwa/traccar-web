@@ -53,7 +53,7 @@ export default function ReplayTimeline({
     <div className="group relative h-8 w-full px-1">
       <div className="absolute inset-x-1 top-1/2 h-1 -translate-y-1/2 overflow-hidden rounded-full bg-slate-300/80 transition-all group-hover:h-1.5 group-hover:bg-slate-300 group-focus-within:h-1.5 group-focus-within:bg-slate-300 dark:bg-slate-700/80 dark:group-hover:bg-slate-600 dark:group-focus-within:bg-slate-600">
         <div
-          className="h-full rounded-full bg-slate-400 transition-colors group-hover:bg-sky-600 group-focus-within:bg-sky-600 dark:bg-slate-500 dark:group-hover:bg-sky-400 dark:group-focus-within:bg-sky-400"
+          className="h-full rounded-full bg-slate-900 transition-colors group-hover:bg-sky-600 group-focus-within:bg-sky-600 dark:bg-slate-100 dark:group-hover:bg-sky-400 dark:group-focus-within:bg-sky-400"
           style={{ width: `${progress}%` }}
         />
       </div>

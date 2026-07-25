@@ -66,9 +66,7 @@ const formatReplayDuration = (milliseconds: number) => {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  return hours
-    ? `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-    : `${minutes}:${String(seconds).padStart(2, '0')}`;
+  return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
 
 function ControlTooltip({ label, children }: { label: string; children: ReactNode }) {
@@ -202,7 +200,7 @@ export function ReplayControls() {
   const totalTime = new Date(positions[lastIndex].fixTime).getTime() - startTime;
   const elapsedLabel = formatReplayDuration(elapsedTime);
   const totalLabel = formatReplayDuration(totalTime);
-  const timeColumnWidth = `${Math.max(totalLabel.length, 4)}ch`;
+  const timeColumnWidth = `${Math.ceil(Math.max(totalLabel.length, 4) / 1.5)}ch`;
   const playbackLabel = playing ? t('replayPause') : t('replayPlay');
 
   return (
