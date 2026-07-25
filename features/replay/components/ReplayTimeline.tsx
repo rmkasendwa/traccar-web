@@ -50,21 +50,21 @@ export default function ReplayTimeline({
   };
 
   return (
-    <div className="relative h-8 w-full px-2">
-      <div className="absolute inset-x-2 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 shadow-inner">
+    <div className="relative h-8 w-full px-1">
+      <div className="absolute inset-x-1 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 shadow-inner">
         <div className="h-full rounded-full bg-sky-600" style={{ width: `${progress}%` }} />
       </div>
       <div
         className={`pointer-events-none absolute top-1/2 z-10 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-sky-600 shadow-[0_2px_8px_rgba(2,132,199,0.35)] ${
           focused ? 'scale-110 ring-4 ring-sky-200/80' : ''
         } ${playing ? 'ring-2 ring-sky-200/70' : ''}`}
-        style={{ left: `calc(0.5rem + (100% - 1rem) * ${progress / 100})` }}
+        style={{ left: `calc(0.25rem + (100% - 0.5rem) * ${progress / 100})` }}
       />
       <span
         className={`pointer-events-none absolute bottom-full z-30 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold tabular-nums text-white shadow-lg transition ${
           dragging || focused ? 'translate-y-0 opacity-100' : 'translate-y-1 opacity-0'
         }`}
-        style={{ left: `calc(0.5rem + (100% - 1rem) * ${progress / 100})` }}
+        style={{ left: `calc(0.25rem + (100% - 0.5rem) * ${progress / 100})` }}
         role="tooltip"
       >
         {getTooltipText(displayValue)}

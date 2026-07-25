@@ -214,77 +214,48 @@ export function ReplayControls() {
       </div>
 
       <div className="mt-2 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-2.5 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm">
-        <div className="w-full">
-          <ReplayTimeline
-            value={index}
-            max={lastIndex}
-            playing={playing}
-            onChange={selectPosition}
-            valueText={t('replayPositionValue')
-              .replace('{position}', String(index + 1))
-              .replace('{total}', String(positions.length))
-              .replace('{time}', new Date(currentPosition.fixTime).toLocaleString())}
-            getTooltipText={(nextIndex) =>
-              formatReplayDuration(new Date(positions[nextIndex].fixTime).getTime() - startTime)
-            }
-          />
-        </div>
-
         <div className="flex h-10 items-center justify-center gap-1">
-          <div className="flex items-center gap-1">
-            <ControlTooltip label={t('replayPreviousPosition')}>
-              <button
-                type="button"
-                onClick={() => selectPosition(index - 1)}
-                disabled={index === 0 || playing}
-                className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
-                aria-label={t('replayPreviousPosition')}
-              >
-                <SkipBack size={16} fill="currentColor" />
-              </button>
-            </ControlTooltip>
-            <ControlTooltip label={playbackLabel}>
-              <button
-                type="button"
-                onClick={togglePlayback}
-                className="grid h-10 w-10 place-items-center rounded-full bg-slate-900 text-white shadow-md transition hover:scale-105 hover:bg-sky-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:scale-95"
-                aria-label={playbackLabel}
-                aria-pressed={playing}
-              >
-                {playing ? (
-                  <Pause size={17} fill="currentColor" />
-                ) : (
-                  <Play size={17} fill="currentColor" className="translate-x-px" />
-                )}
-              </button>
-            </ControlTooltip>
-            <ControlTooltip label={t('replayNextPosition')}>
-              <button
-                type="button"
-                onClick={() => selectPosition(index + 1)}
-                disabled={index === lastIndex || playing}
-                className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
-                aria-label={t('replayNextPosition')}
-              >
-                <SkipForward size={16} fill="currentColor" />
-              </button>
-            </ControlTooltip>
-          </div>
-
-          <span
-            className="mx-1 w-28 shrink-0 text-center text-[10px] font-semibold tabular-nums text-slate-500"
-            aria-label={`${formatReplayDuration(elapsedTime)} / ${formatReplayDuration(totalTime)}`}
-          >
-            <span className="text-slate-700">{formatReplayDuration(elapsedTime)}</span>
-            <span className="px-1 text-slate-300" aria-hidden="true">
-              /
-            </span>
-            <span>{formatReplayDuration(totalTime)}</span>
-          </span>
+          <ControlTooltip label={t('replayPreviousPosition')}>
+            <button
+              type="button"
+              onClick={() => selectPosition(index - 1)}
+              disabled={index === 0 || playing}
+              className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
+              aria-label={t('replayPreviousPosition')}
+            >
+              <SkipBack size={17} fill="currentColor" />
+            </button>
+          </ControlTooltip>
+          <ControlTooltip label={playbackLabel}>
+            <button
+              type="button"
+              onClick={togglePlayback}
+              className="mx-1 grid h-10 w-10 place-items-center rounded-full bg-slate-900 text-white shadow-md transition hover:scale-105 hover:bg-sky-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:scale-95"
+              aria-label={playbackLabel}
+              aria-pressed={playing}
+            >
+              {playing ? (
+                <Pause size={17} fill="currentColor" />
+              ) : (
+                <Play size={17} fill="currentColor" className="translate-x-px" />
+              )}
+            </button>
+          </ControlTooltip>
+          <ControlTooltip label={t('replayNextPosition')}>
+            <button
+              type="button"
+              onClick={() => selectPosition(index + 1)}
+              disabled={index === lastIndex || playing}
+              className="replay-control grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-800 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-35"
+              aria-label={t('replayNextPosition')}
+            >
+              <SkipForward size={17} fill="currentColor" />
+            </button>
+          </ControlTooltip>
 
           <details
             ref={speedMenuRef}
-            className="group relative shrink-0 border-l border-slate-200 pl-1"
+            className="group relative ml-2 shrink-0 border-l border-slate-200 pl-2"
           >
             <summary
               className="peer grid h-8 min-w-10 cursor-pointer list-none place-items-center rounded-lg px-2 text-xs font-bold tabular-nums text-slate-600 transition hover:bg-white hover:text-slate-900 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 [&::-webkit-details-marker]:hidden"
@@ -326,6 +297,28 @@ export function ReplayControls() {
               ))}
             </div>
           </details>
+        </div>
+
+        <div className="grid grid-cols-[4rem_minmax(0,1fr)_4rem] items-center">
+          <span className="pr-1 text-right text-[10px] font-semibold tabular-nums text-slate-600">
+            {formatReplayDuration(elapsedTime)}
+          </span>
+          <ReplayTimeline
+            value={index}
+            max={lastIndex}
+            playing={playing}
+            onChange={selectPosition}
+            valueText={t('replayPositionValue')
+              .replace('{position}', String(index + 1))
+              .replace('{total}', String(positions.length))
+              .replace('{time}', new Date(currentPosition.fixTime).toLocaleString())}
+            getTooltipText={(nextIndex) =>
+              formatReplayDuration(new Date(positions[nextIndex].fixTime).getTime() - startTime)
+            }
+          />
+          <span className="pl-1 text-left text-[10px] font-semibold tabular-nums text-slate-400">
+            {formatReplayDuration(totalTime)}
+          </span>
         </div>
       </div>
     </div>
