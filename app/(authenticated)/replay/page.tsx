@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import ReplayFilterPanel from '@/features/replay/components/ReplayFilterPanel';
 import ReplayPanel from '@/features/replay/components/ReplayPanel';
+import ReplaySpeedGraph from '@/features/replay/components/ReplaySpeedGraph';
 import ReplaySpeedHistogram from '@/features/replay/components/ReplaySpeedHistogram';
 import ReplayPlayer, {
   ReplayControls,
@@ -255,6 +256,8 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                   ),
                 )}
               </section>
+
+              <ReplaySpeedGraph />
 
               <ReplaySpeedHistogram />
 
