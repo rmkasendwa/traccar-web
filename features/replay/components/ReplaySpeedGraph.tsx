@@ -26,6 +26,17 @@ const formatTime = (value: string) =>
       )
     : '';
 
+const formatTooltipTime = (value: string | undefined) =>
+  value && Number.isFinite(Date.parse(value))
+    ? new Intl.DateTimeFormat(undefined, {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      }).format(new Date(value))
+    : '';
+
 export default function ReplaySpeedGraph() {
   const t = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -118,14 +129,14 @@ export default function ReplaySpeedGraph() {
 
       <div className="mt-3 flex gap-2">
         <div
-          className={`flex shrink-0 flex-col justify-between text-right text-(--color-muted) ${large ? 'h-80 text-xs md:h-[28rem]' : 'h-28 text-[0.58rem]'}`}
+          className={`flex shrink-0 flex-col justify-between text-right text-(--color-muted) ${large ? 'h-[calc(94vh-11rem)] min-h-80 text-xs' : 'h-28 text-[0.58rem]'}`}
         >
           <span>{chart.scaleMaximum}</span>
           <span>{Math.round(chart.scaleMaximum / 2)}</span>
           <span>0</span>
         </div>
         <div
-          className={`relative min-w-0 flex-1 overflow-hidden border-b border-l border-(--color-divider) bg-[linear-gradient(to_bottom,var(--color-divider)_1px,transparent_1px)] bg-[length:100%_50%] ${large ? 'h-80 md:h-[28rem]' : 'h-28'}`}
+          className={`relative min-w-0 flex-1 overflow-hidden border-b border-l border-(--color-divider) bg-[linear-gradient(to_bottom,var(--color-divider)_1px,transparent_1px)] bg-[length:100%_50%] ${large ? 'h-[calc(94vh-11rem)] min-h-80' : 'h-28'}`}
         >
           <svg
             viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -155,6 +166,17 @@ export default function ReplaySpeedGraph() {
             }}
             aria-hidden="true"
           />
+          <span
+            aria-hidden="true"
+            className={`pointer-events-none absolute z-10 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-950 px-2.5 py-1.5 font-semibold text-white shadow-lg ${large ? 'text-xs' : 'text-[0.6rem]'}`}
+            style={{
+              left: `${Math.max(14, Math.min(86, currentX))}%`,
+              top: `${Math.max(0, Math.min(100, currentY))}%`,
+              transform: `translate(-50%, ${currentY < 28 ? '10px' : 'calc(-100% - 10px)'})`,
+            }}
+          >
+            {formatTooltipTime(current?.fixTime)} · {currentSpeed.toFixed(0)} km/h
+          </span>
           <input
             type="range"
             min={0}
@@ -162,6 +184,7 @@ export default function ReplaySpeedGraph() {
             value={index}
             onChange={(event) => seekByTime(Number(event.currentTarget.value))}
             aria-label={t('replaySpeedGraphSeek')}
+            aria-valuetext={`${formatTooltipTime(current?.fixTime)}, ${currentSpeed.toFixed(0)} km/h`}
             className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
           />
         </div>
@@ -188,7 +211,7 @@ export default function ReplaySpeedGraph() {
         fullWidth
         maxWidth="lg"
         aria-labelledby="replay-speed-graph-dialog-title"
-        className="!max-w-6xl rounded-3xl"
+        className="h-[94vh] !max-h-[94vh] !max-w-[96vw] rounded-3xl"
       >
         <DialogContent className="p-5 md:p-7">{renderGraph(true)}</DialogContent>
       </Dialog>
