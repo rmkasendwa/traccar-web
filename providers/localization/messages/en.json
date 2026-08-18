@@ -800,6 +800,7 @@
     "replayMaxSpeed": "Max speed",
     "replayGpsPoints": "GPS points",
     "replaySpeedGraph": "Speed over time",
+    "replaySpeedGraphExpand": "Expand speed graph",
     "replaySpeedGraphSeek": "Seek replay by GPS point on the speed graph",
     "replaySpeedGraphHint": "Each point shows its recorded speed over time. Drag across the graph to seek the replay.",
     "replaySpeedHistogram": "Speed distribution",

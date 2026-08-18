@@ -1,7 +1,8 @@
 'use client';
 
-import { Activity } from 'lucide-react';
-import { useMemo } from 'react';
+import { Activity, Expand, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Dialog, DialogContent } from '@/components/ui';
 import { useReplayState } from '@/features/replay/components/ReplayPlayer';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
@@ -27,6 +28,7 @@ const formatTime = (value: string) =>
 
 export default function ReplaySpeedGraph() {
   const t = useTranslation();
+  const [expanded, setExpanded] = useState(false);
   const { positions, index, selectPosition } = useReplayState();
   const chart = useMemo(() => {
     const startTime = timeOf(positions[0]?.fixTime, 0);
@@ -72,28 +74,59 @@ export default function ReplaySpeedGraph() {
     selectPosition(nearestIndex);
   };
 
-  return (
+  useEffect(() => {
+    if (!expanded) return undefined;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setExpanded(false);
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, [expanded]);
+
+  const renderGraph = (large: boolean) => (
     <section
       aria-label={t('replaySpeedGraph')}
-      className="rounded-3xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-sm shadow-slate-950/5"
+      className={
+        large
+          ? 'bg-(--color-paper)'
+          : 'rounded-3xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-sm shadow-slate-950/5'
+      }
     >
       <div className="flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 text-xs font-semibold text-(--color-text)">
-          <Activity size={15} className="text-violet-600" aria-hidden="true" />
+        <h2
+          id={large ? 'replay-speed-graph-dialog-title' : undefined}
+          className={`flex items-center gap-2 font-semibold text-(--color-text) ${large ? 'text-lg' : 'text-xs'}`}
+        >
+          <Activity size={large ? 20 : 15} className="text-violet-600" aria-hidden="true" />
           {t('replaySpeedGraph')}
         </h2>
-        <span className="rounded-full bg-violet-500/10 px-2 py-1 text-[0.65rem] font-semibold text-violet-700 dark:text-violet-300">
-          {currentSpeed.toFixed(0)} km/h
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-violet-500/10 px-2 py-1 text-[0.65rem] font-semibold text-violet-700 dark:text-violet-300">
+            {currentSpeed.toFixed(0)} km/h
+          </span>
+          <button
+            type="button"
+            onClick={() => setExpanded(!large)}
+            aria-label={large ? t('sharedClose') : t('replaySpeedGraphExpand')}
+            title={large ? t('sharedClose') : t('replaySpeedGraphExpand')}
+            className="grid h-8 w-8 place-items-center rounded-lg border border-(--color-divider) text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+          >
+            {large ? <X size={16} aria-hidden="true" /> : <Expand size={15} aria-hidden="true" />}
+          </button>
+        </div>
       </div>
 
       <div className="mt-3 flex gap-2">
-        <div className="flex h-28 shrink-0 flex-col justify-between text-right text-[0.58rem] text-(--color-muted)">
+        <div
+          className={`flex shrink-0 flex-col justify-between text-right text-(--color-muted) ${large ? 'h-80 text-xs md:h-[28rem]' : 'h-28 text-[0.58rem]'}`}
+        >
           <span>{chart.scaleMaximum}</span>
           <span>{Math.round(chart.scaleMaximum / 2)}</span>
           <span>0</span>
         </div>
-        <div className="relative h-28 min-w-0 flex-1 overflow-hidden border-b border-l border-(--color-divider) bg-[linear-gradient(to_bottom,var(--color-divider)_1px,transparent_1px)] bg-[length:100%_50%]">
+        <div
+          className={`relative min-w-0 flex-1 overflow-hidden border-b border-l border-(--color-divider) bg-[linear-gradient(to_bottom,var(--color-divider)_1px,transparent_1px)] bg-[length:100%_50%] ${large ? 'h-80 md:h-[28rem]' : 'h-28'}`}
+        >
           <svg
             viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
             preserveAspectRatio="none"
@@ -134,7 +167,9 @@ export default function ReplaySpeedGraph() {
         </div>
       </div>
 
-      <div className="mt-1.5 ml-6 flex justify-between text-[0.6rem] font-medium text-(--color-muted)">
+      <div
+        className={`mt-1.5 ml-6 flex justify-between font-medium text-(--color-muted) ${large ? 'text-xs' : 'text-[0.6rem]'}`}
+      >
         <span>{positions[0] ? formatTime(positions[0].fixTime) : ''}</span>
         <span>{positions.at(-1) ? formatTime(positions.at(-1)!.fixTime) : ''}</span>
       </div>
@@ -142,5 +177,21 @@ export default function ReplaySpeedGraph() {
         {t('replaySpeedGraphHint')}
       </p>
     </section>
+  );
+
+  return (
+    <>
+      {renderGraph(false)}
+      <Dialog
+        open={expanded}
+        onClose={() => setExpanded(false)}
+        fullWidth
+        maxWidth="lg"
+        aria-labelledby="replay-speed-graph-dialog-title"
+        className="!max-w-6xl rounded-3xl"
+      >
+        <DialogContent className="p-5 md:p-7">{renderGraph(true)}</DialogContent>
+      </Dialog>
+    </>
   );
 }

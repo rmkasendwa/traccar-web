@@ -579,12 +579,13 @@ const Overlay = ({ children, onClose }) =>
     </div>,
     document.body,
   );
-export const Dialog = ({ open, onClose, fullWidth, maxWidth, children, className }) =>
+export const Dialog = ({ open, onClose, fullWidth, maxWidth, children, className, ...props }) =>
   open ? (
     <Overlay onClose={onClose}>
       <div
         role="dialog"
         aria-modal="true"
+        {...props}
         className={cn(
           'max-h-[90vh] overflow-auto rounded-lg bg-(--color-paper) shadow-xl',
           fullWidth && 'w-full',
