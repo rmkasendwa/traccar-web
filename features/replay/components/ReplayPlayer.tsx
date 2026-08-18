@@ -3,7 +3,7 @@
 import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
 import ReplayTimeline from '@/features/replay/components/ReplayTimeline';
 import type { ReplayPosition } from '@/features/replay/types';
-import { Check, Pause, Play, SkipBack, SkipForward } from 'lucide-react';
+import { Check, CircleGauge, Pause, Play, SkipBack, SkipForward } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import {
   createContext,
@@ -154,6 +154,40 @@ export function ReplayMapView() {
         onSelectPosition={selectPosition}
       />
     </div>
+  );
+}
+
+export function ReplayMaxSpeedCard({ maxSpeedKph }: { maxSpeedKph: number }) {
+  const t = useTranslation();
+  const { positions, selectPosition } = useReplayState();
+  const maxSpeedIndex = useMemo(
+    () =>
+      positions.reduce(
+        (maximumIndex, position, positionIndex) =>
+          (position.speed || 0) > (positions[maximumIndex]?.speed || 0)
+            ? positionIndex
+            : maximumIndex,
+        0,
+      ),
+    [positions],
+  );
+  const value = `${maxSpeedKph.toFixed(0)} km/h`;
+
+  return (
+    <button
+      type="button"
+      onClick={() => selectPosition(maxSpeedIndex)}
+      className="rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) p-3 text-left transition hover:border-sky-300 hover:bg-(--color-surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+      aria-label={`${t('replayMaxSpeed')}: ${value}`}
+    >
+      <span className="flex items-center gap-1.5 text-[0.66rem] font-semibold text-(--color-muted)">
+        <CircleGauge size={13} className="text-sky-600" aria-hidden="true" />
+        {t('replayMaxSpeed')}
+      </span>
+      <span className="mt-1 block text-base font-bold tracking-tight text-(--color-text)">
+        {value}
+      </span>
+    </button>
   );
 }
 

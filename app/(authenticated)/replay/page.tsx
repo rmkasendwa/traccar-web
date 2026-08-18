@@ -3,7 +3,6 @@ import Link from 'next/link';
 import {
   AlertTriangle,
   CalendarRange,
-  CircleGauge,
   Clock3,
   Download,
   LocateFixed,
@@ -20,6 +19,7 @@ import ReplayPanel from '@/features/replay/components/ReplayPanel';
 import ReplayPlayer, {
   ReplayControls,
   ReplayMapView,
+  ReplayMaxSpeedCard,
 } from '@/features/replay/components/ReplayPlayer';
 import { calculateReplayStatistics, formatDuration } from '@/features/replay/lib/replay';
 import type { ReplayDevice, ReplayPosition } from '@/features/replay/types';
@@ -229,26 +229,30 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                   {
                     label: t('replayMaxSpeed'),
                     value: `${statistics.maxSpeedKph.toFixed(0)} km/h`,
-                    icon: CircleGauge,
+                    icon: null,
                   },
                   {
                     label: t('replayGpsPoints'),
                     value: statistics.positionCount.toLocaleString(),
                     icon: LocateFixed,
                   },
-                ].map(({ label, value, icon: Icon }) => (
-                  <article
-                    key={label}
-                    className="rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) p-3"
-                  >
-                    <div className="flex items-center gap-1.5 text-[0.66rem] font-semibold text-(--color-muted)">
-                      <Icon size={13} className="text-sky-600" aria-hidden="true" /> {label}
-                    </div>
-                    <p className="mt-1 text-base font-bold tracking-tight text-(--color-text)">
-                      {value}
-                    </p>
-                  </article>
-                ))}
+                ].map(({ label, value, icon: Icon }) =>
+                  Icon ? (
+                    <article
+                      key={label}
+                      className="rounded-xl border border-(--color-divider) bg-(--color-surface-subtle) p-3"
+                    >
+                      <div className="flex items-center gap-1.5 text-[0.66rem] font-semibold text-(--color-muted)">
+                        <Icon size={13} className="text-sky-600" aria-hidden="true" /> {label}
+                      </div>
+                      <p className="mt-1 text-base font-bold tracking-tight text-(--color-text)">
+                        {value}
+                      </p>
+                    </article>
+                  ) : (
+                    <ReplayMaxSpeedCard key={label} maxSpeedKph={statistics.maxSpeedKph} />
+                  ),
+                )}
               </section>
 
               <section className="rounded-3xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-sm shadow-slate-950/5">
