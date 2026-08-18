@@ -1,15 +1,24 @@
 'use client';
 
-import { Activity, Expand, RotateCcw, X } from 'lucide-react';
-import { useEffect, useMemo, useState, type WheelEvent } from 'react';
+import { Activity, Expand, Hand, MousePointer2, RotateCcw, X, ZoomIn } from 'lucide-react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  type WheelEvent,
+} from 'react';
 import { Dialog, DialogContent } from '@/components/ui';
 import { useReplayState } from '@/features/replay/components/ReplayPlayer';
+import type { ReplayPosition } from '@/features/replay/types';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 const KNOTS_TO_KPH = 1.852;
-const WIDTH = 300;
-const HEIGHT = 112;
-const MAX_RENDERED_POINTS = 400;
+const WIDTH = 1000;
+const HEIGHT = 320;
+const MAX_RENDERED_POINTS = 700;
 const MAX_ZOOM = 16;
 
 const speedKph = (speed?: number) =>
@@ -20,12 +29,12 @@ const timeOf = (value: string | undefined, fallback: number) => {
   return Number.isFinite(time) ? time : fallback;
 };
 
-const formatTime = (value: string) =>
-  Number.isFinite(Date.parse(value))
-    ? new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(
-        new Date(value),
-      )
-    : '';
+const formatTime = (time: number, includeSeconds = false) =>
+  new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+    ...(includeSeconds ? { second: '2-digit' } : {}),
+  }).format(new Date(time));
 
 const formatTooltipTime = (value: string | undefined) =>
   value && Number.isFinite(Date.parse(value))
@@ -38,93 +47,104 @@ const formatTooltipTime = (value: string | undefined) =>
       }).format(new Date(value))
     : '';
 
+const nearestPositionIndex = (positions: ReplayPosition[], targetTime: number) =>
+  positions.reduce(
+    (nearest, position, positionIndex) =>
+      Math.abs(timeOf(position.fixTime, targetTime) - targetTime) <
+      Math.abs(timeOf(positions[nearest].fixTime, targetTime) - targetTime)
+        ? positionIndex
+        : nearest,
+    0,
+  );
+
+const buildGeometry = (
+  positions: ReplayPosition[],
+  viewStart: number,
+  viewEnd: number,
+  scaleMaximum: number,
+) => {
+  const duration = Math.max(1, viewEnd - viewStart);
+  const visible = positions.filter((position) => {
+    const time = timeOf(position.fixTime, viewStart);
+    return time >= viewStart && time <= viewEnd;
+  });
+  const step = Math.max(1, Math.ceil(visible.length / MAX_RENDERED_POINTS));
+  const sampled = visible.filter(
+    (_position, positionIndex) =>
+      positionIndex % step === 0 || positionIndex === visible.length - 1,
+  );
+  const points = sampled
+    .map((position, pointIndex) => {
+      const fallback = viewStart + (pointIndex / Math.max(1, sampled.length - 1)) * duration;
+      const x = ((timeOf(position.fixTime, fallback) - viewStart) / duration) * WIDTH;
+      const y = HEIGHT - (speedKph(position.speed) / scaleMaximum) * HEIGHT;
+      return `${Math.max(0, Math.min(WIDTH, x)).toFixed(1)},${Math.max(0, y).toFixed(1)}`;
+    })
+    .join(' ');
+
+  return {
+    points,
+    areaPoints: points ? `0,${HEIGHT} ${points} ${WIDTH},${HEIGHT}` : '',
+    visibleCount: visible.length,
+  };
+};
+
 export default function ReplaySpeedGraph() {
   const t = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [viewportCenter, setViewportCenter] = useState(0.5);
+  const [panning, setPanning] = useState(false);
+  const dragRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startViewStart: number;
+    moved: boolean;
+  } | null>(null);
   const { positions, index, selectPosition } = useReplayState();
-  const chart = useMemo(() => {
+
+  const fullChart = useMemo(() => {
     const startTime = timeOf(positions[0]?.fixTime, 0);
     const endTime = timeOf(positions.at(-1)?.fixTime, startTime);
-    const fullDuration = Math.max(1, endTime - startTime);
-    const duration = fullDuration / zoom;
-    const requestedStart = startTime + viewportCenter * fullDuration - duration / 2;
-    const viewStart = Math.max(startTime, Math.min(endTime - duration, requestedStart));
-    const viewEnd = viewStart + duration;
-    const visiblePositions = positions.filter((position) => {
-      const time = timeOf(position.fixTime, viewStart);
-      return time >= viewStart && time <= viewEnd;
-    });
-    const maximumSpeed = Math.max(
-      ...visiblePositions.map((position) => speedKph(position.speed)),
-      0,
-    );
+    const duration = Math.max(1, endTime - startTime);
+    const maximumSpeed = Math.max(...positions.map((position) => speedKph(position.speed)), 0);
     const scaleMaximum = Math.max(10, Math.ceil(maximumSpeed / 10) * 10);
-    const step = Math.max(1, Math.ceil(visiblePositions.length / MAX_RENDERED_POINTS));
-    const sampled = visiblePositions.filter(
-      (_position, positionIndex) =>
-        positionIndex % step === 0 || positionIndex === visiblePositions.length - 1,
-    );
-    const points = sampled
-      .map((position, pointIndex) => {
-        const fallbackTime = viewStart + (pointIndex / Math.max(1, sampled.length - 1)) * duration;
-        const x = ((timeOf(position.fixTime, fallbackTime) - viewStart) / duration) * WIDTH;
-        const y = HEIGHT - (speedKph(position.speed) / scaleMaximum) * HEIGHT;
-        return `${Math.max(0, Math.min(WIDTH, x)).toFixed(1)},${Math.max(0, y).toFixed(1)}`;
-      })
-      .join(' ');
-
     return {
       startTime,
       endTime,
-      fullDuration,
+      duration,
+      scaleMaximum,
+      geometry: buildGeometry(positions, startTime, endTime, scaleMaximum),
+    };
+  }, [positions]);
+
+  const modalChart = useMemo(() => {
+    const duration = fullChart.duration / zoom;
+    const requestedStart = fullChart.startTime + viewportCenter * fullChart.duration - duration / 2;
+    const viewStart = Math.max(
+      fullChart.startTime,
+      Math.min(fullChart.endTime - duration, requestedStart),
+    );
+    const viewEnd = viewStart + duration;
+    return {
       viewStart,
       viewEnd,
       duration,
-      scaleMaximum,
-      points,
+      geometry: buildGeometry(positions, viewStart, viewEnd, fullChart.scaleMaximum),
     };
-  }, [positions, viewportCenter, zoom]);
+  }, [fullChart, positions, viewportCenter, zoom]);
 
   const current = positions[index];
+  const currentTime = timeOf(current?.fixTime, fullChart.startTime);
   const currentSpeed = speedKph(current?.speed);
-  const currentX = current
-    ? ((timeOf(current.fixTime, chart.viewStart) - chart.viewStart) / chart.duration) * 100
-    : 0;
-  const currentY = 100 - (currentSpeed / chart.scaleMaximum) * 100;
-  const currentVisible = currentX >= 0 && currentX <= 100;
+  const currentY = 100 - (currentSpeed / fullChart.scaleMaximum) * 100;
+  const inlineX = ((currentTime - fullChart.startTime) / fullChart.duration) * 100;
+  const modalX = ((currentTime - modalChart.viewStart) / modalChart.duration) * 100;
+  const currentVisibleInModal = modalX >= 0 && modalX <= 100;
 
-  const seekByTime = (sliderValue: number) => {
-    const ratio = sliderValue / Math.max(positions.length - 1, 1);
-    const targetTime = chart.viewStart + ratio * chart.duration;
-    const nearestIndex = positions.reduce(
-      (nearest, position, positionIndex) =>
-        Math.abs(timeOf(position.fixTime, targetTime) - targetTime) <
-        Math.abs(timeOf(positions[nearest].fixTime, targetTime) - targetTime)
-          ? positionIndex
-          : nearest,
-      0,
-    );
-    selectPosition(nearestIndex);
-  };
-
-  const zoomWithWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (!expanded) return;
-    event.preventDefault();
-    const rect = event.currentTarget.getBoundingClientRect();
-    const anchor = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-    const nextZoom = Math.max(1, Math.min(MAX_ZOOM, zoom * (event.deltaY < 0 ? 1.5 : 1 / 1.5)));
-    if (nextZoom === zoom) return;
-
-    const anchorTime = chart.viewStart + anchor * chart.duration;
-    const nextDuration = chart.fullDuration / nextZoom;
-    const nextViewStart = Math.max(
-      chart.startTime,
-      Math.min(chart.endTime - nextDuration, anchorTime - anchor * nextDuration),
-    );
-    setViewportCenter((nextViewStart + nextDuration / 2 - chart.startTime) / chart.fullDuration);
-    setZoom(nextZoom);
+  const seekAtRatio = (ratio: number, viewStart: number, duration: number) => {
+    const targetTime = viewStart + Math.max(0, Math.min(1, ratio)) * duration;
+    selectPosition(nearestPositionIndex(positions, targetTime));
   };
 
   const resetZoom = () => {
@@ -134,7 +154,83 @@ export default function ReplaySpeedGraph() {
 
   const closeExpandedGraph = () => {
     setExpanded(false);
+    setPanning(false);
     resetZoom();
+  };
+
+  const zoomWithWheel = (event: WheelEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const rect = event.currentTarget.getBoundingClientRect();
+    const anchor = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    const nextZoom = Math.max(1, Math.min(MAX_ZOOM, zoom * (event.deltaY < 0 ? 1.35 : 1 / 1.35)));
+    if (nextZoom === zoom) return;
+
+    const anchorTime = modalChart.viewStart + anchor * modalChart.duration;
+    const nextDuration = fullChart.duration / nextZoom;
+    const nextStart = Math.max(
+      fullChart.startTime,
+      Math.min(fullChart.endTime - nextDuration, anchorTime - anchor * nextDuration),
+    );
+    setViewportCenter((nextStart + nextDuration / 2 - fullChart.startTime) / fullChart.duration);
+    setZoom(nextZoom);
+  };
+
+  const startPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startViewStart: modalChart.viewStart,
+      moved: false,
+    };
+  };
+
+  const movePointer = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const deltaX = event.clientX - drag.startX;
+    if (Math.abs(deltaX) < 4 && !drag.moved) return;
+    drag.moved = true;
+    if (zoom <= 1) return;
+    setPanning(true);
+    const nextStart = Math.max(
+      fullChart.startTime,
+      Math.min(
+        fullChart.endTime - modalChart.duration,
+        drag.startViewStart - (deltaX / rect.width) * modalChart.duration,
+      ),
+    );
+    setViewportCenter(
+      (nextStart + modalChart.duration / 2 - fullChart.startTime) / fullChart.duration,
+    );
+  };
+
+  const endPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    if (!drag.moved) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      seekAtRatio(
+        (event.clientX - rect.left) / rect.width,
+        modalChart.viewStart,
+        modalChart.duration,
+      );
+    }
+    dragRef.current = null;
+    setPanning(false);
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  };
+
+  const cancelPointer = () => {
+    dragRef.current = null;
+    setPanning(false);
+  };
+
+  const seekWithKeyboard = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    selectPosition(index + (event.key === 'ArrowRight' ? 1 : -1));
   };
 
   useEffect(() => {
@@ -146,138 +242,263 @@ export default function ReplaySpeedGraph() {
     return () => document.removeEventListener('keydown', closeOnEscape);
   }, [expanded]);
 
-  const renderGraph = (large: boolean) => (
-    <section
-      aria-label={t('replaySpeedGraph')}
-      className={
-        large
-          ? 'bg-(--color-paper)'
-          : 'rounded-3xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-sm shadow-slate-950/5'
-      }
-    >
-      <div className="flex items-center justify-between gap-3">
-        <h2
-          id={large ? 'replay-speed-graph-dialog-title' : undefined}
-          className={`flex items-center gap-2 font-semibold text-(--color-text) ${large ? 'text-lg' : 'text-xs'}`}
-        >
-          <Activity size={large ? 20 : 15} className="text-violet-600" aria-hidden="true" />
-          {t('replaySpeedGraph')}
-        </h2>
-        <div className="flex items-center gap-2">
-          <span className="rounded-full bg-violet-500/10 px-2 py-1 text-[0.65rem] font-semibold text-violet-700 dark:text-violet-300">
-            {currentSpeed.toFixed(0)} km/h
-          </span>
-          {large && zoom > 1 && (
-            <button
-              type="button"
-              onClick={resetZoom}
-              title={t('replaySpeedGraphResetZoom')}
-              className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-(--color-divider) px-2 text-xs font-semibold text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-            >
-              <RotateCcw size={13} aria-hidden="true" /> {zoom.toFixed(1)}×
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => (large ? closeExpandedGraph() : setExpanded(true))}
-            aria-label={large ? t('sharedClose') : t('replaySpeedGraphExpand')}
-            title={large ? t('sharedClose') : t('replaySpeedGraphExpand')}
-            className="grid h-8 w-8 place-items-center rounded-lg border border-(--color-divider) text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-          >
-            {large ? <X size={16} aria-hidden="true" /> : <Expand size={15} aria-hidden="true" />}
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-3 flex gap-2">
-        <div
-          className={`flex shrink-0 flex-col justify-between text-right text-(--color-muted) ${large ? 'h-[calc(80vh-11rem)] min-h-72 text-xs' : 'h-28 text-[0.58rem]'}`}
-        >
-          <span>{chart.scaleMaximum}</span>
-          <span>{Math.round(chart.scaleMaximum / 2)}</span>
-          <span>0</span>
-        </div>
-        <div
-          onWheel={zoomWithWheel}
-          className={`relative min-w-0 flex-1 overflow-hidden border-b border-l border-(--color-divider) bg-[linear-gradient(to_bottom,var(--color-divider)_1px,transparent_1px)] bg-[length:100%_50%] ${large ? 'h-[calc(80vh-11rem)] min-h-72' : 'h-28'}`}
-        >
-          <svg
-            viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-            preserveAspectRatio="none"
-            className="absolute inset-0 h-full w-full"
-            aria-hidden="true"
-          >
-            <polyline
-              points={chart.points}
-              fill="none"
-              stroke="rgb(124 58 237)"
-              strokeWidth="2"
-              vectorEffect="non-scaling-stroke"
-              strokeLinejoin="round"
-            />
-          </svg>
-          {currentVisible && (
-            <>
-              <span
-                className="pointer-events-none absolute inset-y-0 w-px bg-sky-500"
-                style={{ left: `${currentX}%` }}
-                aria-hidden="true"
-              />
-              <span
-                className="pointer-events-none absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-sky-500 shadow"
-                style={{ left: `${currentX}%`, top: `${Math.max(0, Math.min(100, currentY))}%` }}
-                aria-hidden="true"
-              />
-              <span
-                aria-hidden="true"
-                className={`pointer-events-none absolute z-10 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-950 px-2.5 py-1.5 font-semibold text-white shadow-lg ${large ? 'text-xs' : 'text-[0.6rem]'}`}
-                style={{
-                  left: `${Math.max(14, Math.min(86, currentX))}%`,
-                  top: `${Math.max(0, Math.min(100, currentY))}%`,
-                  transform: `translate(-50%, ${currentY < 28 ? '10px' : 'calc(-100% - 10px)'})`,
-                }}
-              >
-                {formatTooltipTime(current?.fixTime)} · {currentSpeed.toFixed(0)} km/h
-              </span>
-            </>
-          )}
-          <input
-            type="range"
-            min={0}
-            max={Math.max(positions.length - 1, 0)}
-            value={Math.round(Math.max(0, Math.min(1, currentX / 100)) * (positions.length - 1))}
-            onChange={(event) => seekByTime(Number(event.currentTarget.value))}
-            aria-label={t('replaySpeedGraphSeek')}
-            aria-valuetext={`${formatTooltipTime(current?.fixTime)}, ${currentSpeed.toFixed(0)} km/h`}
-            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-          />
-        </div>
-      </div>
-
-      <div
-        className={`mt-1.5 ml-6 flex justify-between font-medium text-(--color-muted) ${large ? 'text-xs' : 'text-[0.6rem]'}`}
+  const renderCurrentMarker = (x: number, compact: boolean) => (
+    <>
+      <span
+        className="pointer-events-none absolute inset-y-0 w-px bg-sky-500/80"
+        style={{ left: `${x}%` }}
+        aria-hidden="true"
+      />
+      <span
+        className="pointer-events-none absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-sky-500 shadow"
+        style={{ left: `${x}%`, top: `${Math.max(0, Math.min(100, currentY))}%` }}
+        aria-hidden="true"
+      />
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute z-20 whitespace-nowrap rounded-lg bg-slate-950 px-2.5 py-1.5 font-semibold text-white shadow-xl ${compact ? 'text-[0.6rem]' : 'text-xs'}`}
+        style={{
+          left: `${Math.max(compact ? 20 : 10, Math.min(compact ? 80 : 90, x))}%`,
+          top: `${Math.max(8, Math.min(88, currentY))}%`,
+          transform: `translate(-50%, ${currentY < 30 ? '12px' : 'calc(-100% - 12px)'})`,
+        }}
       >
-        <span>{formatTime(new Date(chart.viewStart).toISOString())}</span>
-        <span>{formatTime(new Date(chart.viewEnd).toISOString())}</span>
-      </div>
-      <p className="mt-2 text-[0.65rem] leading-4 text-(--color-muted)">
-        {t('replaySpeedGraphHint')}
-      </p>
-    </section>
+        {formatTooltipTime(current?.fixTime)} · {currentSpeed.toFixed(0)} km/h
+      </span>
+    </>
   );
+
+  const yTicks = [1, 0.75, 0.5, 0.25, 0];
+  const timeTicks = [0, 0.25, 0.5, 0.75, 1];
 
   return (
     <>
-      {renderGraph(false)}
+      <section
+        aria-label={t('replaySpeedGraph')}
+        className="rounded-3xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-sm shadow-slate-950/5"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="flex items-center gap-2 text-xs font-semibold text-(--color-text)">
+            <Activity size={15} className="text-violet-600" aria-hidden="true" />
+            {t('replaySpeedGraph')}
+          </h2>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-violet-500/10 px-2 py-1 text-[0.65rem] font-semibold text-violet-700 dark:text-violet-300">
+              {currentSpeed.toFixed(0)} km/h
+            </span>
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              aria-label={t('replaySpeedGraphExpand')}
+              title={t('replaySpeedGraphExpand')}
+              className="grid h-8 w-8 place-items-center rounded-lg border border-(--color-divider) text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+            >
+              <Expand size={15} aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+        <div className="mt-3 flex gap-2">
+          <div className="flex h-28 shrink-0 flex-col justify-between text-right text-[0.58rem] text-(--color-muted)">
+            <span>{fullChart.scaleMaximum}</span>
+            <span>{Math.round(fullChart.scaleMaximum / 2)}</span>
+            <span>0</span>
+          </div>
+          <div className="relative h-28 min-w-0 flex-1">
+            <div className="absolute inset-0 overflow-hidden border-b border-l border-(--color-divider) bg-[linear-gradient(to_bottom,var(--color-divider)_1px,transparent_1px)] bg-[length:100%_50%]">
+              <svg
+                viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+                preserveAspectRatio="none"
+                className="absolute inset-0 h-full w-full"
+                aria-hidden="true"
+              >
+                <polyline
+                  points={fullChart.geometry.points}
+                  fill="none"
+                  stroke="rgb(124 58 237)"
+                  strokeWidth="2"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+            </div>
+            {renderCurrentMarker(Math.max(0, Math.min(100, inlineX)), true)}
+            <input
+              type="range"
+              min={0}
+              max={Math.max(positions.length - 1, 0)}
+              value={index}
+              onChange={(event) => selectPosition(Number(event.currentTarget.value))}
+              aria-label={t('replaySpeedGraphSeek')}
+              aria-valuetext={`${formatTooltipTime(current?.fixTime)}, ${currentSpeed.toFixed(0)} km/h`}
+              className="absolute inset-0 z-30 h-full w-full cursor-pointer opacity-0"
+            />
+          </div>
+        </div>
+        <div className="mt-1.5 ml-6 flex justify-between text-[0.6rem] font-medium text-(--color-muted)">
+          <span>{formatTime(fullChart.startTime)}</span>
+          <span>{formatTime(fullChart.endTime)}</span>
+        </div>
+        <p className="mt-2 text-[0.65rem] leading-4 text-(--color-muted)">
+          {t('replaySpeedGraphHint')}
+        </p>
+      </section>
+
       <Dialog
         open={expanded}
         onClose={closeExpandedGraph}
         fullWidth
         maxWidth="lg"
         aria-labelledby="replay-speed-graph-dialog-title"
-        className="h-[80vh] !max-h-[80vh] !max-w-5xl rounded-3xl"
+        className="!max-w-5xl rounded-xl"
       >
-        <DialogContent className="p-5 md:p-7">{renderGraph(true)}</DialogContent>
+        <DialogContent className="p-0">
+          <section aria-label={t('replaySpeedGraph')} className="overflow-hidden rounded-xl">
+            <header className="flex flex-wrap items-center justify-between gap-4 border-b border-(--color-divider) px-5 py-4 md:px-6">
+              <div>
+                <h2
+                  id="replay-speed-graph-dialog-title"
+                  className="flex items-center gap-2 text-base font-semibold text-(--color-text)"
+                >
+                  <span className="grid h-9 w-9 place-items-center rounded-lg bg-violet-500/10 text-violet-600">
+                    <Activity size={18} aria-hidden="true" />
+                  </span>
+                  {t('replaySpeedGraph')}
+                </h2>
+                <p className="mt-1 pl-11 text-xs text-(--color-muted)">
+                  {t('replaySpeedGraphModalHint')}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="rounded-lg bg-violet-500/10 px-2.5 py-1.5 text-xs font-semibold text-violet-700 dark:text-violet-300">
+                  {currentSpeed.toFixed(0)} km/h
+                </span>
+                {zoom > 1 && (
+                  <button
+                    type="button"
+                    onClick={resetZoom}
+                    title={t('replaySpeedGraphResetZoom')}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-(--color-divider) px-2.5 text-xs font-semibold text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text)"
+                  >
+                    <RotateCcw size={13} aria-hidden="true" /> {zoom.toFixed(1)}×
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={closeExpandedGraph}
+                  aria-label={t('sharedClose')}
+                  className="grid h-9 w-9 place-items-center rounded-lg border border-(--color-divider) text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text)"
+                >
+                  <X size={17} aria-hidden="true" />
+                </button>
+              </div>
+            </header>
+
+            <div className="grid grid-cols-3 gap-px border-b border-(--color-divider) bg-(--color-divider)">
+              {[
+                [
+                  t('replaySpeedGraphVisiblePoints'),
+                  modalChart.geometry.visibleCount.toLocaleString(),
+                ],
+                [t('replaySpeedGraphScale'), `${fullChart.scaleMaximum} km/h`],
+                [t('replaySpeedGraphZoom'), `${zoom.toFixed(1)}×`],
+              ].map(([label, value]) => (
+                <div key={label} className="bg-(--color-paper) px-4 py-2.5 text-center">
+                  <p className="text-[0.62rem] font-semibold uppercase tracking-wide text-(--color-muted)">
+                    {label}
+                  </p>
+                  <p className="mt-0.5 text-sm font-bold text-(--color-text)">{value}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="px-5 pt-5 pb-4 md:px-6">
+              <div className="flex gap-3">
+                <div className="flex h-[min(46vh,25rem)] min-h-64 w-10 shrink-0 flex-col justify-between pb-px text-right text-[0.65rem] font-medium text-(--color-muted)">
+                  {yTicks.map((tick) => (
+                    <span key={tick}>{Math.round(fullChart.scaleMaximum * tick)}</span>
+                  ))}
+                </div>
+                <div className="relative h-[min(46vh,25rem)] min-h-64 min-w-0 flex-1">
+                  <div
+                    role="slider"
+                    tabIndex={0}
+                    aria-label={t('replaySpeedGraphSeek')}
+                    aria-valuemin={0}
+                    aria-valuemax={positions.length - 1}
+                    aria-valuenow={index}
+                    aria-valuetext={`${formatTooltipTime(current?.fixTime)}, ${currentSpeed.toFixed(0)} km/h`}
+                    onKeyDown={seekWithKeyboard}
+                    onWheel={zoomWithWheel}
+                    onPointerDown={startPointer}
+                    onPointerMove={movePointer}
+                    onPointerUp={endPointer}
+                    onPointerCancel={cancelPointer}
+                    className={`absolute inset-0 touch-none select-none overflow-hidden rounded-md border border-(--color-divider) bg-(--color-surface-subtle) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${panning ? 'cursor-grabbing' : zoom > 1 ? 'cursor-grab' : 'cursor-crosshair'}`}
+                  >
+                    <div className="pointer-events-none absolute inset-0 grid grid-cols-4 grid-rows-4">
+                      {Array.from({ length: 16 }, (_, gridIndex) => (
+                        <span
+                          key={gridIndex}
+                          className="border-t border-l border-(--color-divider)/70"
+                        />
+                      ))}
+                    </div>
+                    <svg
+                      viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+                      preserveAspectRatio="none"
+                      className="pointer-events-none absolute inset-0 h-full w-full"
+                      aria-hidden="true"
+                    >
+                      <defs>
+                        <linearGradient id="replay-speed-area" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="rgb(124 58 237)" stopOpacity="0.3" />
+                          <stop offset="100%" stopColor="rgb(124 58 237)" stopOpacity="0.02" />
+                        </linearGradient>
+                      </defs>
+                      <polygon
+                        points={modalChart.geometry.areaPoints}
+                        fill="url(#replay-speed-area)"
+                      />
+                      <polyline
+                        points={modalChart.geometry.points}
+                        fill="none"
+                        stroke="rgb(124 58 237)"
+                        strokeWidth="2"
+                        vectorEffect="non-scaling-stroke"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  {currentVisibleInModal && renderCurrentMarker(modalX, false)}
+                </div>
+              </div>
+
+              <div className="mt-2 ml-13 grid grid-cols-5 text-[0.65rem] font-medium text-(--color-muted)">
+                {timeTicks.map((tick, tickIndex) => (
+                  <span
+                    key={tick}
+                    className={
+                      tickIndex === 0 ? 'text-left' : tickIndex === 4 ? 'text-right' : 'text-center'
+                    }
+                  >
+                    {formatTime(modalChart.viewStart + modalChart.duration * tick, zoom >= 5)}
+                  </span>
+                ))}
+              </div>
+
+              <footer className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-(--color-divider) bg-(--color-surface-subtle) px-3 py-2 text-[0.68rem] text-(--color-muted)">
+                <span className="inline-flex items-center gap-1.5">
+                  <ZoomIn size={13} aria-hidden="true" /> {t('replaySpeedGraphWheelHelp')}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Hand size={13} aria-hidden="true" /> {t('replaySpeedGraphPanHelp')}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <MousePointer2 size={13} aria-hidden="true" /> {t('replaySpeedGraphClickHelp')}
+                </span>
+              </footer>
+            </div>
+          </section>
+        </DialogContent>
       </Dialog>
     </>
   );
