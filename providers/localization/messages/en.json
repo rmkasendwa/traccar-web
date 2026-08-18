@@ -799,6 +799,8 @@
     "replayDuration": "Duration",
     "replayMaxSpeed": "Max speed",
     "replayGpsPoints": "GPS points",
+    "replaySpeedHistogram": "Speed distribution",
+    "replaySpeedHistogramHint": "Select a bar to jump to the first point in that speed range.",
     "replayDownloadKml": "Download route as KML",
     "replayPreviousPosition": "Previous position",
     "replayNextPosition": "Next position",

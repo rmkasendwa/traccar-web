@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import ReplayFilterPanel from '@/features/replay/components/ReplayFilterPanel';
 import ReplayPanel from '@/features/replay/components/ReplayPanel';
+import ReplaySpeedHistogram from '@/features/replay/components/ReplaySpeedHistogram';
 import ReplayPlayer, {
   ReplayControls,
   ReplayMapView,
@@ -254,6 +255,8 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                   ),
                 )}
               </section>
+
+              <ReplaySpeedHistogram />
 
               <section className="rounded-3xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-sm shadow-slate-950/5">
                 <div className="flex items-center gap-3 rounded-3xl border border-(--color-divider) bg-(--color-surface-subtle) px-4 py-3 shadow-inner">

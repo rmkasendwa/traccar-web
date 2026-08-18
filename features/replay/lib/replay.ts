@@ -3,6 +3,13 @@ import type { ReplayPosition, ReplayStatistics } from '@/features/replay/types';
 const EARTH_RADIUS_KM = 6371;
 const KNOTS_TO_KPH = 1.852;
 
+export type SpeedHistogramBin = {
+  startKph: number;
+  endKph: number;
+  count: number;
+  firstPositionIndex: number;
+};
+
 const radians = (value: number) => (value * Math.PI) / 180;
 
 const distanceBetween = (first: ReplayPosition, second: ReplayPosition) => {
@@ -44,6 +51,33 @@ export const calculateReplayStatistics = (positions: ReplayPosition[]): ReplaySt
     averageSpeedKph: positions.length ? speedTotals.total / positions.length : 0,
     positionCount: positions.length,
   };
+};
+
+export const calculateSpeedHistogram = (positions: ReplayPosition[]): SpeedHistogramBin[] => {
+  if (!positions.length) return [];
+
+  const speedsKph = positions.map((position) =>
+    Math.max(0, Number.isFinite(position.speed) ? (position.speed || 0) * KNOTS_TO_KPH : 0),
+  );
+  const maximum = Math.max(...speedsKph);
+  const minimumBinWidth = Math.max(5, Math.ceil(maximum / 8 / 5) * 5);
+  const binWidth = minimumBinWidth || 5;
+  const binCount = Math.max(1, Math.ceil((maximum + Number.EPSILON) / binWidth));
+  const bins = Array.from({ length: binCount }, (_, index) => ({
+    startKph: index * binWidth,
+    endKph: (index + 1) * binWidth,
+    count: 0,
+    firstPositionIndex: -1,
+  }));
+
+  speedsKph.forEach((speed, positionIndex) => {
+    const binIndex = Math.min(Math.floor(speed / binWidth), bins.length - 1);
+    const bin = bins[binIndex];
+    bin.count += 1;
+    if (bin.firstPositionIndex === -1) bin.firstPositionIndex = positionIndex;
+  });
+
+  return bins;
 };
 
 export const formatDuration = (durationMs: number) => {
