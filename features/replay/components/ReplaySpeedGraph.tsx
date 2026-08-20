@@ -139,7 +139,7 @@ export default function ReplaySpeedGraph() {
     };
   }, [positions]);
 
-  const modalChart = useMemo(() => {
+  const viewChart = useMemo(() => {
     const duration = fullChart.duration / zoom;
     const requestedStart = fullChart.startTime + viewportCenter * fullChart.duration - duration / 2;
     const viewStart = Math.max(
@@ -166,9 +166,8 @@ export default function ReplaySpeedGraph() {
   const currentTime = timeOf(current?.fixTime, fullChart.startTime);
   const currentSpeed = speedKph(current?.speed);
   const currentY = 100 - (currentSpeed / fullChart.scaleMaximum) * 100;
-  const inlineX = ((currentTime - fullChart.startTime) / fullChart.duration) * 100;
-  const modalX = ((currentTime - modalChart.viewStart) / modalChart.duration) * 100;
-  const currentVisibleInModal = modalX >= 0 && modalX <= 100;
+  const viewX = ((currentTime - viewChart.viewStart) / viewChart.duration) * 100;
+  const currentVisibleInView = viewX >= 0 && viewX <= 100;
 
   const seekAtRatio = (ratio: number, viewStart: number, duration: number) => {
     const targetTime = viewStart + Math.max(0, Math.min(1, ratio)) * duration;
@@ -183,7 +182,6 @@ export default function ReplaySpeedGraph() {
   const closeExpandedGraph = () => {
     setExpanded(false);
     setPanning(false);
-    resetZoom();
   };
 
   const zoomWithWheel = (event: WheelEvent<HTMLDivElement>) => {
@@ -193,7 +191,7 @@ export default function ReplaySpeedGraph() {
     const nextZoom = Math.max(1, Math.min(MAX_ZOOM, zoom * (event.deltaY < 0 ? 1.35 : 1 / 1.35)));
     if (nextZoom === zoom) return;
 
-    const anchorTime = modalChart.viewStart + anchor * modalChart.duration;
+    const anchorTime = viewChart.viewStart + anchor * viewChart.duration;
     const nextDuration = fullChart.duration / nextZoom;
     const nextStart = Math.max(
       fullChart.startTime,
@@ -205,14 +203,14 @@ export default function ReplaySpeedGraph() {
 
   const startPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    const markerX = rect.left + (modalX / 100) * rect.width;
+    const markerX = rect.left + (viewX / 100) * rect.width;
     const draggingMarker =
-      currentVisibleInModal && Math.abs(event.clientX - markerX) <= MARKER_DRAG_HIT_WIDTH / 2;
+      currentVisibleInView && Math.abs(event.clientX - markerX) <= MARKER_DRAG_HIT_WIDTH / 2;
     event.currentTarget.setPointerCapture(event.pointerId);
     dragRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
-      startViewStart: modalChart.viewStart,
+      startViewStart: viewChart.viewStart,
       moved: false,
       mode: draggingMarker ? 'marker' : 'pan',
     };
@@ -227,8 +225,8 @@ export default function ReplaySpeedGraph() {
       drag.moved = true;
       seekAtRatio(
         (event.clientX - rect.left) / rect.width,
-        modalChart.viewStart,
-        modalChart.duration,
+        viewChart.viewStart,
+        viewChart.duration,
       );
       return;
     }
@@ -239,12 +237,12 @@ export default function ReplaySpeedGraph() {
     const nextStart = Math.max(
       fullChart.startTime,
       Math.min(
-        fullChart.endTime - modalChart.duration,
-        drag.startViewStart - (deltaX / rect.width) * modalChart.duration,
+        fullChart.endTime - viewChart.duration,
+        drag.startViewStart - (deltaX / rect.width) * viewChart.duration,
       ),
     );
     setViewportCenter(
-      (nextStart + modalChart.duration / 2 - fullChart.startTime) / fullChart.duration,
+      (nextStart + viewChart.duration / 2 - fullChart.startTime) / fullChart.duration,
     );
   };
 
@@ -255,15 +253,15 @@ export default function ReplaySpeedGraph() {
       const rect = event.currentTarget.getBoundingClientRect();
       seekAtRatio(
         (event.clientX - rect.left) / rect.width,
-        modalChart.viewStart,
-        modalChart.duration,
+        viewChart.viewStart,
+        viewChart.duration,
       );
     } else if (!drag.moved) {
       const rect = event.currentTarget.getBoundingClientRect();
       seekAtRatio(
         (event.clientX - rect.left) / rect.width,
-        modalChart.viewStart,
-        modalChart.duration,
+        viewChart.viewStart,
+        viewChart.duration,
       );
     }
     dragRef.current = null;
@@ -339,6 +337,17 @@ export default function ReplaySpeedGraph() {
             <span className="rounded-full bg-violet-500/10 px-2 py-1 text-[0.65rem] font-semibold text-violet-700 dark:text-violet-300">
               {currentSpeed.toFixed(0)} km/h
             </span>
+            {zoom > 1 && (
+              <button
+                type="button"
+                onClick={resetZoom}
+                aria-label={t('replaySpeedGraphResetZoom')}
+                title={t('replaySpeedGraphResetZoom')}
+                className="inline-flex h-8 items-center gap-1 rounded-lg border border-(--color-divider) px-2 text-[0.65rem] font-semibold text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+              >
+                <RotateCcw size={12} aria-hidden="true" /> {zoom.toFixed(1)}×
+              </button>
+            )}
             <button
               type="button"
               onClick={() => setExpanded(true)}
@@ -356,7 +365,22 @@ export default function ReplaySpeedGraph() {
             <span>{Math.round(fullChart.scaleMaximum / 2)}</span>
             <span>0</span>
           </div>
-          <div className="group relative h-28 min-w-0 flex-1">
+          <div
+            role="slider"
+            tabIndex={0}
+            aria-label={t('replaySpeedGraphSeek')}
+            aria-valuemin={0}
+            aria-valuemax={Math.max(positions.length - 1, 0)}
+            aria-valuenow={index}
+            aria-valuetext={`${formatTooltipTime(current?.fixTime)}, ${currentSpeed.toFixed(0)} km/h`}
+            onKeyDown={seekWithKeyboard}
+            onWheel={zoomWithWheel}
+            onPointerDown={startPointer}
+            onPointerMove={movePointer}
+            onPointerUp={endPointer}
+            onPointerCancel={cancelPointer}
+            className={`group relative h-28 min-w-0 flex-1 touch-none select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${panning ? 'cursor-grabbing' : zoom > 1 ? 'cursor-grab' : 'cursor-crosshair'}`}
+          >
             <div className="absolute inset-0 overflow-hidden border-b border-l border-(--color-divider) bg-[linear-gradient(to_bottom,var(--color-divider)_1px,transparent_1px)] bg-[length:100%_50%]">
               <svg
                 viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -364,7 +388,7 @@ export default function ReplaySpeedGraph() {
                 className="absolute inset-0 h-full w-full"
                 aria-hidden="true"
               >
-                {fullChart.geometry.segments.map((segment, segmentIndex) => (
+                {viewChart.geometry.segments.map((segment, segmentIndex) => (
                   <line
                     key={segmentIndex}
                     x1={segment.x1}
@@ -378,22 +402,12 @@ export default function ReplaySpeedGraph() {
                 ))}
               </svg>
             </div>
-            {renderCurrentMarker(Math.max(0, Math.min(100, inlineX)), true)}
-            <input
-              type="range"
-              min={0}
-              max={Math.max(positions.length - 1, 0)}
-              value={index}
-              onChange={(event) => selectPosition(Number(event.currentTarget.value))}
-              aria-label={t('replaySpeedGraphSeek')}
-              aria-valuetext={`${formatTooltipTime(current?.fixTime)}, ${currentSpeed.toFixed(0)} km/h`}
-              className="absolute inset-0 z-30 h-full w-full cursor-pointer opacity-0"
-            />
+            {currentVisibleInView && renderCurrentMarker(viewX, true)}
           </div>
         </div>
         <div className="mt-1.5 ml-6 flex justify-between text-[0.6rem] font-medium text-(--color-muted)">
-          <span>{formatTime(fullChart.startTime)}</span>
-          <span>{formatTime(fullChart.endTime)}</span>
+          <span>{formatTime(viewChart.viewStart, zoom >= 5)}</span>
+          <span>{formatTime(viewChart.viewEnd, zoom >= 5)}</span>
         </div>
         <p className="mt-2 text-[0.65rem] leading-4 text-(--color-muted)">
           {t('replaySpeedGraphHint')}
@@ -454,7 +468,7 @@ export default function ReplaySpeedGraph() {
               {[
                 [
                   t('replaySpeedGraphVisiblePoints'),
-                  modalChart.geometry.visibleCount.toLocaleString(),
+                  viewChart.geometry.visibleCount.toLocaleString(),
                 ],
                 [t('replaySpeedGraphScale'), `${fullChart.scaleMaximum} km/h`],
                 [t('replaySpeedGraphZoom'), `${zoom.toFixed(1)}×`],
@@ -513,10 +527,10 @@ export default function ReplaySpeedGraph() {
                         </linearGradient>
                       </defs>
                       <polygon
-                        points={modalChart.geometry.areaPoints}
+                        points={viewChart.geometry.areaPoints}
                         fill="url(#replay-speed-area)"
                       />
-                      {modalChart.geometry.segments.map((segment, segmentIndex) => (
+                      {viewChart.geometry.segments.map((segment, segmentIndex) => (
                         <line
                           key={segmentIndex}
                           x1={segment.x1}
@@ -530,7 +544,7 @@ export default function ReplaySpeedGraph() {
                       ))}
                     </svg>
                   </div>
-                  {currentVisibleInModal && renderCurrentMarker(modalX, false)}
+                  {currentVisibleInView && renderCurrentMarker(viewX, false)}
                 </div>
               </div>
 
@@ -542,7 +556,7 @@ export default function ReplaySpeedGraph() {
                       tickIndex === 0 ? 'text-left' : tickIndex === 4 ? 'text-right' : 'text-center'
                     }
                   >
-                    {formatTime(modalChart.viewStart + modalChart.duration * tick, zoom >= 5)}
+                    {formatTime(viewChart.viewStart + viewChart.duration * tick, zoom >= 5)}
                   </span>
                 ))}
               </div>
