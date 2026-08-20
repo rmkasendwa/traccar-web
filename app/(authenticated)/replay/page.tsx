@@ -288,9 +288,9 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                   </div>
                 </div>
                 <div className="mt-4 grid gap-3 border-t border-(--color-divider) pt-4 text-xs text-(--color-muted)">
-                  <div className="flex items-center gap-2">
-                    <Navigation size={14} className="text-sky-600" aria-hidden="true" />
-                    <span>
+                  <div className="flex items-center gap-1.5">
+                    <Navigation size={13} className="shrink-0 text-sky-600" aria-hidden="true" />
+                    <span className="whitespace-nowrap tracking-tight">
                       {formatDate(normalizedFrom, timeZone)} → {formatDate(normalizedTo, timeZone)}
                     </span>
                   </div>
