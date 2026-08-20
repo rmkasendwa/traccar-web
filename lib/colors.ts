@@ -24,7 +24,8 @@ export const interpolateTurbo = (value) => {
 };
 
 const getSpeedColor = (speed, minSpeed, maxSpeed) => {
-  const normalizedSpeed = (speed - minSpeed) / (maxSpeed - minSpeed);
+  const range = maxSpeed - minSpeed;
+  const normalizedSpeed = Number.isFinite(range) && range > 0 ? (speed - minSpeed) / range : 0.5;
 
   const [r, g, b] = interpolateTurbo(normalizedSpeed);
 

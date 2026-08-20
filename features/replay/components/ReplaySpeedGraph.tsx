@@ -13,6 +13,7 @@ import {
 import { Dialog, DialogContent } from '@/components/ui';
 import { useReplayState } from '@/features/replay/components/ReplayPlayer';
 import type { ReplayPosition } from '@/features/replay/types';
+import getSpeedColor from '@/lib/colors';
 import { useTranslation } from '@/providers/localization/LocalizationProvider';
 
 const KNOTS_TO_KPH = 1.852;
@@ -62,6 +63,8 @@ const buildGeometry = (
   viewStart: number,
   viewEnd: number,
   scaleMaximum: number,
+  minSpeed: number,
+  maxSpeed: number,
 ) => {
   const duration = Math.max(1, viewEnd - viewStart);
   const visible = positions.filter((position) => {
@@ -73,17 +76,28 @@ const buildGeometry = (
     (_position, positionIndex) =>
       positionIndex % step === 0 || positionIndex === visible.length - 1,
   );
-  const points = sampled
-    .map((position, pointIndex) => {
-      const fallback = viewStart + (pointIndex / Math.max(1, sampled.length - 1)) * duration;
-      const x = ((timeOf(position.fixTime, fallback) - viewStart) / duration) * WIDTH;
-      const y = HEIGHT - (speedKph(position.speed) / scaleMaximum) * HEIGHT;
-      return `${Math.max(0, Math.min(WIDTH, x)).toFixed(1)},${Math.max(0, y).toFixed(1)}`;
-    })
-    .join(' ');
+  const coordinates = sampled.map((position, pointIndex) => {
+    const fallback = viewStart + (pointIndex / Math.max(1, sampled.length - 1)) * duration;
+    const x = ((timeOf(position.fixTime, fallback) - viewStart) / duration) * WIDTH;
+    const y = HEIGHT - (speedKph(position.speed) / scaleMaximum) * HEIGHT;
+    return {
+      x: Math.max(0, Math.min(WIDTH, x)),
+      y: Math.max(0, y),
+      speed: position.speed || 0,
+    };
+  });
+  const points = coordinates.map(({ x, y }) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+  const segments = coordinates.slice(1).map((coordinate, pointIndex) => ({
+    x1: coordinates[pointIndex].x,
+    y1: coordinates[pointIndex].y,
+    x2: coordinate.x,
+    y2: coordinate.y,
+    color: getSpeedColor(coordinate.speed, minSpeed, maxSpeed),
+  }));
 
   return {
     points,
+    segments,
     areaPoints: points ? `0,${HEIGHT} ${points} ${WIDTH},${HEIGHT}` : '',
     visibleCount: visible.length,
   };
@@ -108,13 +122,18 @@ export default function ReplaySpeedGraph() {
     const endTime = timeOf(positions.at(-1)?.fixTime, startTime);
     const duration = Math.max(1, endTime - startTime);
     const maximumSpeed = Math.max(...positions.map((position) => speedKph(position.speed)), 0);
+    const speeds = positions.map((position) => position.speed || 0);
+    const minSpeed = speeds.length ? Math.min(...speeds) : 0;
+    const maxSpeed = speeds.length ? Math.max(...speeds) : 0;
     const scaleMaximum = Math.max(10, Math.ceil(maximumSpeed / 10) * 10);
     return {
       startTime,
       endTime,
       duration,
       scaleMaximum,
-      geometry: buildGeometry(positions, startTime, endTime, scaleMaximum),
+      minSpeed,
+      maxSpeed,
+      geometry: buildGeometry(positions, startTime, endTime, scaleMaximum, minSpeed, maxSpeed),
     };
   }, [positions]);
 
@@ -130,7 +149,14 @@ export default function ReplaySpeedGraph() {
       viewStart,
       viewEnd,
       duration,
-      geometry: buildGeometry(positions, viewStart, viewEnd, fullChart.scaleMaximum),
+      geometry: buildGeometry(
+        positions,
+        viewStart,
+        viewEnd,
+        fullChart.scaleMaximum,
+        fullChart.minSpeed,
+        fullChart.maxSpeed,
+      ),
     };
   }, [fullChart, positions, viewportCenter, zoom]);
 
@@ -311,13 +337,18 @@ export default function ReplaySpeedGraph() {
                 className="absolute inset-0 h-full w-full"
                 aria-hidden="true"
               >
-                <polyline
-                  points={fullChart.geometry.points}
-                  fill="none"
-                  stroke="rgb(124 58 237)"
-                  strokeWidth="2"
-                  vectorEffect="non-scaling-stroke"
-                />
+                {fullChart.geometry.segments.map((segment, segmentIndex) => (
+                  <line
+                    key={segmentIndex}
+                    x1={segment.x1}
+                    y1={segment.y1}
+                    x2={segment.x2}
+                    y2={segment.y2}
+                    stroke={segment.color}
+                    strokeWidth="2"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                ))}
               </svg>
             </div>
             {renderCurrentMarker(Math.max(0, Math.min(100, inlineX)), true)}
@@ -458,14 +489,18 @@ export default function ReplaySpeedGraph() {
                         points={modalChart.geometry.areaPoints}
                         fill="url(#replay-speed-area)"
                       />
-                      <polyline
-                        points={modalChart.geometry.points}
-                        fill="none"
-                        stroke="rgb(124 58 237)"
-                        strokeWidth="2"
-                        vectorEffect="non-scaling-stroke"
-                        strokeLinejoin="round"
-                      />
+                      {modalChart.geometry.segments.map((segment, segmentIndex) => (
+                        <line
+                          key={segmentIndex}
+                          x1={segment.x1}
+                          y1={segment.y1}
+                          x2={segment.x2}
+                          y2={segment.y2}
+                          stroke={segment.color}
+                          strokeWidth="2"
+                          vectorEffect="non-scaling-stroke"
+                        />
+                      ))}
                     </svg>
                   </div>
                   {currentVisibleInModal && renderCurrentMarker(modalX, false)}
