@@ -45,10 +45,20 @@ const valueOf = (value: string | string[] | undefined) => (Array.isArray(value) 
 const parseDate = (value: string) =>
   Date.parse(/[zZ]$|[+-]\d{2}:\d{2}$/.test(value) ? value : `${value}Z`);
 
-const formatDate = (value: string) =>
-  new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(
+const formatDate = (value: string, timeZone?: string) =>
+  new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short', timeZone }).format(
     new Date(value),
   );
+
+const validTimeZone = (value: string | undefined) => {
+  if (!value) return undefined;
+  try {
+    new Intl.DateTimeFormat('en', { timeZone: value });
+    return value;
+  } catch {
+    return undefined;
+  }
+};
 
 async function loadDevices() {
   try {
@@ -146,6 +156,7 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
   const rawTo = valueOf(params.to);
   const rawPeriod = valueOf(params.period);
   const rawDay = valueOf(params.day);
+  const timeZone = validTimeZone(valueOf(params.timeZone));
   const replayDay = rawDay && /^\d{4}-\d{2}-\d{2}$/.test(rawDay) ? rawDay : undefined;
   const deviceId = rawDeviceId && /^\d+$/.test(rawDeviceId) ? rawDeviceId : '';
   const fromTime = rawFrom ? parseDate(rawFrom) : Number.NaN;
@@ -280,7 +291,7 @@ export default async function ReplayPage({ searchParams }: { searchParams: Searc
                   <div className="flex items-center gap-2">
                     <Navigation size={14} className="text-sky-600" aria-hidden="true" />
                     <span>
-                      {formatDate(normalizedFrom)} → {formatDate(normalizedTo)}
+                      {formatDate(normalizedFrom, timeZone)} → {formatDate(normalizedTo, timeZone)}
                     </span>
                   </div>
                   <a

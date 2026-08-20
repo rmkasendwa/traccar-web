@@ -827,6 +827,8 @@
     "calendarFullLocalDay": "Full local day",
     "calendarUtcTimezone": "UTC timezone",
     "calendarTimeInUtc": "{label} time in UTC",
+    "calendarLocalTimezone": "Your local timezone",
+    "calendarTimeInLocal": "{label} time in your local timezone",
     "calendarPreviousMonth": "Previous month",
     "calendarNextMonth": "Next month",
     "reportsTitle": "Reports",

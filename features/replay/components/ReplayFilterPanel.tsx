@@ -109,9 +109,17 @@ export default function ReplayFilterPanel({
           ? 'custom'
           : 'today',
     );
-    setCustomFrom(initialCustomFrom);
-    setCustomTo(initialCustomTo);
-    setSelectedDay(initialDay || initialCustomFrom.slice(0, 10));
+    const toLocalDateTime = (value: string | undefined, fallback: string) => {
+      if (!value) return fallback;
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return fallback;
+      const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+      return localDate.toISOString().slice(0, 16);
+    };
+    const localFrom = toLocalDateTime(initialFrom || `${initialCustomFrom}Z`, initialCustomFrom);
+    setCustomFrom(localFrom);
+    setCustomTo(toLocalDateTime(initialTo || `${initialCustomTo}Z`, initialCustomTo));
+    setSelectedDay(initialDay || localFrom.slice(0, 10));
     setDirty(!initialFrom || !initialTo);
   }, [
     deviceId,
@@ -132,8 +140,10 @@ export default function ReplayFilterPanel({
       from = new Date(`${selectedDay}T00:00:00`);
       to = endOfDay(new Date(from));
     } else if (period === 'custom') {
-      from = new Date(`${customFrom}Z`);
-      to = new Date(`${customTo}Z`);
+      // Date-time picker values are local wall-clock times. Date converts them to
+      // instants using the browser timezone; toISOString serializes UTC for the API.
+      from = new Date(customFrom);
+      to = new Date(customTo);
     } else {
       [from, to] = rangeFor(period);
     }
@@ -144,6 +154,7 @@ export default function ReplayFilterPanel({
       from: from.toISOString(),
       to: to.toISOString(),
       period,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
     if (period === 'specificDay') query.set('day', selectedDay);
     startTransition(() => router.push(`${routes.replay.index}?${query}`));

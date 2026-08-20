@@ -112,7 +112,7 @@ export default function ReplayDateTimePicker({
         </button>
         {!dateOnly && (
           <label className="relative min-w-0">
-            <span className="sr-only">{t('calendarTimeInUtc').replace('{label}', label)}</span>
+            <span className="sr-only">{t('calendarTimeInLocal').replace('{label}', label)}</span>
             <Clock3
               size={14}
               className="pointer-events-none absolute top-1/2 left-2 -translate-y-1/2 text-slate-400"
@@ -129,7 +129,7 @@ export default function ReplayDateTimePicker({
         )}
       </div>
       <p className="mt-1.5 px-1 text-[0.62rem] font-medium text-(--color-muted)">
-        {dateOnly ? t('calendarFullLocalDay') : t('calendarUtcTimezone')}
+        {dateOnly ? t('calendarFullLocalDay') : t('calendarLocalTimezone')}
       </p>
 
       {open && (
