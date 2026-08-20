@@ -21,6 +21,7 @@ const WIDTH = 1000;
 const HEIGHT = 320;
 const MAX_RENDERED_POINTS = 700;
 const MAX_ZOOM = 16;
+const MARKER_DRAG_HIT_WIDTH = 24;
 
 const speedKph = (speed?: number) =>
   Math.max(0, Number.isFinite(speed) ? (speed || 0) * KNOTS_TO_KPH : 0);
@@ -114,6 +115,7 @@ export default function ReplaySpeedGraph() {
     startX: number;
     startViewStart: number;
     moved: boolean;
+    mode: 'marker' | 'pan';
   } | null>(null);
   const { positions, index, selectPosition } = useReplayState();
 
@@ -202,12 +204,17 @@ export default function ReplaySpeedGraph() {
   };
 
   const startPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const markerX = rect.left + (modalX / 100) * rect.width;
+    const draggingMarker =
+      currentVisibleInModal && Math.abs(event.clientX - markerX) <= MARKER_DRAG_HIT_WIDTH / 2;
     event.currentTarget.setPointerCapture(event.pointerId);
     dragRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
       startViewStart: modalChart.viewStart,
       moved: false,
+      mode: draggingMarker ? 'marker' : 'pan',
     };
   };
 
@@ -216,6 +223,15 @@ export default function ReplaySpeedGraph() {
     if (!drag || drag.pointerId !== event.pointerId) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const deltaX = event.clientX - drag.startX;
+    if (drag.mode === 'marker') {
+      drag.moved = true;
+      seekAtRatio(
+        (event.clientX - rect.left) / rect.width,
+        modalChart.viewStart,
+        modalChart.duration,
+      );
+      return;
+    }
     if (Math.abs(deltaX) < 4 && !drag.moved) return;
     drag.moved = true;
     if (zoom <= 1) return;
@@ -235,7 +251,14 @@ export default function ReplaySpeedGraph() {
   const endPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
     const drag = dragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
-    if (!drag.moved) {
+    if (drag.mode === 'marker') {
+      const rect = event.currentTarget.getBoundingClientRect();
+      seekAtRatio(
+        (event.clientX - rect.left) / rect.width,
+        modalChart.viewStart,
+        modalChart.duration,
+      );
+    } else if (!drag.moved) {
       const rect = event.currentTarget.getBoundingClientRect();
       seekAtRatio(
         (event.clientX - rect.left) / rect.width,
