@@ -305,7 +305,11 @@ export default function ReplaySpeedGraph() {
       />
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute z-20 whitespace-nowrap rounded-lg bg-slate-950 px-2.5 py-1.5 font-semibold text-white shadow-xl ${compact ? 'text-[0.6rem]' : 'text-xs'}`}
+        className={`pointer-events-none absolute z-20 whitespace-nowrap rounded-lg bg-slate-950 px-2.5 py-1.5 font-semibold text-white shadow-xl ${
+          compact
+            ? 'text-[0.6rem] opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100'
+            : 'text-xs'
+        }`}
         style={{
           left: `${Math.max(compact ? 20 : 10, Math.min(compact ? 80 : 90, x))}%`,
           top: `${Math.max(8, Math.min(88, currentY))}%`,
@@ -352,7 +356,7 @@ export default function ReplaySpeedGraph() {
             <span>{Math.round(fullChart.scaleMaximum / 2)}</span>
             <span>0</span>
           </div>
-          <div className="relative h-28 min-w-0 flex-1">
+          <div className="group relative h-28 min-w-0 flex-1">
             <div className="absolute inset-0 overflow-hidden border-b border-l border-(--color-divider) bg-[linear-gradient(to_bottom,var(--color-divider)_1px,transparent_1px)] bg-[length:100%_50%]">
               <svg
                 viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
