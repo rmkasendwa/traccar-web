@@ -20,7 +20,7 @@ const KNOTS_TO_KPH = 1.852;
 const WIDTH = 1000;
 const HEIGHT = 320;
 const MAX_RENDERED_POINTS = 700;
-const MAX_ZOOM = 16;
+const MAX_ZOOM = 64;
 const MARKER_DRAG_HIT_WIDTH = 24;
 
 const speedKph = (speed?: number) =>
