@@ -3,12 +3,12 @@
 import { Activity, Expand, Hand, MousePointer2, RotateCcw, X, ZoomIn } from 'lucide-react';
 import {
   useEffect,
+  useCallback,
   useMemo,
   useRef,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
-  type WheelEvent,
 } from 'react';
 import { Dialog, DialogContent } from '@/components/ui';
 import { useReplayState } from '@/features/replay/components/ReplayPlayer';
@@ -110,6 +110,7 @@ export default function ReplaySpeedGraph() {
   const [zoom, setZoom] = useState(1);
   const [viewportCenter, setViewportCenter] = useState(0.5);
   const [panning, setPanning] = useState(false);
+  const compactGraphRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{
     pointerId: number;
     startX: number;
@@ -184,22 +185,35 @@ export default function ReplaySpeedGraph() {
     setPanning(false);
   };
 
-  const zoomWithWheel = (event: WheelEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const rect = event.currentTarget.getBoundingClientRect();
-    const anchor = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-    const nextZoom = Math.max(1, Math.min(MAX_ZOOM, zoom * (event.deltaY < 0 ? 1.35 : 1 / 1.35)));
-    if (nextZoom === zoom) return;
+  const zoomAt = useCallback(
+    (clientX: number, deltaY: number, rect: DOMRect) => {
+      const anchor = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      const nextZoom = Math.max(1, Math.min(MAX_ZOOM, zoom * (deltaY < 0 ? 1.35 : 1 / 1.35)));
+      if (nextZoom === zoom) return;
 
-    const anchorTime = viewChart.viewStart + anchor * viewChart.duration;
-    const nextDuration = fullChart.duration / nextZoom;
-    const nextStart = Math.max(
-      fullChart.startTime,
-      Math.min(fullChart.endTime - nextDuration, anchorTime - anchor * nextDuration),
-    );
-    setViewportCenter((nextStart + nextDuration / 2 - fullChart.startTime) / fullChart.duration);
-    setZoom(nextZoom);
-  };
+      const anchorTime = viewChart.viewStart + anchor * viewChart.duration;
+      const nextDuration = fullChart.duration / nextZoom;
+      const nextStart = Math.max(
+        fullChart.startTime,
+        Math.min(fullChart.endTime - nextDuration, anchorTime - anchor * nextDuration),
+      );
+      setViewportCenter((nextStart + nextDuration / 2 - fullChart.startTime) / fullChart.duration);
+      setZoom(nextZoom);
+    },
+    [fullChart, viewChart, zoom],
+  );
+
+  useEffect(() => {
+    const graph = compactGraphRef.current;
+    if (!graph) return undefined;
+    const handleWheel = (event: globalThis.WheelEvent) => {
+      if (!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      zoomAt(event.clientX, event.deltaY, graph.getBoundingClientRect());
+    };
+    graph.addEventListener('wheel', handleWheel, { passive: false });
+    return () => graph.removeEventListener('wheel', handleWheel);
+  }, [zoomAt]);
 
   const startPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -328,13 +342,17 @@ export default function ReplaySpeedGraph() {
         aria-label={t('replaySpeedGraph')}
         className="rounded-3xl border border-(--color-divider) bg-(--color-paper) p-4 shadow-sm shadow-slate-950/5"
       >
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="flex items-center gap-2 text-xs font-semibold text-(--color-text)">
-            <Activity size={15} className="text-violet-600" aria-hidden="true" />
-            {t('replaySpeedGraph')}
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="flex min-w-0 items-center gap-2 whitespace-nowrap text-xs font-semibold text-(--color-text)">
+            <Activity
+              size={15}
+              className="shrink-0 text-violet-600 dark:text-violet-400"
+              aria-hidden="true"
+            />
+            <span className="truncate">{t('replaySpeedGraph')}</span>
           </h2>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-violet-500/10 px-2 py-1 text-[0.65rem] font-semibold text-violet-700 dark:text-violet-300">
+          <div className="flex shrink-0 items-center gap-1.5">
+            <span className="inline-flex h-8 items-center whitespace-nowrap rounded-lg bg-violet-500/10 px-2 text-[0.65rem] font-bold tabular-nums text-violet-700 dark:text-violet-300">
               {currentSpeed.toFixed(0)} km/h
             </span>
             {zoom > 1 && (
@@ -343,7 +361,7 @@ export default function ReplaySpeedGraph() {
                 onClick={resetZoom}
                 aria-label={t('replaySpeedGraphResetZoom')}
                 title={t('replaySpeedGraphResetZoom')}
-                className="inline-flex h-8 items-center gap-1 rounded-lg border border-(--color-divider) px-2 text-[0.65rem] font-semibold text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+                className="inline-flex h-8 items-center gap-1 whitespace-nowrap rounded-lg border border-(--color-divider) bg-(--color-surface-subtle) px-2 text-[0.65rem] font-semibold tabular-nums text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
               >
                 <RotateCcw size={12} aria-hidden="true" /> {zoom.toFixed(1)}×
               </button>
@@ -353,7 +371,7 @@ export default function ReplaySpeedGraph() {
               onClick={() => setExpanded(true)}
               aria-label={t('replaySpeedGraphExpand')}
               title={t('replaySpeedGraphExpand')}
-              className="grid h-8 w-8 place-items-center rounded-lg border border-(--color-divider) text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-(--color-divider) bg-(--color-surface-subtle) text-(--color-muted) transition hover:bg-(--color-surface-hover) hover:text-(--color-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
             >
               <Expand size={15} aria-hidden="true" />
             </button>
@@ -366,6 +384,7 @@ export default function ReplaySpeedGraph() {
             <span>0</span>
           </div>
           <div
+            ref={compactGraphRef}
             role="slider"
             tabIndex={0}
             aria-label={t('replaySpeedGraphSeek')}
@@ -374,7 +393,6 @@ export default function ReplaySpeedGraph() {
             aria-valuenow={index}
             aria-valuetext={`${formatTooltipTime(current?.fixTime)}, ${currentSpeed.toFixed(0)} km/h`}
             onKeyDown={seekWithKeyboard}
-            onWheel={zoomWithWheel}
             onPointerDown={startPointer}
             onPointerMove={movePointer}
             onPointerUp={endPointer}
@@ -499,7 +517,14 @@ export default function ReplaySpeedGraph() {
                     aria-valuenow={index}
                     aria-valuetext={`${formatTooltipTime(current?.fixTime)}, ${currentSpeed.toFixed(0)} km/h`}
                     onKeyDown={seekWithKeyboard}
-                    onWheel={zoomWithWheel}
+                    onWheel={(event) => {
+                      event.preventDefault();
+                      zoomAt(
+                        event.clientX,
+                        event.deltaY,
+                        event.currentTarget.getBoundingClientRect(),
+                      );
+                    }}
                     onPointerDown={startPointer}
                     onPointerMove={movePointer}
                     onPointerUp={endPointer}

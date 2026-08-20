@@ -810,7 +810,7 @@
     "replaySpeedGraphPanHelp": "Drag to pan when zoomed",
     "replaySpeedGraphClickHelp": "Click to seek",
     "replaySpeedGraphSeek": "Seek replay by GPS point on the speed graph",
-    "replaySpeedGraphHint": "Scroll to zoom, drag to pan, or click the graph to seek while keeping the map visible.",
+    "replaySpeedGraphHint": "Ctrl + scroll to zoom, drag to pan, or click the graph to seek while keeping the map visible.",
     "replaySpeedHistogram": "Speed distribution",
     "replaySpeedHistogramHint": "Select a bar to jump to the first point in that speed range.",
     "replayDownloadKml": "Download route as KML",
