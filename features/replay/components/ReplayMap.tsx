@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useCallback, useEffect, useId, useState } from 'react';
+import { Minus, Plus } from 'lucide-react';
 import MapView from '@/features/map/core/MapView';
 import MapRoutePath from '@/features/map/MapRoutePath';
 import MapRoutePoints from '@/features/map/MapRoutePoints';
@@ -20,8 +21,95 @@ import { useTranslation } from '@/providers/localization/LocalizationProvider';
 type ReplayMapProps = {
   positions: ReplayPosition[];
   currentPosition?: ReplayPosition;
+  playbackSpeed: number;
+  followEnabled: boolean;
+  onFollowChange: (enabled: boolean) => void;
   onSelectPosition: (index: number) => void;
 };
+
+const REPLAY_MIN_ZOOM = 2;
+const REPLAY_MAX_ZOOM = 20;
+
+function ReplayCameraControls({
+  currentPosition,
+  playbackSpeed,
+  followEnabled,
+  onFollowChange,
+}: Pick<ReplayMapProps, 'currentPosition' | 'playbackSpeed' | 'followEnabled' | 'onFollowChange'>) {
+  const t = useTranslation();
+  const [zoom, setZoom] = useState(() => map.getZoom());
+
+  useEffect(() => {
+    const updateZoom = () => setZoom(map.getZoom());
+    const stopFollowingOnPan = () => onFollowChange(false);
+    map.on('zoom', updateZoom);
+    map.on('dragstart', stopFollowingOnPan);
+    updateZoom();
+    return () => {
+      map.off('zoom', updateZoom);
+      map.off('dragstart', stopFollowingOnPan);
+    };
+  }, [onFollowChange]);
+
+  useEffect(() => {
+    if (!followEnabled || !currentPosition) return;
+    const center = toMapCoordinates(currentPosition.longitude, currentPosition.latitude) as [
+      number,
+      number,
+    ];
+    const currentCenter = map.project(center);
+    const canvas = map.getCanvas();
+    const distanceFromCenter = Math.hypot(
+      currentCenter.x - canvas.clientWidth / 2,
+      currentCenter.y - canvas.clientHeight / 2,
+    );
+
+    // Let nearby points move naturally; recenter once the marker has visibly drifted.
+    if (distanceFromCenter < 24) return;
+    map.easeTo({
+      center,
+      duration: Math.max(100, Math.min(300, 450 / playbackSpeed)),
+      easing: (value) => value * (2 - value),
+    });
+  }, [currentPosition, followEnabled, playbackSpeed]);
+
+  const changeZoom = (change: number) => {
+    const minimum = Math.max(REPLAY_MIN_ZOOM, map.getMinZoom());
+    const maximum = Math.min(REPLAY_MAX_ZOOM, map.getMaxZoom());
+    map.zoomTo(Math.max(minimum, Math.min(maximum, map.getZoom() + change)), { duration: 150 });
+  };
+
+  return (
+    <div className="absolute right-3 bottom-8 z-10 flex items-center overflow-hidden rounded-xl border border-slate-200 bg-white/95 text-slate-700 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-200">
+      <button
+        type="button"
+        onClick={() => changeZoom(-1)}
+        disabled={zoom <= Math.max(REPLAY_MIN_ZOOM, map.getMinZoom())}
+        className="grid h-11 w-11 place-items-center hover:bg-slate-100 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-sky-600 disabled:opacity-35 dark:hover:bg-slate-800"
+        aria-label={t('replayZoomOut')}
+        title={t('replayZoomOut')}
+      >
+        <Minus size={18} aria-hidden="true" />
+      </button>
+      <output
+        className="min-w-10 text-center text-[11px] font-bold tabular-nums"
+        aria-live="polite"
+      >
+        {zoom.toFixed(1)}
+      </output>
+      <button
+        type="button"
+        onClick={() => changeZoom(1)}
+        disabled={zoom >= Math.min(REPLAY_MAX_ZOOM, map.getMaxZoom())}
+        className="grid h-11 w-11 place-items-center hover:bg-slate-100 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-sky-600 disabled:opacity-35 dark:hover:bg-slate-800"
+        aria-label={t('replayZoomIn')}
+        title={t('replayZoomIn')}
+      >
+        <Plus size={18} aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
 
 function CurrentPositionMarker({
   position,
@@ -88,7 +176,14 @@ function CurrentPositionMarker({
   return null;
 }
 
-function ReplayMap({ positions, currentPosition, onSelectPosition }: ReplayMapProps) {
+function ReplayMap({
+  positions,
+  currentPosition,
+  playbackSpeed,
+  followEnabled,
+  onFollowChange,
+  onSelectPosition,
+}: ReplayMapProps) {
   const t = useTranslation();
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -130,6 +225,12 @@ function ReplayMap({ positions, currentPosition, onSelectPosition }: ReplayMapPr
         className={`pointer-events-none absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none ${mapVisible ? 'opacity-0' : 'opacity-100'}`}
       />
       <MapScale />
+      <ReplayCameraControls
+        currentPosition={currentPosition}
+        playbackSpeed={playbackSpeed}
+        followEnabled={followEnabled}
+        onFollowChange={onFollowChange}
+      />
       {positions.length > 0 && (
         <MapCamera
           latitude={undefined}

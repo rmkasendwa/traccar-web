@@ -3,7 +3,7 @@
 import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
 import ReplayTimeline from '@/features/replay/components/ReplayTimeline';
 import type { ReplayPosition } from '@/features/replay/types';
-import { Check, CircleGauge, Pause, Play, SkipBack, SkipForward } from 'lucide-react';
+import { Check, CircleGauge, LocateFixed, Pause, Play, SkipBack, SkipForward } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import {
   createContext,
@@ -36,11 +36,13 @@ type ReplayState = {
   index: number;
   playing: boolean;
   speed: number;
+  followEnabled: boolean;
   lastIndex: number;
   currentPosition?: ReplayPosition;
   selectPosition: (nextIndex: number) => void;
   togglePlayback: () => void;
   setSpeed: (value: number) => void;
+  setFollowEnabled: (value: boolean) => void;
 };
 
 const ReplayContext = createContext<ReplayState | null>(null);
@@ -87,6 +89,7 @@ export function ReplayProvider({ positions, children }: ReplayProviderProps) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
+  const [followEnabled, setFollowEnabled] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastIndex = useMemo(() => Math.max(positions.length - 1, 0), [positions.length]);
 
@@ -131,11 +134,13 @@ export function ReplayProvider({ positions, children }: ReplayProviderProps) {
         index,
         playing,
         speed,
+        followEnabled,
         lastIndex,
         currentPosition,
         selectPosition,
         togglePlayback,
         setSpeed,
+        setFollowEnabled,
       }}
     >
       {children}
@@ -144,13 +149,17 @@ export function ReplayProvider({ positions, children }: ReplayProviderProps) {
 }
 
 export function ReplayMapView() {
-  const { positions, currentPosition, selectPosition } = useReplayState();
+  const { positions, currentPosition, speed, followEnabled, selectPosition, setFollowEnabled } =
+    useReplayState();
 
   return (
     <div className="relative h-full min-h-96 overflow-hidden bg-slate-200">
       <ReplayMap
         positions={positions}
         currentPosition={currentPosition}
+        playbackSpeed={speed}
+        followEnabled={followEnabled}
+        onFollowChange={setFollowEnabled}
         onSelectPosition={selectPosition}
       />
     </div>
@@ -201,9 +210,11 @@ export function ReplayControls() {
     lastIndex,
     playing,
     speed,
+    followEnabled,
     selectPosition,
     togglePlayback,
     setSpeed,
+    setFollowEnabled,
   } = useReplayState();
 
   useEffect(() => {
@@ -250,6 +261,25 @@ export function ReplayControls() {
 
       <div className="mt-2 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-2.5 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-900/85 dark:shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
         <div className="relative flex h-10 items-center justify-center">
+          <div className="absolute top-1 left-0 border-r border-slate-200 pr-2 dark:border-slate-700">
+            <ControlTooltip
+              label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
+            >
+              <button
+                type="button"
+                onClick={() => setFollowEnabled(!followEnabled)}
+                className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
+                  followEnabled
+                    ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                    : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                }`}
+                aria-label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
+                aria-pressed={followEnabled}
+              >
+                <LocateFixed size={16} aria-hidden="true" />
+              </button>
+            </ControlTooltip>
+          </div>
           <div className="flex items-center gap-1">
             <ControlTooltip label={t('replayPreviousPosition')}>
               <button
