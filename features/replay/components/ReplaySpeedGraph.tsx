@@ -22,6 +22,8 @@ const HEIGHT = 320;
 const MAX_RENDERED_POINTS = 700;
 const MAX_ZOOM = 64;
 const MARKER_DRAG_HIT_WIDTH = 24;
+const VIEWPORT_RIGHT_EDGE = 92;
+const VIEWPORT_RIGHT_REENTRY = 82;
 
 const speedKph = (speed?: number) =>
   Math.max(0, Number.isFinite(speed) ? (speed || 0) * KNOTS_TO_KPH : 0);
@@ -118,7 +120,7 @@ export default function ReplaySpeedGraph() {
     moved: boolean;
     mode: 'marker' | 'pan';
   } | null>(null);
-  const { positions, index, selectPosition } = useReplayState();
+  const { positions, index, followEnabled, selectPosition } = useReplayState();
 
   const fullChart = useMemo(() => {
     const startTime = timeOf(positions[0]?.fixTime, 0);
@@ -169,6 +171,37 @@ export default function ReplaySpeedGraph() {
   const currentY = 100 - (currentSpeed / fullChart.scaleMaximum) * 100;
   const viewX = ((currentTime - viewChart.viewStart) / viewChart.duration) * 100;
   const currentVisibleInView = viewX >= 0 && viewX <= 100;
+
+  useEffect(() => {
+    if (zoom <= 1 || panning || dragRef.current) return;
+
+    const shouldKeepFollowing = followEnabled;
+    const shouldKeepMarkerVisible = viewX >= VIEWPORT_RIGHT_EDGE;
+    if (!shouldKeepFollowing && !shouldKeepMarkerVisible) return;
+
+    const markerRatio = shouldKeepFollowing ? 0.5 : VIEWPORT_RIGHT_REENTRY / 100;
+    const requestedStart = currentTime - markerRatio * viewChart.duration;
+    const nextStart = Math.max(
+      fullChart.startTime,
+      Math.min(fullChart.endTime - viewChart.duration, requestedStart),
+    );
+    const nextCenter =
+      (nextStart + viewChart.duration / 2 - fullChart.startTime) / fullChart.duration;
+
+    setViewportCenter((currentCenter) =>
+      Math.abs(currentCenter - nextCenter) < 0.000001 ? currentCenter : nextCenter,
+    );
+  }, [
+    currentTime,
+    followEnabled,
+    fullChart.duration,
+    fullChart.endTime,
+    fullChart.startTime,
+    panning,
+    viewChart.duration,
+    viewX,
+    zoom,
+  ]);
 
   const seekAtRatio = (ratio: number, viewStart: number, duration: number) => {
     const targetTime = viewStart + Math.max(0, Math.min(1, ratio)) * duration;
