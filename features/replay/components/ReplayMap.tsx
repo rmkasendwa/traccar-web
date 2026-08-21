@@ -33,10 +33,14 @@ const REPLAY_MAX_ZOOM = 20;
 
 function ReplayCameraControls({
   currentPosition,
+  playing,
   playbackSpeed,
   followEnabled,
   onFollowChange,
-}: Pick<ReplayMapProps, 'currentPosition' | 'playbackSpeed' | 'followEnabled' | 'onFollowChange'>) {
+}: Pick<
+  ReplayMapProps,
+  'currentPosition' | 'playing' | 'playbackSpeed' | 'followEnabled' | 'onFollowChange'
+>) {
   const t = useTranslation();
   const [zoom, setZoom] = useState(() => map.getZoom());
 
@@ -58,21 +62,13 @@ function ReplayCameraControls({
       number,
       number,
     ];
-    const currentCenter = map.project(center);
-    const canvas = map.getCanvas();
-    const distanceFromCenter = Math.hypot(
-      currentCenter.x - canvas.clientWidth / 2,
-      currentCenter.y - canvas.clientHeight / 2,
-    );
-
-    // Let nearby points move naturally; recenter once the marker has visibly drifted.
-    if (distanceFromCenter < 24) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     map.easeTo({
       center,
-      duration: Math.max(100, Math.min(300, 450 / playbackSpeed)),
-      easing: (value) => value * (2 - value),
+      duration: reduceMotion ? 0 : playing ? 600 / playbackSpeed : 250,
+      easing: playing ? (value) => value : (value) => value * (2 - value),
     });
-  }, [currentPosition, followEnabled, playbackSpeed]);
+  }, [currentPosition, followEnabled, playbackSpeed, playing]);
 
   const changeZoom = (change: number) => {
     const minimum = Math.max(REPLAY_MIN_ZOOM, map.getMinZoom());
@@ -277,6 +273,7 @@ function ReplayMap({
       <MapScale />
       <ReplayCameraControls
         currentPosition={currentPosition}
+        playing={playing}
         playbackSpeed={playbackSpeed}
         followEnabled={followEnabled}
         onFollowChange={onFollowChange}
