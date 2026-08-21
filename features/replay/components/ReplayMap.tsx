@@ -202,10 +202,9 @@ function CurrentPositionMarker({
 
     const animate = (now: number) => {
       const progress = Math.min((now - startedAt) / duration, 1);
-      const eased = progress * (2 - progress);
       updatePosition([
-        start[0] + longitudeDelta * eased,
-        start[1] + (target[1] - start[1]) * eased,
+        start[0] + longitudeDelta * progress,
+        start[1] + (target[1] - start[1]) * progress,
       ]);
       if (progress < 1) animationRef.current = requestAnimationFrame(animate);
       else animationRef.current = null;
