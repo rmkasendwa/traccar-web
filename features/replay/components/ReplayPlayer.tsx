@@ -149,14 +149,22 @@ export function ReplayProvider({ positions, children }: ReplayProviderProps) {
 }
 
 export function ReplayMapView() {
-  const { positions, currentPosition, speed, followEnabled, selectPosition, setFollowEnabled } =
-    useReplayState();
+  const {
+    positions,
+    currentPosition,
+    playing,
+    speed,
+    followEnabled,
+    selectPosition,
+    setFollowEnabled,
+  } = useReplayState();
 
   return (
     <div className="relative h-full min-h-96 overflow-hidden bg-slate-200">
       <ReplayMap
         positions={positions}
         currentPosition={currentPosition}
+        playing={playing}
         playbackSpeed={speed}
         followEnabled={followEnabled}
         onFollowChange={setFollowEnabled}

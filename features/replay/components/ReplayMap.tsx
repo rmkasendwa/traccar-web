@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback, useEffect, useId, useState } from 'react';
+import { memo, useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
 import MapView from '@/features/map/core/MapView';
 import MapRoutePath from '@/features/map/MapRoutePath';
@@ -21,6 +21,7 @@ import { useTranslation } from '@/providers/localization/LocalizationProvider';
 type ReplayMapProps = {
   positions: ReplayPosition[];
   currentPosition?: ReplayPosition;
+  playing: boolean;
   playbackSpeed: number;
   followEnabled: boolean;
   onFollowChange: (enabled: boolean) => void;
@@ -113,12 +114,36 @@ function ReplayCameraControls({
 
 function CurrentPositionMarker({
   position,
+  playing,
+  playbackSpeed,
   onClick,
 }: {
   position: ReplayPosition;
+  playing: boolean;
+  playbackSpeed: number;
   onClick: () => void;
 }) {
   const id = useId();
+  const animationRef = useRef<number | null>(null);
+  const coordinateRef = useRef<[number, number] | null>(null);
+
+  const updatePosition = useCallback(
+    (coordinates: [number, number]) => {
+      coordinateRef.current = coordinates;
+      const source = map.getSource(id) as { setData?: (data: object) => void } | undefined;
+      source?.setData?.({
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates },
+            properties: {},
+          },
+        ],
+      });
+    },
+    [id],
+  );
 
   useEffect(() => {
     const handleMouseEnter = () => (map.getCanvas().style.cursor = 'pointer');
@@ -148,6 +173,7 @@ function CurrentPositionMarker({
     map.on('click', id, handleClick);
 
     return () => {
+      if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
       map.off('mouseenter', id, handleMouseEnter);
       map.off('mouseleave', id, handleMouseLeave);
       map.off('click', id, handleClick);
@@ -157,21 +183,40 @@ function CurrentPositionMarker({
   }, [id, onClick]);
 
   useEffect(() => {
-    const source = map.getSource(id) as { setData?: (data: object) => void } | undefined;
-    source?.setData?.({
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: toMapCoordinates(position.longitude, position.latitude),
-          },
-          properties: {},
-        },
-      ],
-    });
-  }, [id, position]);
+    if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
+
+    const target = toMapCoordinates(position.longitude, position.latitude) as [number, number];
+    const start = coordinateRef.current;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!playing || !start || reduceMotion) {
+      updatePosition(target);
+      return undefined;
+    }
+
+    const startedAt = performance.now();
+    const duration = 600 / playbackSpeed;
+    let longitudeDelta = target[0] - start[0];
+    if (longitudeDelta > 180) longitudeDelta -= 360;
+    if (longitudeDelta < -180) longitudeDelta += 360;
+
+    const animate = (now: number) => {
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const eased = progress * (2 - progress);
+      updatePosition([
+        start[0] + longitudeDelta * eased,
+        start[1] + (target[1] - start[1]) * eased,
+      ]);
+      if (progress < 1) animationRef.current = requestAnimationFrame(animate);
+      else animationRef.current = null;
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    };
+  }, [playbackSpeed, playing, position, updatePosition]);
 
   return null;
 }
@@ -179,6 +224,7 @@ function CurrentPositionMarker({
 function ReplayMap({
   positions,
   currentPosition,
+  playing,
   playbackSpeed,
   followEnabled,
   onFollowChange,
@@ -218,7 +264,12 @@ function ReplayMap({
           </>
         )}
         {currentPosition && (
-          <CurrentPositionMarker position={currentPosition} onClick={handleMarkerClick} />
+          <CurrentPositionMarker
+            position={currentPosition}
+            playing={playing}
+            playbackSpeed={playbackSpeed}
+            onClick={handleMarkerClick}
+          />
         )}
       </MapView>
       <ReplayMapPlaceholder
