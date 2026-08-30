@@ -193,7 +193,7 @@ export default function ReplayFilterPanel({
                 setPeriod(item.value);
                 setDirty(true);
               }}
-              className={`rounded-lg border px-2.5 py-2 text-left text-xs font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
+              className={`cursor-pointer rounded-lg border px-2.5 py-2 text-left text-xs font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
                 period === item.value
                   ? 'border-sky-300 bg-sky-50 text-sky-800 shadow-sm dark:border-sky-700 dark:bg-sky-950 dark:text-sky-200'
                   : 'border-(--color-divider) bg-(--color-paper) text-(--color-muted) hover:bg-(--color-surface-hover) hover:text-(--color-text)'
