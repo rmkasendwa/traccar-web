@@ -31,6 +31,17 @@ type ReplayMapProps = {
 
 const REPLAY_MIN_ZOOM = 2;
 const REPLAY_MAX_ZOOM = 20;
+const REPLAY_MARKER_STYLES = {
+  arrow: {
+    image: 'replayMarker',
+    size: 0.85,
+  },
+  car: {
+    image: 'car-success',
+    size: 0.75,
+  },
+} as const;
+const REPLAY_MARKER_STYLE_KEY: keyof typeof REPLAY_MARKER_STYLES = 'arrow';
 
 function ReplayCameraControls({
   currentPosition,
@@ -109,7 +120,7 @@ function ReplayCameraControls({
   );
 }
 
-function CurrentPositionMarker({
+function ReplayPositionMarker({
   position,
   playing,
   playbackSpeed,
@@ -134,12 +145,14 @@ function CurrentPositionMarker({
           {
             type: 'Feature',
             geometry: { type: 'Point', coordinates },
-            properties: {},
+            properties: {
+              rotation: position.course,
+            },
           },
         ],
       });
     },
-    [id],
+    [id, position.course],
   );
 
   useEffect(() => {
@@ -149,6 +162,7 @@ function CurrentPositionMarker({
       event.preventDefault();
       onClick();
     };
+    const markerStyle = REPLAY_MARKER_STYLES[REPLAY_MARKER_STYLE_KEY];
 
     map.addSource(id, {
       type: 'geojson',
@@ -156,13 +170,15 @@ function CurrentPositionMarker({
     });
     map.addLayer({
       id,
-      type: 'circle',
+      type: 'symbol',
       source: id,
-      paint: {
-        'circle-radius': 9,
-        'circle-color': '#0284c7',
-        'circle-stroke-color': '#ffffff',
-        'circle-stroke-width': 3,
+      layout: {
+        'icon-image': markerStyle.image,
+        'icon-size': markerStyle.size,
+        'icon-rotate': ['get', 'rotation'],
+        'icon-rotation-alignment': 'map',
+        'icon-allow-overlap': true,
+        'icon-ignore-placement': true,
       },
     });
     map.on('mouseenter', id, handleMouseEnter);
@@ -260,7 +276,7 @@ function ReplayMap({
           </>
         )}
         {currentPosition && (
-          <CurrentPositionMarker
+          <ReplayPositionMarker
             position={currentPosition}
             playing={playing}
             playbackSpeed={playbackSpeed}

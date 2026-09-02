@@ -5,6 +5,7 @@ import { loadImage, prepareIcon } from '@/features/map/core/mapUtil';
 
 import directionSvg from '@/features/map/assets/direction.svg';
 import backgroundSvg from '@/features/map/assets/background.svg';
+import replayMarkerSvg from '@/features/map/assets/replay-marker.svg';
 import animalSvg from '@/features/map/assets/icon/animal.svg';
 import bicycleSvg from '@/features/map/assets/icon/bicycle.svg';
 import boatSvg from '@/features/map/assets/icon/boat.svg';
@@ -77,6 +78,7 @@ export default async () => {
   const background = await loadImage(backgroundSvg);
   mapImages.background = await prepareIcon(background);
   mapImages.direction = await prepareIcon(await loadImage(directionSvg));
+  mapImages.replayMarker = await prepareIcon(await loadImage(replayMarkerSvg));
   await Promise.all(
     Object.keys(mapIcons).map(async (category) => {
       const results = [];
