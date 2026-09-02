@@ -3,6 +3,7 @@
 import { memo, useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
 import MapView from '@/features/map/core/MapView';
+import MapCurrentLocation from '@/features/map/MapCurrentLocation';
 import MapRoutePath from '@/features/map/MapRoutePath';
 import MapRoutePoints from '@/features/map/MapRoutePoints';
 import MapCamera from '@/features/map/MapCamera';
@@ -271,6 +272,7 @@ function ReplayMap({
         className={`pointer-events-none absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none ${mapVisible ? 'opacity-0' : 'opacity-100'}`}
       />
       <MapScale />
+      <MapCurrentLocation />
       <ReplayCameraControls
         currentPosition={currentPosition}
         playing={playing}
