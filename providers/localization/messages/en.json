@@ -824,6 +824,8 @@
   "replayFollowPosition": "Follow replay position",
   "replayStopFollowing": "Stop following replay position",
   "replayResumeFollowing": "Resume following",
+  "replayHeadingUp": "Keep direction up",
+  "replayPerspectiveView": "3D perspective while playing",
   "replayZoomIn": "Zoom in",
   "replayZoomOut": "Zoom out",
   "replayTimeline": "Replay timeline",

@@ -25,12 +25,15 @@ type ReplayMapProps = {
   playing: boolean;
   playbackSpeed: number;
   followEnabled: boolean;
+  headingUpEnabled: boolean;
+  perspectiveEnabled: boolean;
   onFollowChange: (enabled: boolean) => void;
   onSelectPosition: (index: number) => void;
 };
 
 const REPLAY_MIN_ZOOM = 2;
 const REPLAY_MAX_ZOOM = 20;
+const REPLAY_PERSPECTIVE_PITCH = 58;
 const REPLAY_MARKER_STYLES = {
   arrow: {
     image: 'replayMarker',
@@ -48,10 +51,18 @@ function ReplayCameraControls({
   playing,
   playbackSpeed,
   followEnabled,
+  headingUpEnabled,
+  perspectiveEnabled,
   onFollowChange,
 }: Pick<
   ReplayMapProps,
-  'currentPosition' | 'playing' | 'playbackSpeed' | 'followEnabled' | 'onFollowChange'
+  | 'currentPosition'
+  | 'playing'
+  | 'playbackSpeed'
+  | 'followEnabled'
+  | 'headingUpEnabled'
+  | 'perspectiveEnabled'
+  | 'onFollowChange'
 >) {
   const t = useTranslation();
   const [zoom, setZoom] = useState(() => map.getZoom());
@@ -69,18 +80,39 @@ function ReplayCameraControls({
   }, [onFollowChange]);
 
   useEffect(() => {
-    if (!followEnabled || !currentPosition) return;
+    if (!currentPosition) {
+      if (perspectiveEnabled || headingUpEnabled) {
+        map.easeTo({ bearing: 0, pitch: 0, duration: 250 });
+      }
+      return;
+    }
     const center = toMapCoordinates(currentPosition.longitude, currentPosition.latitude) as [
       number,
       number,
     ];
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     map.easeTo({
-      center,
+      ...(followEnabled ? { center } : {}),
+      ...(followEnabled ? { bearing: headingUpEnabled ? currentPosition.course : 0 } : {}),
+      pitch: perspectiveEnabled && playing ? REPLAY_PERSPECTIVE_PITCH : 0,
       duration: reduceMotion ? 0 : playing ? 600 / playbackSpeed : 250,
       easing: playing ? (value) => value : (value) => value * (2 - value),
     });
-  }, [currentPosition, followEnabled, playbackSpeed, playing]);
+  }, [
+    currentPosition,
+    followEnabled,
+    headingUpEnabled,
+    perspectiveEnabled,
+    playbackSpeed,
+    playing,
+  ]);
+
+  useEffect(
+    () => () => {
+      map.easeTo({ bearing: 0, pitch: 0, duration: 0 });
+    },
+    [],
+  );
 
   const changeZoom = (change: number) => {
     const minimum = Math.max(REPLAY_MIN_ZOOM, map.getMinZoom());
@@ -239,6 +271,8 @@ function ReplayMap({
   playing,
   playbackSpeed,
   followEnabled,
+  headingUpEnabled,
+  perspectiveEnabled,
   onFollowChange,
   onSelectPosition,
 }: ReplayMapProps) {
@@ -294,6 +328,8 @@ function ReplayMap({
         playing={playing}
         playbackSpeed={playbackSpeed}
         followEnabled={followEnabled}
+        headingUpEnabled={headingUpEnabled}
+        perspectiveEnabled={perspectiveEnabled}
         onFollowChange={onFollowChange}
       />
       {positions.length > 0 && (

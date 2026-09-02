@@ -3,7 +3,17 @@
 import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlaceholder';
 import ReplayTimeline from '@/features/replay/components/ReplayTimeline';
 import type { ReplayPosition } from '@/features/replay/types';
-import { Check, CircleGauge, LocateFixed, Pause, Play, SkipBack, SkipForward } from 'lucide-react';
+import {
+  Box,
+  Check,
+  CircleGauge,
+  Compass,
+  LocateFixed,
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import {
   createContext,
@@ -37,12 +47,16 @@ type ReplayState = {
   playing: boolean;
   speed: number;
   followEnabled: boolean;
+  headingUpEnabled: boolean;
+  perspectiveEnabled: boolean;
   lastIndex: number;
   currentPosition?: ReplayPosition;
   selectPosition: (nextIndex: number) => void;
   togglePlayback: () => void;
   setSpeed: (value: number) => void;
   setFollowEnabled: (value: boolean) => void;
+  setHeadingUpEnabled: (value: boolean) => void;
+  setPerspectiveEnabled: (value: boolean) => void;
 };
 
 const ReplayContext = createContext<ReplayState | null>(null);
@@ -90,6 +104,8 @@ export function ReplayProvider({ positions, children }: ReplayProviderProps) {
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [followEnabled, setFollowEnabled] = useState(false);
+  const [headingUpEnabled, setHeadingUpEnabled] = useState(false);
+  const [perspectiveEnabled, setPerspectiveEnabled] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastIndex = useMemo(() => Math.max(positions.length - 1, 0), [positions.length]);
 
@@ -135,12 +151,16 @@ export function ReplayProvider({ positions, children }: ReplayProviderProps) {
         playing,
         speed,
         followEnabled,
+        headingUpEnabled,
+        perspectiveEnabled,
         lastIndex,
         currentPosition,
         selectPosition,
         togglePlayback,
         setSpeed,
         setFollowEnabled,
+        setHeadingUpEnabled,
+        setPerspectiveEnabled,
       }}
     >
       {children}
@@ -155,9 +175,19 @@ export function ReplayMapView() {
     playing,
     speed,
     followEnabled,
+    headingUpEnabled,
+    perspectiveEnabled,
     selectPosition,
     setFollowEnabled,
+    setHeadingUpEnabled,
   } = useReplayState();
+  const handleFollowChange = useCallback(
+    (value: boolean) => {
+      setFollowEnabled(value);
+      if (!value) setHeadingUpEnabled(false);
+    },
+    [setFollowEnabled, setHeadingUpEnabled],
+  );
 
   return (
     <div className="relative h-full min-h-96 overflow-hidden bg-slate-200">
@@ -167,7 +197,9 @@ export function ReplayMapView() {
         playing={playing}
         playbackSpeed={speed}
         followEnabled={followEnabled}
-        onFollowChange={setFollowEnabled}
+        headingUpEnabled={headingUpEnabled}
+        perspectiveEnabled={perspectiveEnabled}
+        onFollowChange={handleFollowChange}
         onSelectPosition={selectPosition}
       />
     </div>
@@ -219,10 +251,14 @@ export function ReplayControls() {
     playing,
     speed,
     followEnabled,
+    headingUpEnabled,
+    perspectiveEnabled,
     selectPosition,
     togglePlayback,
     setSpeed,
     setFollowEnabled,
+    setHeadingUpEnabled,
+    setPerspectiveEnabled,
   } = useReplayState();
 
   useEffect(() => {
@@ -268,14 +304,18 @@ export function ReplayControls() {
       </div>
 
       <div className="mt-2 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-2.5 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-900/85 dark:shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
-        <div className="relative flex h-10 items-center justify-center">
-          <div className="absolute top-1 left-0 border-r border-slate-200 pr-2 dark:border-slate-700">
+        <div className="flex h-10 items-center justify-between gap-2">
+          <div className="flex shrink-0 items-center gap-1 border-r border-slate-200 pr-2 dark:border-slate-700">
             <ControlTooltip
               label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
             >
               <button
                 type="button"
-                onClick={() => setFollowEnabled(!followEnabled)}
+                onClick={() => {
+                  const nextValue = !followEnabled;
+                  setFollowEnabled(nextValue);
+                  if (!nextValue) setHeadingUpEnabled(false);
+                }}
                 className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
                   followEnabled
                     ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
@@ -285,6 +325,40 @@ export function ReplayControls() {
                 aria-pressed={followEnabled}
               >
                 <LocateFixed size={16} aria-hidden="true" />
+              </button>
+            </ControlTooltip>
+            <ControlTooltip label={t('replayHeadingUp')}>
+              <button
+                type="button"
+                onClick={() => {
+                  const nextValue = !headingUpEnabled;
+                  setHeadingUpEnabled(nextValue);
+                  if (nextValue) setFollowEnabled(true);
+                }}
+                className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
+                  headingUpEnabled
+                    ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                    : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                }`}
+                aria-label={t('replayHeadingUp')}
+                aria-pressed={headingUpEnabled}
+              >
+                <Compass size={16} aria-hidden="true" />
+              </button>
+            </ControlTooltip>
+            <ControlTooltip label={t('replayPerspectiveView')}>
+              <button
+                type="button"
+                onClick={() => setPerspectiveEnabled(!perspectiveEnabled)}
+                className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
+                  perspectiveEnabled
+                    ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                    : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                }`}
+                aria-label={t('replayPerspectiveView')}
+                aria-pressed={perspectiveEnabled}
+              >
+                <Box size={16} aria-hidden="true" />
               </button>
             </ControlTooltip>
           </div>
@@ -330,7 +404,7 @@ export function ReplayControls() {
 
           <details
             ref={speedMenuRef}
-            className="group absolute top-1 right-0 shrink-0 border-l border-slate-200 pl-2 dark:border-slate-700"
+            className="group shrink-0 border-l border-slate-200 pl-2 dark:border-slate-700"
           >
             <summary
               className="peer grid h-8 min-w-10 cursor-pointer list-none place-items-center rounded-lg px-2 text-xs font-bold tabular-nums text-slate-600 transition hover:bg-white hover:text-slate-900 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white [&::-webkit-details-marker]:hidden"
