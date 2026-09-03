@@ -26,7 +26,6 @@ import {
   LocateFixed,
   Pause,
   Play,
-  Settings2,
   SkipBack,
   SkipForward,
 } from 'lucide-react';
@@ -401,57 +400,50 @@ export function ReplayControls() {
                 label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
               >
                 <button
+                  ref={followOptionsRefs.setReference}
                   type="button"
-                  onClick={() => {
-                    const nextValue = !followEnabled;
-                    setFollowEnabled(nextValue);
-                    setFollowOptionsOpen(nextValue);
-                    if (!nextValue) {
-                      setHeadingUpEnabled(false);
-                      setPerspectiveEnabled(false);
-                    }
-                  }}
+                  {...getFollowOptionsReferenceProps({
+                    onClick: () => {
+                      const nextValue = !followEnabled;
+                      setFollowEnabled(nextValue);
+                      setFollowOptionsOpen(nextValue);
+                      if (!nextValue) {
+                        setHeadingUpEnabled(false);
+                        setPerspectiveEnabled(false);
+                      }
+                    },
+                    onMouseEnter: () => {
+                      if (followEnabled) setFollowOptionsOpen(true);
+                    },
+                    onFocus: () => {
+                      if (followEnabled) setFollowOptionsOpen(true);
+                    },
+                  })}
                   className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
-                    followEnabled
+                    followEnabled || headingUpEnabled || perspectiveEnabled
                       ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
                       : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
                   }`}
+                  aria-expanded={followEnabled ? followOptionsOpen : undefined}
                   aria-label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
                   aria-pressed={followEnabled}
                 >
                   <LocateFixed size={16} aria-hidden="true" />
                 </button>
               </ControlTooltip>
-              {followEnabled && (
-                <ControlTooltip label={t('replayFollowOptions')}>
-                  <button
-                    ref={followOptionsRefs.setReference}
-                    type="button"
-                    {...getFollowOptionsReferenceProps({
-                      onClick: () => setFollowOptionsOpen(!followOptionsOpen),
-                    })}
-                    className={`ml-1 inline-grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
-                      followOptionsOpen || headingUpEnabled || perspectiveEnabled
-                        ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
-                        : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
-                    }`}
-                    aria-expanded={followOptionsOpen}
-                    aria-label={t('replayFollowOptions')}
-                  >
-                    <Settings2 size={16} aria-hidden="true" />
-                  </button>
-                </ControlTooltip>
-              )}
               {followEnabled && followOptionsOpen && (
                 <FloatingPortal>
                   <FloatingFocusManager context={followOptionsContext} modal={false}>
                     <div
                       ref={followOptionsRefs.setFloating}
                       style={followOptionsStyles}
-                      className="z-100 w-44 max-w-[calc(100vw-1.5rem)] overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 text-xs font-semibold shadow-2xl shadow-slate-950/20 outline-none dark:border-slate-700 dark:bg-slate-900"
+                      className="z-100 w-48 max-w-[calc(100vw-1.5rem)] overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 text-xs font-semibold shadow-2xl shadow-slate-950/20 outline-none dark:border-slate-700 dark:bg-slate-900"
                       aria-label={t('replayFollowOptions')}
                       {...getFollowOptionsFloatingProps()}
                     >
+                      <p className="px-3 pt-1.5 pb-2 text-[0.65rem] font-bold uppercase text-slate-400">
+                        {t('replayFollowOptions')}
+                      </p>
                       <button
                         type="button"
                         role="menuitemcheckbox"
