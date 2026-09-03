@@ -26,6 +26,7 @@ import {
   LocateFixed,
   Pause,
   Play,
+  SlidersHorizontal,
   SkipBack,
   SkipForward,
 } from 'lucide-react';
@@ -395,42 +396,53 @@ export function ReplayControls() {
       <div className="mt-2 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-2.5 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-900/85 dark:shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
         <div className="relative flex h-12 items-center justify-center">
           <div className="absolute top-2 left-0 flex items-center gap-1 border-r border-slate-200 pr-2 dark:border-slate-700">
-            <div className="relative">
+            <div className="relative flex items-center gap-1">
               <ControlTooltip
                 label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
               >
                 <button
-                  ref={followOptionsRefs.setReference}
                   type="button"
-                  {...getFollowOptionsReferenceProps({
-                    onClick: () => {
-                      const nextValue = !followEnabled;
-                      setFollowEnabled(nextValue);
-                      setFollowOptionsOpen(nextValue);
-                      if (!nextValue) {
-                        setHeadingUpEnabled(false);
-                        setPerspectiveEnabled(false);
-                      }
-                    },
-                    onMouseEnter: () => {
-                      if (followEnabled) setFollowOptionsOpen(true);
-                    },
-                    onFocus: () => {
-                      if (followEnabled) setFollowOptionsOpen(true);
-                    },
-                  })}
+                  onClick={() => {
+                    const nextValue = !followEnabled;
+                    setFollowEnabled(nextValue);
+                    if (!nextValue) {
+                      setFollowOptionsOpen(false);
+                      setHeadingUpEnabled(false);
+                      setPerspectiveEnabled(false);
+                    }
+                  }}
                   className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
                     followEnabled || headingUpEnabled || perspectiveEnabled
                       ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
                       : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
                   }`}
-                  aria-expanded={followEnabled ? followOptionsOpen : undefined}
                   aria-label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
                   aria-pressed={followEnabled}
                 >
                   <LocateFixed size={16} aria-hidden="true" />
                 </button>
               </ControlTooltip>
+              {followEnabled && (
+                <ControlTooltip label={t('replayFollowOptions')}>
+                  <button
+                    ref={followOptionsRefs.setReference}
+                    type="button"
+                    {...getFollowOptionsReferenceProps({
+                      onClick: () => setFollowOptionsOpen(!followOptionsOpen),
+                    })}
+                    className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
+                      followOptionsOpen || headingUpEnabled || perspectiveEnabled
+                        ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                        : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                    }`}
+                    aria-expanded={followOptionsOpen}
+                    aria-haspopup="menu"
+                    aria-label={t('replayFollowOptions')}
+                  >
+                    <SlidersHorizontal size={16} aria-hidden="true" />
+                  </button>
+                </ControlTooltip>
+              )}
               {followEnabled && followOptionsOpen && (
                 <FloatingPortal>
                   <FloatingFocusManager context={followOptionsContext} modal={false}>
