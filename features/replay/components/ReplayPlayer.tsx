@@ -4,6 +4,21 @@ import ReplayMapPlaceholder from '@/features/replay/components/ReplayMapPlacehol
 import ReplayTimeline from '@/features/replay/components/ReplayTimeline';
 import type { ReplayPosition } from '@/features/replay/types';
 import {
+  autoUpdate,
+  flip,
+  FloatingFocusManager,
+  FloatingPortal,
+  offset,
+  shift,
+  size,
+  useDismiss,
+  useFloating,
+  useFocus,
+  useHover,
+  useInteractions,
+  useRole,
+} from '@floating-ui/react';
+import {
   Box,
   Check,
   CircleGauge,
@@ -11,6 +26,7 @@ import {
   LocateFixed,
   Pause,
   Play,
+  Settings2,
   SkipBack,
   SkipForward,
 } from 'lucide-react';
@@ -86,15 +102,36 @@ const formatReplayDuration = (milliseconds: number) => {
 };
 
 function ControlTooltip({ label, children }: { label: string; children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const { refs, floatingStyles, context } = useFloating({
+    open,
+    onOpenChange: setOpen,
+    placement: 'top',
+    strategy: 'fixed',
+    whileElementsMounted: autoUpdate,
+    middleware: [offset(8), flip({ padding: 8 }), shift({ padding: 8 })],
+  });
+  const hover = useHover(context, { move: false, delay: { open: 250, close: 80 } });
+  const focus = useFocus(context);
+  const dismiss = useDismiss(context);
+  const role = useRole(context, { role: 'tooltip' });
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role]);
+
   return (
-    <span className="group/tooltip relative shrink-0">
+    <span ref={refs.setReference} className="relative shrink-0" {...getReferenceProps()}>
       {children}
-      <span
-        role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-40 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white opacity-0 shadow-lg transition group-hover/tooltip:translate-y-0 group-hover/tooltip:opacity-100 group-focus-within/tooltip:translate-y-0 group-focus-within/tooltip:opacity-100 dark:bg-slate-100 dark:text-slate-900"
-      >
-        {label}
-      </span>
+      {open && (
+        <FloatingPortal>
+          <span
+            ref={refs.setFloating}
+            style={floatingStyles}
+            className="pointer-events-none z-100 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white shadow-lg dark:bg-slate-100 dark:text-slate-900"
+            {...getFloatingProps()}
+          >
+            {label}
+          </span>
+        </FloatingPortal>
+      )}
     </span>
   );
 }
@@ -180,13 +217,17 @@ export function ReplayMapView() {
     selectPosition,
     setFollowEnabled,
     setHeadingUpEnabled,
+    setPerspectiveEnabled,
   } = useReplayState();
   const handleFollowChange = useCallback(
     (value: boolean) => {
       setFollowEnabled(value);
-      if (!value) setHeadingUpEnabled(false);
+      if (!value) {
+        setHeadingUpEnabled(false);
+        setPerspectiveEnabled(false);
+      }
     },
-    [setFollowEnabled, setHeadingUpEnabled],
+    [setFollowEnabled, setHeadingUpEnabled, setPerspectiveEnabled],
   );
 
   return (
@@ -242,7 +283,8 @@ export function ReplayMaxSpeedCard({ maxSpeedKph }: { maxSpeedKph: number }) {
 
 export function ReplayControls() {
   const t = useTranslation();
-  const speedMenuRef = useRef<HTMLDetailsElement>(null);
+  const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
+  const [followOptionsOpen, setFollowOptionsOpen] = useState(false);
   const {
     positions,
     index,
@@ -260,25 +302,73 @@ export function ReplayControls() {
     setHeadingUpEnabled,
     setPerspectiveEnabled,
   } = useReplayState();
+  const {
+    refs: followOptionsRefs,
+    floatingStyles: followOptionsStyles,
+    context: followOptionsContext,
+  } = useFloating({
+    open: followEnabled && followOptionsOpen,
+    onOpenChange: setFollowOptionsOpen,
+    placement: 'bottom-start',
+    strategy: 'fixed',
+    whileElementsMounted: autoUpdate,
+    middleware: [
+      offset(8),
+      flip({ padding: 12 }),
+      shift({ padding: 12 }),
+      size({
+        padding: 12,
+        apply({ availableWidth, availableHeight, elements }) {
+          Object.assign(elements.floating.style, {
+            maxWidth: `${availableWidth}px`,
+            maxHeight: `${availableHeight}px`,
+          });
+        },
+      }),
+    ],
+  });
+  const followOptionsDismiss = useDismiss(followOptionsContext);
+  const followOptionsRole = useRole(followOptionsContext, { role: 'menu' });
+  const {
+    getReferenceProps: getFollowOptionsReferenceProps,
+    getFloatingProps: getFollowOptionsFloatingProps,
+  } = useInteractions([followOptionsDismiss, followOptionsRole]);
+
+  const {
+    refs: speedRefs,
+    floatingStyles: speedStyles,
+    context: speedContext,
+  } = useFloating({
+    open: speedMenuOpen,
+    onOpenChange: setSpeedMenuOpen,
+    placement: 'top-end',
+    strategy: 'fixed',
+    whileElementsMounted: autoUpdate,
+    middleware: [
+      offset(8),
+      flip({ padding: 12 }),
+      shift({ padding: 12 }),
+      size({
+        padding: 12,
+        apply({ availableWidth, availableHeight, elements }) {
+          Object.assign(elements.floating.style, {
+            maxWidth: `${availableWidth}px`,
+            maxHeight: `${availableHeight}px`,
+          });
+        },
+      }),
+    ],
+  });
+  const speedDismiss = useDismiss(speedContext);
+  const speedRole = useRole(speedContext, { role: 'menu' });
+  const { getReferenceProps: getSpeedReferenceProps, getFloatingProps: getSpeedFloatingProps } =
+    useInteractions([speedDismiss, speedRole]);
 
   useEffect(() => {
-    const closeSpeedMenu = (event: PointerEvent | KeyboardEvent) => {
-      if (event.type === 'keydown' && (event as KeyboardEvent).key !== 'Escape') {
-        return;
-      }
-      if (event.type === 'pointerdown' && speedMenuRef.current?.contains(event.target as Node)) {
-        return;
-      }
-      speedMenuRef.current?.removeAttribute('open');
-    };
-
-    document.addEventListener('pointerdown', closeSpeedMenu);
-    document.addEventListener('keydown', closeSpeedMenu);
-    return () => {
-      document.removeEventListener('pointerdown', closeSpeedMenu);
-      document.removeEventListener('keydown', closeSpeedMenu);
-    };
-  }, []);
+    if (!followEnabled) {
+      setFollowOptionsOpen(false);
+    }
+  }, [followEnabled]);
 
   if (!currentPosition) {
     return null;
@@ -304,65 +394,99 @@ export function ReplayControls() {
       </div>
 
       <div className="mt-2 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-2.5 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-900/85 dark:shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
-        <div className="flex h-10 items-center justify-between gap-2">
-          <div className="flex shrink-0 items-center gap-1 border-r border-slate-200 pr-2 dark:border-slate-700">
-            <ControlTooltip
-              label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
-            >
-              <button
-                type="button"
-                onClick={() => {
-                  const nextValue = !followEnabled;
-                  setFollowEnabled(nextValue);
-                  if (!nextValue) setHeadingUpEnabled(false);
-                }}
-                className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
-                  followEnabled
-                    ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
-                    : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
-                }`}
-                aria-label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
-                aria-pressed={followEnabled}
+        <div className="relative flex h-12 items-center justify-center">
+          <div className="absolute top-2 left-0 flex items-center gap-1 border-r border-slate-200 pr-2 dark:border-slate-700">
+            <div className="relative">
+              <ControlTooltip
+                label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
               >
-                <LocateFixed size={16} aria-hidden="true" />
-              </button>
-            </ControlTooltip>
-            <ControlTooltip label={t('replayHeadingUp')}>
-              <button
-                type="button"
-                onClick={() => {
-                  const nextValue = !headingUpEnabled;
-                  setHeadingUpEnabled(nextValue);
-                  if (nextValue) setFollowEnabled(true);
-                }}
-                className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
-                  headingUpEnabled
-                    ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
-                    : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
-                }`}
-                aria-label={t('replayHeadingUp')}
-                aria-pressed={headingUpEnabled}
-              >
-                <Compass size={16} aria-hidden="true" />
-              </button>
-            </ControlTooltip>
-            <ControlTooltip label={t('replayPerspectiveView')}>
-              <button
-                type="button"
-                onClick={() => setPerspectiveEnabled(!perspectiveEnabled)}
-                className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
-                  perspectiveEnabled
-                    ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
-                    : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
-                }`}
-                aria-label={t('replayPerspectiveView')}
-                aria-pressed={perspectiveEnabled}
-              >
-                <Box size={16} aria-hidden="true" />
-              </button>
-            </ControlTooltip>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextValue = !followEnabled;
+                    setFollowEnabled(nextValue);
+                    setFollowOptionsOpen(nextValue);
+                    if (!nextValue) {
+                      setHeadingUpEnabled(false);
+                      setPerspectiveEnabled(false);
+                    }
+                  }}
+                  className={`grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
+                    followEnabled
+                      ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                      : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                  }`}
+                  aria-label={followEnabled ? t('replayStopFollowing') : t('replayFollowPosition')}
+                  aria-pressed={followEnabled}
+                >
+                  <LocateFixed size={16} aria-hidden="true" />
+                </button>
+              </ControlTooltip>
+              {followEnabled && (
+                <ControlTooltip label={t('replayFollowOptions')}>
+                  <button
+                    ref={followOptionsRefs.setReference}
+                    type="button"
+                    {...getFollowOptionsReferenceProps({
+                      onClick: () => setFollowOptionsOpen(!followOptionsOpen),
+                    })}
+                    className={`ml-1 inline-grid h-8 w-8 place-items-center rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
+                      followOptionsOpen || headingUpEnabled || perspectiveEnabled
+                        ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                        : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                    }`}
+                    aria-expanded={followOptionsOpen}
+                    aria-label={t('replayFollowOptions')}
+                  >
+                    <Settings2 size={16} aria-hidden="true" />
+                  </button>
+                </ControlTooltip>
+              )}
+              {followEnabled && followOptionsOpen && (
+                <FloatingPortal>
+                  <FloatingFocusManager context={followOptionsContext} modal={false}>
+                    <div
+                      ref={followOptionsRefs.setFloating}
+                      style={followOptionsStyles}
+                      className="z-100 w-44 max-w-[calc(100vw-1.5rem)] overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 text-xs font-semibold shadow-2xl shadow-slate-950/20 outline-none dark:border-slate-700 dark:bg-slate-900"
+                      aria-label={t('replayFollowOptions')}
+                      {...getFollowOptionsFloatingProps()}
+                    >
+                      <button
+                        type="button"
+                        role="menuitemcheckbox"
+                        aria-checked={headingUpEnabled}
+                        onClick={() => setHeadingUpEnabled(!headingUpEnabled)}
+                        className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition ${
+                          headingUpEnabled
+                            ? 'bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                        }`}
+                      >
+                        <Compass size={15} aria-hidden="true" />
+                        <span>{t('replayHeadingUp')}</span>
+                      </button>
+                      <button
+                        type="button"
+                        role="menuitemcheckbox"
+                        aria-checked={perspectiveEnabled}
+                        onClick={() => setPerspectiveEnabled(!perspectiveEnabled)}
+                        className={`mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition ${
+                          perspectiveEnabled
+                            ? 'bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                        }`}
+                      >
+                        <Box size={15} aria-hidden="true" />
+                        <span>{t('replayPerspectiveView')}</span>
+                      </button>
+                    </div>
+                  </FloatingFocusManager>
+                </FloatingPortal>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-center gap-1">
             <ControlTooltip label={t('replayPreviousPosition')}>
               <button
                 type="button"
@@ -402,54 +526,58 @@ export function ReplayControls() {
             </ControlTooltip>
           </div>
 
-          <details
-            ref={speedMenuRef}
-            className="group shrink-0 border-l border-slate-200 pl-2 dark:border-slate-700"
-          >
-            <summary
-              className="peer grid h-8 min-w-10 cursor-pointer list-none place-items-center rounded-lg px-2 text-xs font-bold tabular-nums text-slate-600 transition hover:bg-white hover:text-slate-900 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white [&::-webkit-details-marker]:hidden"
+          <div className="absolute top-2 right-0 border-l border-slate-200 pl-2 dark:border-slate-700">
+            <button
+              ref={speedRefs.setReference}
+              type="button"
+              {...getSpeedReferenceProps({ onClick: () => setSpeedMenuOpen(!speedMenuOpen) })}
+              className="grid h-8 min-w-10 cursor-pointer place-items-center rounded-lg px-2 text-xs font-bold tabular-nums text-slate-600 transition hover:bg-white hover:text-slate-900 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+              aria-expanded={speedMenuOpen}
+              aria-haspopup="menu"
               aria-label={`${t('replayPlaybackSpeed')}: ${speed}×`}
             >
               {speed}×
-            </summary>
-            <span
-              role="tooltip"
-              className="pointer-events-none absolute right-0 bottom-full z-40 mb-2 translate-y-1 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white opacity-0 shadow-lg transition peer-hover:translate-y-0 peer-hover:opacity-100 peer-focus-visible:translate-y-0 peer-focus-visible:opacity-100 group-open:hidden dark:bg-slate-100 dark:text-slate-900"
-            >
-              {t('replayPlaybackSpeed')}
-            </span>
-            <div
-              className="absolute right-0 bottom-full z-30 mb-2 w-32 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-slate-700 dark:bg-slate-900"
-              role="menu"
-              aria-label={t('replayPlaybackSpeed')}
-            >
-              {speeds.map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  role="menuitemradio"
-                  aria-checked={speed === value}
-                  onClick={() => {
-                    setSpeed(value);
-                    speedMenuRef.current?.removeAttribute('open');
-                  }}
-                  className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-semibold transition ${
-                    speed === value
-                      ? 'bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
-                  }`}
-                  aria-label={t('replayPlaybackSpeedValue').replace('{value}', String(value))}
-                >
-                  <span>{value}×</span>
-                  {speed === value && <Check size={14} aria-hidden="true" />}
-                </button>
-              ))}
-            </div>
-          </details>
+            </button>
+            {speedMenuOpen && (
+              <FloatingPortal>
+                <FloatingFocusManager context={speedContext} initialFocus={0} modal={false}>
+                  <div
+                    ref={speedRefs.setFloating}
+                    style={speedStyles}
+                    className="z-100 w-32 max-w-[calc(100vw-1.5rem)] overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-2xl shadow-slate-950/20 outline-none dark:border-slate-700 dark:bg-slate-900"
+                    aria-label={t('replayPlaybackSpeed')}
+                    {...getSpeedFloatingProps()}
+                  >
+                    {speeds.map((value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={speed === value}
+                        onClick={() => {
+                          setSpeed(value);
+                          setSpeedMenuOpen(false);
+                        }}
+                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-semibold transition ${
+                          speed === value
+                            ? 'bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                        }`}
+                        aria-label={t('replayPlaybackSpeedValue').replace('{value}', String(value))}
+                      >
+                        <span>{value}×</span>
+                        {speed === value && <Check size={14} aria-hidden="true" />}
+                      </button>
+                    ))}
+                  </div>
+                </FloatingFocusManager>
+              </FloatingPortal>
+            )}
+          </div>
         </div>
 
         <div
-          className="grid items-center"
+          className="mt-1 grid items-center"
           style={{
             gridTemplateColumns: `${timeColumnWidth} minmax(0, 1fr) ${timeColumnWidth}`,
           }}

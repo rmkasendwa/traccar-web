@@ -94,7 +94,7 @@ function ReplayCameraControls({
     map.easeTo({
       ...(followEnabled ? { center } : {}),
       ...(followEnabled ? { bearing: headingUpEnabled ? currentPosition.course : 0 } : {}),
-      pitch: perspectiveEnabled && playing ? REPLAY_PERSPECTIVE_PITCH : 0,
+      pitch: followEnabled && perspectiveEnabled && playing ? REPLAY_PERSPECTIVE_PITCH : 0,
       duration: reduceMotion ? 0 : playing ? 600 / playbackSpeed : 250,
       easing: playing ? (value) => value : (value) => value * (2 - value),
     });
